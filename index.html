@@ -314,6 +314,9 @@ input,select,textarea{font-family:var(--font);}
   box-shadow:0 0 14px var(--glow-primary);
 }
 .page-header h1{font-size:22px;line-height:1.2;color:var(--text-primary);letter-spacing:.1px;}
+/* the header keeps its exact look; it only becomes clickable */
+.sec-head{cursor:pointer;-webkit-user-select:none;user-select:none;}
+.ops-section{margin-top:16px;}
 .page-header .sub{margin-top:3px;font-size:13px;font-weight:500;color:var(--text-secondary);}
 
 /* ---------- 5. CARDS ---------- */
@@ -1105,13 +1108,15 @@ html[lang="ar"] .card-title{font-size:13px;}
 
 <!-- ================= PAGE: GENERATORS ================= -->
 <div class="page active" id="page-generators">
-  <div class="page-header">
+  <div class="page-header sec-head" id="secHeadGen" role="button" tabindex="0" aria-expanded="true" aria-controls="secBodyGen">
     <div class="accent-strip"></div>
     <div>
       <h1>Generators</h1>
       <div class="sub">Operating hours &amp; service log</div>
     </div>
   </div>
+
+  <div class="sec-body" id="secBodyGen">
 
   <div class="queue-banner" id="genQueueBanner">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
@@ -1220,6 +1225,206 @@ html[lang="ar"] .card-title{font-size:13px;}
       </button>
     </div>
   </form>
+  </div>
+
+  <!-- ===== SECTION: FUEL CONSUMPTION (moved from its own tab) ===== -->
+  <div class="ops-section" id="page-fuel">
+  <div class="page-header sec-head" id="secHeadFuel" role="button" tabindex="0" aria-expanded="false" aria-controls="secBodyFuel">
+    <div class="accent-strip"></div>
+    <div>
+      <h1>Fuel Consumption</h1>
+      <div class="sub">Fuel reading and consumption record</div>
+    </div>
+  </div>
+
+  <div class="sec-body" id="secBodyFuel" hidden>
+
+  <div class="queue-banner" id="fuelQueueBanner">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2">
+      <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+    </svg>
+
+    <span class="qb-text" id="fuelQueueText">
+      1 fuel record saved offline — will submit when back online.
+    </span>
+  </div>
+
+  <form id="formFuel" novalidate>
+
+    <div class="card">
+      <div class="card-title">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2">
+          <path d="M4 22V4a2 2 0 012-2h8a2 2 0 012 2v18"/>
+          <path d="M4 12h12"/>
+          <path d="M16 7h2l2 3v8a2 2 0 01-2 2h-2"/>
+          <path d="M8 6h4"/>
+        </svg>
+        Fuel Readings
+      </div>
+
+      <div class="field">
+        <label for="fuel-first-dt">
+          Date and Time of First Reading
+          <span class="req">*</span>
+        </label>
+
+        <div class="dt-row">
+          <input
+            class="input"
+            type="datetime-local"
+            id="fuel-first-dt"
+            required readonly aria-readonly="true" step="any">
+
+          <button
+            type="button"
+            class="btn-now"
+            data-target="fuel-first-dt" disabled aria-disabled="true">
+            NOW
+          </button>
+        </div>
+
+        <div class="error-msg" id="err-fuel-first-dt">
+          First reading date and time is required
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fuel-first-reading">
+          First Reading
+          <span class="req">*</span>
+          <span class="hint">Fuel quantity in litres</span>
+        </label>
+
+        <input
+          class="input"
+          type="number"
+          inputmode="decimal"
+          min="0"
+          step="0.01"
+          id="fuel-first-reading"
+          readonly aria-readonly="true" autocomplete="off"
+          placeholder="—"
+          required>
+        <div id="fuel-opening-status" role="status" style="font-size:11px;color:var(--steel-light);margin-top:6px;line-height:1.4"></div>
+
+        <div class="error-msg" id="err-fuel-first-reading">
+          Enter a valid first reading
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fuel-second-dt">
+          Date and Time of Second Reading
+          <span class="req">*</span>
+        </label>
+
+        <div class="dt-row">
+          <input
+            class="input"
+            type="datetime-local"
+            id="fuel-second-dt"
+            required>
+
+          <button
+            type="button"
+            class="btn-now"
+            data-target="fuel-second-dt">
+            NOW
+          </button>
+        </div>
+
+        <div class="error-msg" id="err-fuel-second-dt">
+          Second reading date and time is required
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fuel-second-reading">
+          Second Reading
+          <span class="req">*</span>
+          <span class="hint">Fuel quantity in litres</span>
+        </label>
+
+        <input
+          class="input"
+          type="number"
+          inputmode="decimal"
+          min="0"
+          step="0.01"
+          id="fuel-second-reading"
+          placeholder="e.g. 4700"
+          required>
+
+        <div class="error-msg" id="err-fuel-second-reading">
+          Second reading must not exceed the first reading
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fuel-consumption">
+          Consumption
+          <span class="hint">
+            Auto-calculated — First Reading minus Second Reading
+          </span>
+        </label>
+
+        <div class="iqd-input-wrap">
+          <input
+            class="input"
+            type="number"
+            id="fuel-consumption"
+            value="0"
+            readonly>
+
+          <span class="iqd-suffix">L</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="fuel-note">Note</label>
+
+        <textarea
+          class="input"
+          id="fuel-note"
+          rows="4"
+          maxlength="1000"
+          placeholder="Add an optional note…"></textarea>
+      </div>
+    </div>
+
+    <div class="submit-bar">
+      <button
+        type="submit"
+        class="btn-submit"
+        id="btnSubmitFuel">
+
+        <svg
+          class="btn-icon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.2">
+          <path d="M20 6L9 17l-5-5"/>
+        </svg>
+
+        <span class="btn-label">
+          Submit Fuel Consumption
+        </span>
+
+        <span class="spinner"></span>
+      </button>
+    </div>
+
+  </form>
+  </div>
 </div>
 
 <!-- ================= PAGE: TASKS ================= -->
@@ -1516,209 +1721,13 @@ html[lang="ar"] .card-title{font-size:13px;}
     </div>
   </form>
 </div>
-   <!-- ================= PAGE: FUEL CONSUMPTION ================= -->
-<div class="page" id="page-fuel">
-  <div class="page-header">
-    <div class="accent-strip"></div>
-    <div>
-      <h1>Fuel Consumption</h1>
-      <div class="sub">Fuel reading and consumption record</div>
-    </div>
-  </div>
-
-  <div class="queue-banner" id="fuelQueueBanner">
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2">
-      <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-    </svg>
-
-    <span class="qb-text" id="fuelQueueText">
-      1 fuel record saved offline — will submit when back online.
-    </span>
-  </div>
-
-  <form id="formFuel" novalidate>
-
-    <div class="card">
-      <div class="card-title">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2">
-          <path d="M4 22V4a2 2 0 012-2h8a2 2 0 012 2v18"/>
-          <path d="M4 12h12"/>
-          <path d="M16 7h2l2 3v8a2 2 0 01-2 2h-2"/>
-          <path d="M8 6h4"/>
-        </svg>
-        Fuel Readings
-      </div>
-
-      <div class="field">
-        <label for="fuel-first-dt">
-          Date and Time of First Reading
-          <span class="req">*</span>
-        </label>
-
-        <div class="dt-row">
-          <input
-            class="input"
-            type="datetime-local"
-            id="fuel-first-dt"
-            required readonly aria-readonly="true" step="any">
-
-          <button
-            type="button"
-            class="btn-now"
-            data-target="fuel-first-dt" disabled aria-disabled="true">
-            NOW
-          </button>
-        </div>
-
-        <div class="error-msg" id="err-fuel-first-dt">
-          First reading date and time is required
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="fuel-first-reading">
-          First Reading
-          <span class="req">*</span>
-          <span class="hint">Fuel quantity in litres</span>
-        </label>
-
-        <input
-          class="input"
-          type="number"
-          inputmode="decimal"
-          min="0"
-          step="0.01"
-          id="fuel-first-reading"
-          readonly aria-readonly="true" autocomplete="off"
-          placeholder="—"
-          required>
-        <div id="fuel-opening-status" role="status" style="font-size:11px;color:var(--steel-light);margin-top:6px;line-height:1.4"></div>
-
-        <div class="error-msg" id="err-fuel-first-reading">
-          Enter a valid first reading
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="fuel-second-dt">
-          Date and Time of Second Reading
-          <span class="req">*</span>
-        </label>
-
-        <div class="dt-row">
-          <input
-            class="input"
-            type="datetime-local"
-            id="fuel-second-dt"
-            required>
-
-          <button
-            type="button"
-            class="btn-now"
-            data-target="fuel-second-dt">
-            NOW
-          </button>
-        </div>
-
-        <div class="error-msg" id="err-fuel-second-dt">
-          Second reading date and time is required
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="fuel-second-reading">
-          Second Reading
-          <span class="req">*</span>
-          <span class="hint">Fuel quantity in litres</span>
-        </label>
-
-        <input
-          class="input"
-          type="number"
-          inputmode="decimal"
-          min="0"
-          step="0.01"
-          id="fuel-second-reading"
-          placeholder="e.g. 4700"
-          required>
-
-        <div class="error-msg" id="err-fuel-second-reading">
-          Second reading must not exceed the first reading
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="fuel-consumption">
-          Consumption
-          <span class="hint">
-            Auto-calculated — First Reading minus Second Reading
-          </span>
-        </label>
-
-        <div class="iqd-input-wrap">
-          <input
-            class="input"
-            type="number"
-            id="fuel-consumption"
-            value="0"
-            readonly>
-
-          <span class="iqd-suffix">L</span>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="fuel-note">Note</label>
-
-        <textarea
-          class="input"
-          id="fuel-note"
-          rows="4"
-          maxlength="1000"
-          placeholder="Add an optional note…"></textarea>
-      </div>
-    </div>
-
-    <div class="submit-bar">
-      <button
-        type="submit"
-        class="btn-submit"
-        id="btnSubmitFuel">
-
-        <svg
-          class="btn-icon"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2.2">
-          <path d="M20 6L9 17l-5-5"/>
-        </svg>
-
-        <span class="btn-label">
-          Submit Fuel Consumption
-        </span>
-
-        <span class="spinner"></span>
-      </button>
-    </div>
-
-  </form>
-</div>
 
 <!-- ================= BOTTOM NAVIGATION ================= -->
 <nav class="bottom-nav">
   <button class="nav-btn active" id="nav-generators" data-page="generators">
     <div class="nav-indicator"></div>
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M12 12v3M9 13.5h6"/></svg>
-    <span class="nav-label">Generators</span>
+    <span class="nav-label">Ops</span>
   </button>
   <button class="nav-btn" id="nav-tasks" data-page="tasks">
     <div class="nav-indicator"></div>
@@ -1734,21 +1743,6 @@ html[lang="ar"] .card-title{font-size:13px;}
     <div class="nav-indicator"></div>
     <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 01-8 0"/></svg>
     <span class="nav-label">Purchase</span>
-  </button>
-     <button class="nav-btn" id="nav-fuel" data-page="fuel">
-    <div class="nav-indicator"></div>
-
-    <svg
-      class="nav-icon"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2">
-      <path d="M12 2C9 7 5 11 5 15a7 7 0 0014 0c0-4-4-8-7-13z"/>
-      <path d="M9 16a3 3 0 006 0"/>
-    </svg>
-
-    <span class="nav-label">Fuel</span>
   </button>
 </nav>
 
@@ -3161,6 +3155,7 @@ document.addEventListener('DOMContentLoaded', initSafeLanguageSwitcher);
 
 function applySmallNavTranslation(lang) {
   const translations = [
+    ['Ops', 'تشغيلي'],
     ['Generators', 'المولدات'],
     ['Tasks', 'المهام'],
     ['Attendance', 'الحضور'],
@@ -4439,6 +4434,69 @@ document.addEventListener(
   'DOMContentLoaded',
   initFuelLanguage
 );
+
+   /* ============================================================
+   OPS TAB - COLLAPSIBLE SECTIONS (Generators + Fuel Consumption)
+   Only shows/hides existing content; no field or logic changes.
+   ============================================================ */
+
+function initOpsSections() {
+  const sections = [
+    { head: 'secHeadGen', body: 'secBodyGen' },
+    { head: 'secHeadFuel', body: 'secBodyFuel' }
+  ]
+    .map(function (section) {
+      return {
+        head: document.getElementById(section.head),
+        body: document.getElementById(section.body)
+      };
+    })
+    .filter(function (section) {
+      return section.head && section.body;
+    });
+
+  function setSectionOpen(section, open) {
+    section.body.hidden = !open;
+    section.head.setAttribute('aria-expanded', String(open));
+  }
+
+  /* keeps the opened header in view after the other section collapses */
+  function revealHeader(head) {
+    const top = head.getBoundingClientRect().top;
+    const barHeight = 74;
+
+    if (top >= barHeight && top <= window.innerHeight * 0.5) return;
+
+    window.scrollTo({
+      top: Math.max(0, head.getBoundingClientRect().top + window.scrollY - barHeight),
+      behavior: 'smooth'
+    });
+  }
+
+  sections.forEach(function (section) {
+    function toggleSection() {
+      const willOpen = section.body.hidden;
+
+      /* only one section is open at a time */
+      sections.forEach(function (other) {
+        setSectionOpen(other, other === section ? willOpen : false);
+      });
+
+      if (willOpen) revealHeader(section.head);
+    }
+
+    section.head.addEventListener('click', toggleSection);
+
+    section.head.addEventListener('keydown', function (event) {
+      if (event.key === 'Enter' || event.key === ' ' || event.key === 'Spacebar') {
+        event.preventDefault();
+        toggleSection();
+      }
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initOpsSections);
    
 </script>
 <script>
