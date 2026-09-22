@@ -1580,15 +1580,18 @@ html[lang="ar"] .card-title{font-size:13px;}
   </form>
 </div>
 
-<!-- ================= PAGE: ATTENDANCE ================= -->
+<!-- ================= PAGE: MANAGEMENT ================= -->
+<!-- Retain the existing page ID; Attendance is an internal Management section. -->
 <div class="page" id="page-attendance">
-  <div class="page-header">
+  <div class="page-header sec-head" id="secHeadAttendance" role="button" tabindex="0" aria-expanded="false" aria-controls="secBodyAttendance">
     <div class="accent-strip"></div>
     <div>
       <h1>Attendance</h1>
       <div class="sub">Clock in, out &amp; breaks</div>
     </div>
   </div>
+
+  <div class="sec-body" id="secBodyAttendance" hidden>
 
   <div class="queue-banner" id="attQueueBanner">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
@@ -1673,6 +1676,7 @@ html[lang="ar"] .card-title{font-size:13px;}
       </button>
     </div>
   </form>
+  </div>
 </div>
 
 <!-- ================= PAGE: SUPPLY ================= -->
@@ -1905,7 +1909,6 @@ html[lang="ar"] .card-title{font-size:13px;}
     { id:'projects', page:'projects', en:'Projects', ar:'المشاريع', quickOrder:null,
       icon:'<path d="M3 7V5a2 2 0 012-2h5l2 3h7a2 2 0 012 2v11a2 2 0 01-2 2H5a2 2 0 01-2-2V7z"/>' },
     { id:'management', page:'attendance', en:'Management', ar:'الإدارة', quickOrder:2,
-      quickLabel:{ en:'Attendance', ar:'الحضور' },
       icon:'<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/>' },
     { id:'reports', page:'reports', en:'Reports', ar:'التقارير', quickOrder:null,
       icon:'<path d="M5 3h10l4 4v14H5z"/><path d="M9 17v-4M12 17V9M15 17v-6"/>' },
@@ -4606,6 +4609,10 @@ document.addEventListener('DOMContentLoaded', function () {
   ]);
   initCollapsibleSections([
     { head: 'secHeadPurchase', body: 'secBodyPurchase' }
+  ]);
+  // Future Management sections can join this group, independently of Ops/Supply.
+  initCollapsibleSections([
+    { head: 'secHeadAttendance', body: 'secBodyAttendance' }
   ]);
 });
    
