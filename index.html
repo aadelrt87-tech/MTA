@@ -816,6 +816,10 @@ html[dir="rtl"] .side-drawer{transform:translateX(calc(100% + 20px));}
 html.navigation-open .side-drawer{transform:translateX(0);visibility:visible;pointer-events:auto;transition-delay:0s;}
 .drawer-title{padding:0 10px;color:var(--text-secondary);font-size:14px;font-weight:700;}
 .drawer-nav{display:flex;flex-direction:column;gap:6px;min-height:0;overflow-y:auto;overscroll-behavior:contain;}
+.drawer-footer{
+  display:flex;align-items:center;flex-shrink:0;margin-top:auto;
+  padding:12px 10px 0;border-top:1px solid var(--border-subtle);
+}
 .drawer-nav-btn{
   display:flex;align-items:center;gap:12px;flex-shrink:0;min-height:46px;
   padding:11px 12px;border:1px solid transparent;border-radius:var(--r-md);
@@ -1015,7 +1019,8 @@ html[lang="ar"] .card-title{font-size:13px;}
   .page-header h1{font-size:21px;}
 }
 @media (max-width:360px){
-  .topbar{padding-left:12px;padding-right:12px;gap:6px;}
+  /* Preserve the header height previously set by the 36px language control. */
+  .topbar{padding-left:12px;padding-right:12px;gap:6px;min-height:calc(61px + var(--safe-top));}
   .topbar .brand-mark{width:34px;height:34px;}
   .topbar .brand-text .t1{font-size:23px;}
   .status-pill{padding:4px 8px;font-size:10px;}
@@ -1124,10 +1129,6 @@ html[lang="ar"] .card-title{font-size:13px;}
       <span class="t1">tîşk</span>
     </div>
   </div>
-   <div class="lang-switch">
-  <button type="button" class="lang-btn active" id="btnLangEn">EN</button>
-  <button type="button" class="lang-btn" id="btnLangAr">AR</button>
-</div>
   <div class="status-pill" id="connStatus">
     <span class="status-dot pulse" id="connDot"></span>
     <span id="connText">Online</span>
@@ -1139,6 +1140,12 @@ html[lang="ar"] .card-title{font-size:13px;}
 <aside class="side-drawer" id="mainDrawer" aria-labelledby="drawerTitle" aria-hidden="true" inert>
   <h2 class="drawer-title" id="drawerTitle">Menu</h2>
   <nav class="drawer-nav" id="drawerNav" aria-label="Main navigation"></nav>
+  <div class="drawer-footer">
+    <div class="lang-switch">
+      <button type="button" class="lang-btn active" id="btnLangEn">EN</button>
+      <button type="button" class="lang-btn" id="btnLangAr">AR</button>
+    </div>
+  </div>
 </aside>
 
 <!-- LOGGED-IN USER BAR -->
@@ -2033,7 +2040,7 @@ html[lang="ar"] .card-title{font-size:13px;}
         event.preventDefault();
         setDrawerOpen(false);
       } else if (event.key === 'Tab') {
-        const controls = [$('menuToggle'), $('btnLangEn'), $('btnLangAr'), ...qsa('.drawer-nav-btn')];
+        const controls = [$('menuToggle'), ...qsa('.drawer-nav-btn'), $('btnLangEn'), $('btnLangAr')];
         const index = controls.indexOf(document.activeElement);
         if (event.shiftKey ? index <= 0 : index === controls.length - 1 || index === -1) {
           event.preventDefault();
