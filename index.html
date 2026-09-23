@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="auth-locked">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -762,8 +762,8 @@ input[type="file"]{display:none;}
   transition:color var(--dur-2) var(--ease),transform var(--dur-3) var(--ease-spring),filter var(--dur-3) var(--ease);
 }
 .nav-btn .nav-label{
-  max-width:100%;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  /* Let labels use their natural width while keeping icons evenly spaced. */
+  width:max-content;white-space:nowrap;
   color:var(--text-muted);
   font-size:10.5px;font-weight:600;
   opacity:.9;
@@ -889,6 +889,10 @@ html[dir="rtl"] .char-count{text-align:left;}
 }
 .auth-login-screen[hidden],
 .auth-user-bar[hidden]{display:none !important;}
+html.auth-locked .topbar,
+html.auth-locked .page,
+html.auth-locked .bottom-nav,
+html.auth-locked .side-drawer{visibility:hidden;transition:none !important;}
 
 /* tîşk wordmark: Cormorant Garamond 600, subset to the letters t î ş k (SIL OFL, see fonts/OFL.txt) */
 @font-face{
@@ -963,6 +967,7 @@ html[dir="rtl"] .char-count{text-align:left;}
   transition:opacity var(--dur-2) var(--ease);
 }
 .auth-login-button:hover{background:var(--grad-primary-hover);}
+.auth-login-button:active{opacity:.85;}
 .auth-login-button:disabled{opacity:.5;cursor:wait;}
 
 /* signed-in user + logout: a strip under the top bar, aligned with the page content */
@@ -1042,10 +1047,10 @@ html[lang="ar"] .card-title{font-size:13px;}
 </head>
 <body>
 <!-- =========================================================
-     LOGIN SCREEN - HIDDEN UNTIL AUTH IS FULLY CONNECTED
+     LOGIN SCREEN - VISIBLE UNTIL THE SAVED SESSION IS CHECKED
      ========================================================= -->
 
-<div id="authLoginScreen" class="auth-login-screen" hidden>
+<div id="authLoginScreen" class="auth-login-screen">
   <div class="auth-login-card">
 
     <div class="auth-login-wordmark">tîşk</div>
@@ -1107,6 +1112,7 @@ html[lang="ar"] .card-title{font-size:13px;}
       id="authLoginButton"
       class="auth-login-button">
       <span
+        aria-live="polite"
         data-auth-en="Sign In"
         data-auth-ar="تسجيل الدخول">
         Sign In
@@ -1840,6 +1846,10 @@ html[lang="ar"] .card-title{font-size:13px;}
   const $ = (id) => document.getElementById(id);
   const qs = (sel, root) => (root || document).querySelector(sel);
   const qsa = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+  let sessionEpoch = 0;
+  let dataSessionToken = localStorage.getItem(CONFIG.LS_PREFIX + 'auth_token') || '';
+  let dataSessionUsername = localStorage.getItem(CONFIG.LS_PREFIX + 'auth_username') || '';
+  const pendingSubmissions = new Set();
 
   function pad2(n) { return String(n).padStart(2, '0'); }
 
@@ -1905,7 +1915,7 @@ html[lang="ar"] .card-title{font-size:13px;}
   // quick bar and controls its independent order; null keeps it drawer-only.
   // Existing page IDs stay intact so forms and internal sections are preserved.
   const MAIN_NAVIGATION = [
-    { id:'home', page:'home', en:'Overview', ar:'نظرة عامة', quickOrder:-1,
+    { id:'home', page:'home', en:'Overview', ar:'نظرة عامة', quickOrder:1.5,
       icon:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>' },
     { id:'ops', page:'generators', en:'Ops', ar:'تشغيلي', quickOrder:0,
       icon:'<rect x="2" y="7" width="20" height="13" rx="2"/><path d="M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M12 12v3M9 13.5h6"/>' },
@@ -2051,6 +2061,7 @@ html[lang="ar"] .card-title{font-size:13px;}
   }
 
   function goToPage(pageName) {
+    if (!authSessionExists()) { showAuthLoginScreen(); return; }
     const page = $('page-' + pageName);
     if (!page || !page.classList.contains('page')) return;
     const fromDrawer = drawerOpen;
@@ -2089,6 +2100,7 @@ html[lang="ar"] .card-title{font-size:13px;}
     selectEl.appendChild(opt);
   });
   if (current && names.includes(current)) selectEl.value = current;
+  applyLoggedInIdentityRules();
 }
 
 function fetchJSONP(url) {
@@ -2110,7 +2122,10 @@ function loadEmployeeNames() {
 
   try {
     const cached = localStorage.getItem(cacheKey);
-    if (cached) names = JSON.parse(cached);
+    if (cached) {
+      const parsed = JSON.parse(cached);
+      if (Array.isArray(parsed) && parsed.length && parsed.every((name) => typeof name === 'string')) names = parsed;
+    }
   } catch (e) {
     /* ignore parse errors, use defaults */
   }
@@ -2121,7 +2136,7 @@ function loadEmployeeNames() {
 
   fetchJSONP(CONFIG.WEB_APP_URL + '?action=getEmployees')
     .then((res) => {
-      if (res && res.success && Array.isArray(res.employees) && res.employees.length) {
+      if (res && res.success && Array.isArray(res.employees) && res.employees.length && res.employees.every((name) => typeof name === 'string')) {
         names = res.employees;
         localStorage.setItem(cacheKey, JSON.stringify(names));
 
@@ -2359,9 +2374,6 @@ function loadEmployeeNames() {
     const refreshAll = function () { Object.keys(openingFields).forEach(refreshOpeningReading); };
     window.addEventListener('online', refreshAll);
     window.addEventListener('genops-auth-changed', refreshAll);
-    window.addEventListener('storage', function (event) {
-      if (event.key === CONFIG.LS_PREFIX + 'auth_token' || event.key === null) refreshAll();
-    });
     ['btnLangEn', 'btnLangAr'].forEach(function (id) {
       $(id).addEventListener('click', function () {
         setTimeout(function () { Object.keys(openingFields).forEach(renderOpeningStatus); }, 0);
@@ -2607,6 +2619,7 @@ function onSubmitTasks(ev) {
 }
   function resetTasksForm() {
     $('formTasks').reset();
+    applyLoggedInIdentityRules();
     $('taskDescCount').textContent = '0';
     imageStores.tasks = [];
     renderPreviewGrid('task-preview-grid', imageStores.tasks);
@@ -2682,6 +2695,7 @@ function onSubmitTasks(ev) {
 
   function resetAttendanceForm() {
     $('formAttendance').reset();
+    applyLoggedInIdentityRules();
     imageStores.attendance = [];
     renderPreviewGrid('att-preview-grid', imageStores.attendance);
     qsa('#formAttendance .invalid').forEach((el) => el.classList.remove('invalid'));
@@ -2759,6 +2773,7 @@ function onSubmitTasks(ev) {
 
   function resetPurchaseForm() {
     $('formPurchase').reset();
+    applyLoggedInIdentityRules();
     imageStores.purchase = [];
     renderPreviewGrid('po-preview-grid', imageStores.purchase);
     qsa('#formPurchase .invalid').forEach((el) => el.classList.remove('invalid'));
@@ -2962,6 +2977,7 @@ function resetFuelForm() {
 
     [camInput, galInput].forEach((inputEl) => {
       inputEl.addEventListener('change', async (ev) => {
+        const epoch = sessionEpoch;
         const files = Array.from(ev.target.files || []);
         if (!files.length) return;
 
@@ -2978,8 +2994,10 @@ function resetFuelForm() {
         for (const file of toProcess) {
           try {
             const compressed = await compressImage(file, CONFIG.MAX_IMAGE_DIMENSION, CONFIG.IMAGE_QUALITY);
+            if (epoch !== sessionEpoch || storeArr !== getStoreByKey(opts)) return;
             storeArr.push(compressed);
           } catch (e) {
+            if (epoch !== sessionEpoch || storeArr !== getStoreByKey(opts)) return;
             toast('error', 'Photo failed', 'Could not process one of the selected photos.');
           }
         }
@@ -3072,24 +3090,33 @@ function resetFuelForm() {
   */
   const QUEUE_KEY = CONFIG.LS_PREFIX + 'pending_queue';
   let isSubmitting = false;
+  let queueFlushPromise = null;
 
   function readQueue() {
-    try { return JSON.parse(localStorage.getItem(QUEUE_KEY)) || []; }
+    try {
+      const queue = JSON.parse(localStorage.getItem(QUEUE_KEY));
+      return Array.isArray(queue) ? queue : [];
+    }
     catch (e) { return []; }
   }
   function writeQueue(arr) {
-    try { localStorage.setItem(QUEUE_KEY, JSON.stringify(arr)); } catch (e) { /* storage full / disabled */ }
+    try {
+      localStorage.setItem(QUEUE_KEY, JSON.stringify(arr));
+      return true;
+    } catch (e) { return false; }
   }
   function pushToQueue(record) {
     const q = readQueue();
     q.push(record);
-    writeQueue(q);
+    if (!writeQueue(q)) return false;
     updateQueueBanners();
+    return true;
   }
   function removeFromQueue(clientId) {
     const q = readQueue().filter((r) => r.clientId !== clientId);
-    writeQueue(q);
+    if (!writeQueue(q)) return false;
     updateQueueBanners();
+    return true;
   }
 
   const SHEET_TO_BANNER = {
@@ -3144,6 +3171,8 @@ function resetFuelForm() {
    * @param {string} keyPrefix  short prefix for duplicate-guard key
    */
   function submitRecord(record, btn, onSuccessReset, keyPrefix) {
+    if (!authSessionExists()) { showAuthLoginScreen(); return; }
+    const epoch = sessionEpoch;
     if (isSubmitting) {
       toast('info', 'Please wait', 'A submission is already in progress.');
       return;
@@ -3159,11 +3188,13 @@ function resetFuelForm() {
     const sig = JSON.stringify(sigPayload);
     const last = sessionStorage.getItem(dupKey);
     if (last) {
-      const parsed = JSON.parse(last);
-      if (parsed.sig === sig && (Date.now() - parsed.t) < 8000) {
-        toast('info', 'Already submitted', 'This record was just submitted.');
-        return;
-      }
+      try {
+        const parsed = JSON.parse(last);
+        if (parsed && parsed.sig === sig && (Date.now() - parsed.t) < 8000) {
+          toast('info', 'Already submitted', 'This record was just submitted.');
+          return;
+        }
+      } catch (error) { sessionStorage.removeItem(dupKey); }
     }
     sessionStorage.setItem(dupKey, JSON.stringify({ sig: sig, t: Date.now() }));
 
@@ -3175,6 +3206,7 @@ function resetFuelForm() {
     }
     sendToAppsScript(record)
       .then(() => {
+        if (epoch !== sessionEpoch) return;
         setButtonLoading(btn, false);
         isSubmitting = false;
         removeFromQueue(record.clientId);
@@ -3182,6 +3214,7 @@ function resetFuelForm() {
         toast('success', 'Submitted', record.sheet === 'Purchase Orders' ? 'Purchase request sent for approval.' : 'Record saved to Google Sheets.');
       })
       .catch((error) => {
+        if (epoch !== sessionEpoch) return;
         setButtonLoading(btn, false);
         isSubmitting = false;
         if (openingFields[record.sheet]) {
@@ -3202,30 +3235,43 @@ function resetFuelForm() {
           }
           return;
         }
-        pushToQueue(record);
+        if (!pushToQueue(record)) {
+          sessionStorage.removeItem(dupKey);
+          toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+            openingText('Device storage is full or unavailable. Your inputs are still in the form.',
+              'مساحة الجهاز ممتلئة أو غير متاحة. بياناتك باقية في الاستمارة.'), 6000);
+          return;
+        }
         onSuccessReset();
         toast('info', 'Saved offline', 'No connection — this will sync automatically once you\u2019re back online.');
       });
   }
 
   function flushQueue() {
+    if (queueFlushPromise) return queueFlushPromise;
     const q = readQueue();
-    if (!q.length || !navigator.onLine) return;
+    if (!q.length || !navigator.onLine || !authSessionExists()) return Promise.resolve();
+    const epoch = sessionEpoch;
     // Process sequentially to avoid overwhelming Apps Script's quota.
     let chain = Promise.resolve();
     q.forEach((record) => {
-      chain = chain.then(() =>
-        sendToAppsScript(record)
-          .then(() => { removeFromQueue(record.clientId); })
+      chain = chain.then(() => {
+        if (epoch !== sessionEpoch) return;
+        return sendToAppsScript(record)
+          .then(() => { if (epoch === sessionEpoch) removeFromQueue(record.clientId); })
           .catch(() => { /* still offline or server error — leave queued */ })
-      );
+      });
     });
-    chain.then(() => {
+    queueFlushPromise = chain.then(() => {
+      if (epoch !== sessionEpoch) return;
       const remaining = readQueue().length;
       if (remaining === 0 && q.length > 0) {
         toast('success', 'Synced', 'All offline records have been submitted.');
       }
+    }).finally(() => {
+      queueFlushPromise = null;
     });
+    return queueFlushPromise;
   }
 
   window.addEventListener('online', () => { setConnStatus(true); flushQueue(); });
@@ -3242,6 +3288,10 @@ function resetFuelForm() {
   */
   function sendToAppsScript(record) {
     return new Promise((resolve, reject) => {
+      if (!authSessionExists()) {
+        reject(new Error('LOGIN_REQUIRED'));
+        return;
+      }
       if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.indexOf('YOUR_DEPLOYMENT_ID') !== -1) {
         reject(new Error('Web App URL not configured'));
         return;
@@ -3252,6 +3302,7 @@ function resetFuelForm() {
       }
 
       const controller = new AbortController();
+      pendingSubmissions.add(controller);
       const timeoutId = setTimeout(() => controller.abort(), CONFIG.REQUEST_TIMEOUT_MS);
 
       fetch(CONFIG.WEB_APP_URL, {
@@ -3268,6 +3319,7 @@ function resetFuelForm() {
         .then((resp) => resp.json())
         .then((json) => {
           clearTimeout(timeoutId);
+          pendingSubmissions.delete(controller);
           if (json && json.success) resolve(json);
           else {
             const error = new Error((json && json.error) || 'Server rejected submission');
@@ -3278,6 +3330,7 @@ function resetFuelForm() {
         })
         .catch((err) => {
           clearTimeout(timeoutId);
+          pendingSubmissions.delete(controller);
           reject(err);
         });
     });
@@ -3286,7 +3339,47 @@ function resetFuelForm() {
   /* ============================================================
      INIT
      ============================================================ */
+  function resetSessionContent(event) {
+    const token = localStorage.getItem(CONFIG.LS_PREFIX + 'auth_token') || '';
+    const username = localStorage.getItem(CONFIG.LS_PREFIX + 'auth_username') || '';
+    const discard = !!(event.detail && event.detail.discardContent) ||
+      (!!token && username !== dataSessionUsername);
+    if (token === dataSessionToken && !discard) return;
+    dataSessionToken = token;
+    if (token || discard) dataSessionUsername = username;
+    sessionEpoch++;
+    pendingSubmissions.forEach((controller) => controller.abort());
+    pendingSubmissions.clear();
+    isSubmitting = false;
+    qsa('.btn-submit').forEach((button) => setButtonLoading(button, false));
+    // Expiry locks the app but keeps this user's unsaved draft for sign-in.
+    // Explicit logout or a different account discards it.
+    if (!discard) return;
+    qsa('form').forEach((form) => form.reset());
+    qsa('.invalid, .error-msg.show, .check-item.checked').forEach((element) => {
+      element.classList.remove('invalid', 'show', 'checked');
+    });
+    qsa('option[data-auth-identity]').forEach((option) => option.remove());
+    qsa('[data-auth-locked]').forEach((select) => {
+      select.disabled = false;
+      select.removeAttribute('data-auth-locked');
+    });
+    Object.keys(imageStores).forEach((key) => { imageStores[key] = []; });
+    qsa('.preview-grid').forEach((grid) => { grid.textContent = ''; });
+    $('att-photo-zone').style.borderColor = '';
+    $('taskDescCount').textContent = '0';
+    $('opHoursValue').textContent = '0.0';
+    $('opHoursValue').classList.add('zero');
+    $('fuel-consumption').value = '0';
+    $('toastStack').textContent = '';
+    Object.keys(openingAttempts).forEach((key) => { delete openingAttempts[key]; });
+    ['gen', 'task', 'att', 'po', 'fuel'].forEach((key) => sessionStorage.removeItem(CONFIG.LS_PREFIX + 'lastsig_' + key));
+    ['task-start-dt', 'att-dt'].forEach((id) => { $(id).value = nowForInput(); });
+    applyLoggedInIdentityRules();
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
+    window.addEventListener('genops-auth-changed', resetSessionContent);
     initNavigation();
     initNowButtons();
     initGeneratorsForm();
@@ -3716,8 +3809,12 @@ function applyFinalLanguageFix(lang) {
     ['e.g. 4', 'مثال: 4']
   ];
 
+  // Match complete phrases before prefixes (Photo/Photos and task dates).
+  const sourceIndex = lang === 'ar' ? 0 : 1;
+  pairs.sort(function (a, b) { return b[sourceIndex].length - a[sourceIndex].length; });
+
   const elements = document.querySelectorAll(
-    'h1, h2, h3, label, button, option, small, span, p, .card-title, .section-title, .section-header, .photo-title, .photo-subtitle, .upload-title, .upload-subtitle, .hint, .sub, .hero-subtitle'
+    'h1, h2, h3, label, button, option, small, span, p, .card-title, .section-title, .section-header, .photo-title, .photo-subtitle, .pz-title, .pz-sub, .upload-title, .upload-subtitle, .hint, .sub, .hero-subtitle'
   );
 
   elements.forEach(function (el) {
@@ -3851,11 +3948,14 @@ function applyMixedLanguageCleanup(lang) {
   ];
 
   const fixes = lang === 'ar' ? arFixes : enFixes;
+  fixes.sort(function (a, b) { return b[0].length - a[0].length; });
 
   const walker = document.createTreeWalker(
     document.body,
     NodeFilter.SHOW_TEXT,
-    null
+    { acceptNode: function (node) {
+      return node.parentElement.closest('script, style') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+    } }
   );
 
   const nodes = [];
@@ -3999,8 +4099,7 @@ function initPurchaseButtonFinalFix() {
 document.addEventListener('DOMContentLoaded', initPurchaseButtonFinalFix);
 
    /* ============================================================
-   LOGIN SYSTEM - SAFE TEST MODE
-   Login screen appears only when URL contains: loginTest=1
+   LOGIN / LOGOUT AND SAVED SESSION LIFECYCLE
    ============================================================ */
 
 const AUTH_KEYS = {
@@ -4010,6 +4109,44 @@ const AUTH_KEYS = {
   role: CONFIG.LS_PREFIX + 'auth_role',
   expiresAt: CONFIG.LS_PREFIX + 'auth_expires_at'
 };
+const AUTH_REQUEST_TIMEOUT_MS = 30000;
+let authLoginAttempt = null;
+let authExpiryTimer = null;
+let authStorageTimer = null;
+let authInitialized = false;
+
+function renderAuthLoginState() {
+  const button = document.getElementById('authLoginButton');
+  if (!button) return;
+  const loading = !!authLoginAttempt;
+  button.disabled = loading;
+  button.setAttribute('aria-busy', String(loading));
+  button.querySelector('span').textContent = loading
+    ? authMessage('Signing in…', 'جارٍ تسجيل الدخول…')
+    : authMessage('Sign In', 'تسجيل الدخول');
+}
+
+function cancelAuthLogin() {
+  if (authLoginAttempt) authLoginAttempt.controller.abort();
+  authLoginAttempt = null;
+  renderAuthLoginState();
+}
+
+async function requestAuth(payload, controller = new AbortController()) {
+  const timeout = setTimeout(function () { controller.abort(); }, AUTH_REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch(CONFIG.WEB_APP_URL, {
+      method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload), redirect: 'follow', signal: controller.signal
+    });
+    if (!response.ok) throw new Error('AUTH_NETWORK');
+    const result = await response.json();
+    if (!result || !result.success) throw new Error('AUTH_REJECTED');
+    return result;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
 
 function authCurrentLanguage() {
   return localStorage.getItem('genops_language') || 'en';
@@ -4042,6 +4179,7 @@ function applyAuthLanguage() {
   }
 
   updateAuthUserBar();
+  renderAuthLoginState();
 }
 
 function showAuthError(message) {
@@ -4063,19 +4201,31 @@ function clearAuthError() {
 }
 
 function saveAuthSession(result) {
-  localStorage.setItem(AUTH_KEYS.token, result.token || '');
-  localStorage.setItem(AUTH_KEYS.username, result.username || '');
-  localStorage.setItem(AUTH_KEYS.employeeName, result.employeeName || '');
-  localStorage.setItem(AUTH_KEYS.role, result.role || 'User');
-  localStorage.setItem(AUTH_KEYS.expiresAt, result.expiresAt || '');
+  if (typeof result.token !== 'string' || !result.token.trim() ||
+      !Number.isFinite(Date.parse(result.expiresAt)) || Date.parse(result.expiresAt) <= Date.now()) {
+    throw new Error('AUTH_INVALID_SESSION');
+  }
+  try {
+    localStorage.setItem(AUTH_KEYS.username, result.username || '');
+    localStorage.setItem(AUTH_KEYS.employeeName, result.employeeName || '');
+    localStorage.setItem(AUTH_KEYS.role, result.role || 'User');
+    localStorage.setItem(AUTH_KEYS.expiresAt, result.expiresAt);
+    // Publish the token after the session metadata is complete.
+    localStorage.setItem(AUTH_KEYS.token, result.token);
+  } catch (error) {
+    Object.values(AUTH_KEYS).forEach(function (key) { localStorage.removeItem(key); });
+    throw new Error('AUTH_STORAGE');
+  }
   window.dispatchEvent(new Event('genops-auth-changed'));
 }
 
-function clearAuthSession() {
+function clearAuthSession(discardContent = false) {
+  cancelAuthLogin();
+  clearTimeout(authExpiryTimer);
   Object.keys(AUTH_KEYS).forEach(function (key) {
     localStorage.removeItem(AUTH_KEYS[key]);
   });
-  window.dispatchEvent(new Event('genops-auth-changed'));
+  window.dispatchEvent(new CustomEvent('genops-auth-changed', { detail:{ discardContent:discardContent } }));
 }
 
 function authSessionExists() {
@@ -4120,15 +4270,15 @@ function showAuthLoginScreen() {
   const loginScreen = document.getElementById('authLoginScreen');
   const userBar = document.getElementById('authUserBar');
 
+  const wasHidden = loginScreen && loginScreen.hidden;
+  document.documentElement.classList.add('auth-locked');
+  document.querySelectorAll('.topbar, .page, .bottom-nav, .auth-user-bar').forEach(function (element) { element.inert = true; });
   if (loginScreen) loginScreen.hidden = false;
   if (userBar) userBar.hidden = true;
 
   applyAuthLanguage();
 
-  setTimeout(function () {
-    const usernameInput = document.getElementById('authUsername');
-    if (usernameInput) usernameInput.focus();
-  }, 100);
+  if (wasHidden) document.getElementById('authUsername').focus({ preventScroll:true });
 }
 
 function hideAuthLoginScreen() {
@@ -4136,13 +4286,17 @@ function hideAuthLoginScreen() {
   const userBar = document.getElementById('authUserBar');
 
   if (loginScreen) loginScreen.hidden = true;
+  document.documentElement.classList.remove('auth-locked');
+  document.querySelectorAll('.topbar, .page, .bottom-nav, .auth-user-bar').forEach(function (element) { element.inert = false; });
 
   applyAuthLanguage();
 
   if (userBar) userBar.hidden = false;
+  document.getElementById('authLogoutButton').disabled = false;
 }
 
 async function submitAuthLogin() {
+  if (authLoginAttempt) return;
   clearAuthError();
   if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.includes('YOUR_DEPLOYMENT_ID')) {
     showAuthError(authMessage('Configure the Apps Script web app URL first.', 'يجب ضبط رابط Apps Script أولاً.'));
@@ -4151,7 +4305,6 @@ async function submitAuthLogin() {
 
   const usernameInput = document.getElementById('authUsername');
   const passcodeInput = document.getElementById('authPasscode');
-  const loginButton = document.getElementById('authLoginButton');
 
   const username = String(usernameInput ? usernameInput.value : '').trim();
   const passcode = String(passcodeInput ? passcodeInput.value : '').trim();
@@ -4166,96 +4319,88 @@ async function submitAuthLogin() {
     return;
   }
 
-  if (loginButton) {
-    loginButton.disabled = true;
-  }
+  const attempt = { controller: new AbortController() };
+  authLoginAttempt = attempt;
+  renderAuthLoginState();
 
   try {
-    const response = await fetch(CONFIG.WEB_APP_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'text/plain;charset=utf-8'
-      },
-      body: JSON.stringify({
-        action: 'login',
-        username: username,
-        passcode: passcode
-      }),
-      redirect: 'follow'
-    });
-
-    const result = await response.json();
-
-    if (!result || !result.success) {
-      throw new Error(
-        result && result.error
-          ? result.error
-          : 'Login failed'
-      );
-    }
-
+    const result = await requestAuth({ action:'login', username:username, passcode:passcode }, attempt.controller);
+    if (authLoginAttempt !== attempt) return;
     saveAuthSession(result);
-    scheduleLoggedInIdentityRules();
-    hideAuthLoginScreen();
-
     if (passcodeInput) passcodeInput.value = '';
 
   } catch (error) {
-    showAuthError(
-      authMessage(
-        'Login failed. Check your username and passcode.',
-        'فشل تسجيل الدخول. تحقق من اسم المستخدم ورمز الدخول.'
-      )
-    );
-
+    if (authLoginAttempt !== attempt) return;
+    const messages = {
+      AUTH_REJECTED: ['Login failed. Check your username and passcode.', 'فشل تسجيل الدخول. تحقق من اسم المستخدم ورمز الدخول.'],
+      AUTH_STORAGE: ['Could not save your session. Allow browser storage and try again.', 'تعذّر حفظ الجلسة. اسمح بالتخزين في المتصفح ثم أعد المحاولة.'],
+      AUTH_INVALID_SESSION: ['The server returned an invalid session. Please try again.', 'أعاد الخادم جلسة غير صالحة. أعد المحاولة.']
+    };
+    const message = error.name === 'AbortError'
+      ? ['Sign-in timed out. Check your connection and try again.', 'انتهت مهلة تسجيل الدخول. تحقق من الاتصال وأعد المحاولة.']
+      : messages[error.message] || ['Could not reach the sign-in service. Please try again.', 'تعذّر الاتصال بخدمة تسجيل الدخول. أعد المحاولة.'];
+    showAuthError(authMessage(message[0], message[1]));
   } finally {
-    if (loginButton) {
-      loginButton.disabled = false;
+    if (authLoginAttempt === attempt) {
+      authLoginAttempt = null;
+      renderAuthLoginState();
     }
   }
 }
 
-function initAuthTestMode() {
+function syncAuthSession() {
+  clearTimeout(authExpiryTimer);
+  if (authSessionExists()) {
+    applyLoggedInIdentityRules();
+    if (!document.getElementById('authLoginScreen').hidden) hideAuthLoginScreen();
+    else updateAuthUserBar();
+    const remaining = Date.parse(localStorage.getItem(AUTH_KEYS.expiresAt)) - Date.now();
+    authExpiryTimer = setTimeout(syncAuthSession, Math.min(remaining + 1, 2147483647));
+  } else {
+    showAuthLoginScreen();
+  }
+}
+
+async function submitAuthLogout() {
+  const token = localStorage.getItem(AUTH_KEYS.token) || '';
+  if (!token) return;
+  const button = document.getElementById('authLogoutButton');
+  button.disabled = true;
+  clearAuthSession(true);
+  document.getElementById('authUsername').value = '';
+  document.getElementById('authPasscode').value = '';
+  clearAuthError();
+  // The local screen is locked before waiting for revocation of this token.
+  // Completion must never clear a session created by a subsequent login.
+  try {
+    await requestAuth({ action:'logout', token:token });
+  } catch (error) {
+    if (!localStorage.getItem(AUTH_KEYS.token) && !authLoginAttempt) {
+      showAuthError(authMessage(
+        'Signed out on this device. Server sign-out could not be confirmed.',
+        'تم تسجيل الخروج من هذا الجهاز. تعذّر تأكيد إنهاء الجلسة على الخادم.'
+      ));
+    }
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function initAuth() {
+  if (authInitialized) return;
+  authInitialized = true;
 
   const loginButton = document.getElementById('authLoginButton');
   const logoutButton = document.getElementById('authLogoutButton');
   const passcodeInput = document.getElementById('authPasscode');
-  const btnEn = document.getElementById('btnLangEn');
-  const btnAr = document.getElementById('btnLangAr');
 
   if (loginButton) {
     loginButton.addEventListener('click', submitAuthLogin);
   }
 
   if (logoutButton) {
-  logoutButton.addEventListener('click', async function () {
-    const token = localStorage.getItem(AUTH_KEYS.token) || '';
-
-    logoutButton.disabled = true;
-
-    try {
-      if (token) {
-        await fetch(CONFIG.WEB_APP_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'text/plain;charset=utf-8'
-          },
-          body: JSON.stringify({
-            action: 'logout',
-            token: token
-          }),
-          redirect: 'follow'
-        });
-      }
-    } catch (error) {
-      console.warn('Server logout failed:', error);
-    } finally {
-      clearAuthSession();
-      logoutButton.disabled = false;
-      showAuthLoginScreen();
-    }
-  });
-}
+    logoutButton.addEventListener('click', submitAuthLogout);
+  }
 
   [passcodeInput].forEach(function (input) {
     if (!input) return;
@@ -4268,26 +4413,25 @@ function initAuthTestMode() {
     });
   });
 
-  if (btnEn) {
-    btnEn.addEventListener('click', function () {
-      setTimeout(applyAuthLanguage, 100);
-    });
-  }
-
-  if (btnAr) {
-    btnAr.addEventListener('click', function () {
-      setTimeout(applyAuthLanguage, 100);
-    });
-  }
-
-  if (authSessionExists()) {
-    scheduleLoggedInIdentityRules();
-    hideAuthLoginScreen();
-  } else {
-    showAuthLoginScreen();
-  }
+  document.addEventListener('genops-language-changed', applyAuthLanguage);
+  window.addEventListener('genops-auth-changed', syncAuthSession);
+  window.addEventListener('storage', function (event) {
+    if (event.key !== null && !Object.values(AUTH_KEYS).includes(event.key)) return;
+    clearTimeout(authStorageTimer);
+    authStorageTimer = setTimeout(function () {
+      cancelAuthLogin();
+      window.dispatchEvent(new CustomEvent('genops-auth-changed', {
+        detail:{ discardContent:!localStorage.getItem(AUTH_KEYS.token) }
+      }));
+    }, 0);
+  });
+  window.addEventListener('pageshow', syncAuthSession);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) syncAuthSession();
+  });
+  syncAuthSession();
 }
-document.addEventListener('DOMContentLoaded', initAuthTestMode);
+document.addEventListener('DOMContentLoaded', initAuth);
 
    /* ============================================================
    LOCK EMPLOYEE FIELDS FOR NORMAL USERS
@@ -4341,6 +4485,7 @@ function applyLoggedInIdentityRules() {
       employeeOption = document.createElement('option');
       employeeOption.value = employeeName;
       employeeOption.textContent = employeeName;
+      employeeOption.setAttribute('data-auth-identity', 'true');
       select.appendChild(employeeOption);
     }
 
@@ -4350,11 +4495,6 @@ function applyLoggedInIdentityRules() {
   });
 }
 
-function scheduleLoggedInIdentityRules() {
-  [0, 300, 800, 1500, 3000].forEach(function (delay) {
-    setTimeout(applyLoggedInIdentityRules, delay);
-  });
-}
    /* ============================================================
    FUEL CONSUMPTION AUTO CALCULATION
    First Reading - Second Reading
