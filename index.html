@@ -1172,7 +1172,7 @@ html[lang="ar"] .card-title{font-size:13px;}
 </div>
 
 <!-- ================= PAGE: GENERATORS ================= -->
-<div class="page active" id="page-generators">
+<div class="page" id="page-generators">
   <div class="page-header sec-head" id="secHeadGen" role="button" tabindex="0" aria-expanded="true" aria-controls="secBodyGen">
     <div class="accent-strip"></div>
     <div>
@@ -1915,6 +1915,7 @@ html[lang="ar"] .card-title{font-size:13px;}
   // Order here controls the full drawer. quickOrder opts a main tab into the
   // quick bar and controls its independent order; null keeps it drawer-only.
   // Existing page IDs stay intact so forms and internal sections are preserved.
+  const DEFAULT_PAGE = 'home';
   const MAIN_NAVIGATION = [
     { id:'home', page:'home', en:'Overview', ar:'نظرة عامة', quickOrder:1.5,
       icon:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>' },
@@ -1977,6 +1978,14 @@ html[lang="ar"] .card-title{font-size:13px;}
     document.documentElement.style.setProperty('--drawer-top', qs('.topbar').getBoundingClientRect().bottom + 'px');
   }
 
+  function resetNavigationToDefault() {
+    // Select the landing page internally; only the auth lifecycle unlocks it.
+    setDrawerOpen(false, false);
+    qsa('.page').forEach((page) => page.classList.toggle('active', page.id === 'page-' + DEFAULT_PAGE));
+    updateNavigationActiveState();
+    window.scrollTo({ top:0, behavior:'instant' });
+  }
+
   function setDrawerOpen(open, restoreFocus = true) {
     if (drawerOpen === open) return;
     drawerOpen = open;
@@ -2036,13 +2045,14 @@ html[lang="ar"] .card-title{font-size:13px;}
       .sort((a, b) => a.quickOrder - b.quickOrder)
       .forEach((item) => $('quickNav').appendChild(makeButton(item, true)));
     updateNavigationLanguage();
-    updateNavigationActiveState();
+    resetNavigationToDefault();
 
     $('menuToggle').addEventListener('click', () => setDrawerOpen(!drawerOpen));
     $('drawerBackdrop').addEventListener('click', () => setDrawerOpen(false));
     window.addEventListener('resize', () => { if (drawerOpen) positionDrawer(); });
-    window.addEventListener('genops-auth-changed', () => {
-      if (!localStorage.getItem(CONFIG.LS_PREFIX + 'auth_token')) setDrawerOpen(false);
+    window.addEventListener('pageshow', (event) => {
+      // A restored document skips initialization; give it the same landing page.
+      if (event.persisted) resetNavigationToDefault();
     });
     document.addEventListener('genops-language-changed', updateNavigationLanguage);
     document.addEventListener('keydown', (event) => {
@@ -3346,6 +3356,7 @@ function resetFuelForm() {
     const discard = !!(event.detail && event.detail.discardContent) ||
       (!!token && username !== dataSessionUsername);
     if (token === dataSessionToken && !discard) return;
+    resetNavigationToDefault();
     dataSessionToken = token;
     if (token || discard) dataSessionUsername = username;
     sessionEpoch++;
