@@ -273,6 +273,7 @@ html[dir="rtl"] .topbar .brand-mark svg{transform:scaleX(-1);}
   border:1px solid var(--border-subtle);
 }
 .lang-btn{
+  position:relative;
   min-width:34px;min-height:28px;
   padding:4px 9px;
   border:0;border-radius:var(--r-full);
@@ -281,6 +282,9 @@ html[dir="rtl"] .topbar .brand-mark svg{transform:scaleX(-1);}
   cursor:pointer;
   transition:background var(--dur-2) var(--ease),color var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease);
 }
+/* Reach a 44px touch height without changing the control's drawn size.
+   Vertical only, so the two adjacent buttons never overlap. */
+.lang-btn::after{content:"";position:absolute;inset-block:-8px;inset-inline:0;}
 .lang-btn:hover{color:var(--primary);}
 .lang-btn.active{
   background:var(--grad-primary);
@@ -602,6 +606,8 @@ input[type="file"]{display:none;}
   cursor:pointer;
   box-shadow:0 0 12px var(--glow-danger);
 }
+/* Reach a 44px touch target without changing the drawn 26px badge. */
+.preview-thumb .rm::after{content:"";position:absolute;inset:-9px;border-radius:50%;}
 .preview-thumb .compress-tag{
   position:absolute;bottom:7px;left:7px;
   padding:3px 8px;
@@ -611,6 +617,9 @@ input[type="file"]{display:none;}
   color:var(--primary);
   font-size:9.5px;font-weight:700;letter-spacing:.04em;
 }
+/* The two overlays are physically positioned, so they need an explicit mirror. */
+html[dir="rtl"] .preview-thumb .rm{right:auto;left:7px;}
+html[dir="rtl"] .preview-thumb .compress-tag{left:auto;right:7px;}
 
 /* ---------- 10. SUBMIT BUTTON ---------- */
 /* part of the page: sits right after the last section of each tab and scrolls with it */
@@ -665,6 +674,8 @@ input[type="file"]{display:none;}
   color:rgba(4,34,43,.7);
   font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
 }
+/* Generated content cannot be reached by the JS translation layers. */
+html[lang="ar"] .btn-submit.loading::before{content:"جارٍ الإرسال...";}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ---------- 11. TOAST NOTIFICATIONS ---------- */
@@ -678,7 +689,8 @@ input[type="file"]{display:none;}
 .toast{
   width:100%;max-width:460px;
   display:flex;align-items:flex-start;gap:10px;
-  padding:12px 16px 12px 12px;
+  /* Logical padding: the icon gutter has to follow the reading direction. */
+  padding:12px;padding-inline-end:16px;
   border-radius:var(--r-lg);
   background-color:rgba(18,49,66,.96);
   color:var(--text-primary);
@@ -965,11 +977,17 @@ html.auth-locked .side-drawer{visibility:hidden;transition:none !important;}
   color:var(--on-primary);
   font-size:16px;font-weight:700;
   cursor:pointer;
-  transition:opacity var(--dur-2) var(--ease);
+  transition:opacity var(--dur-2) var(--ease),transform var(--dur-2) var(--ease),filter var(--dur-2) var(--ease);
 }
 .auth-login-button:hover{background:var(--grad-primary-hover);}
-.auth-login-button:active{opacity:.85;}
-.auth-login-button:disabled{opacity:.5;cursor:wait;}
+/* The global tap-highlight is transparent, so the press has to be drawn here.
+   transition-duration:0s makes it land on the same frame as the touch; the
+   release still eases back through the rule above. */
+.auth-login-button:active{
+  opacity:.82;transform:scale(.978);filter:brightness(.9);
+  transition-duration:0s;
+}
+.auth-login-button:disabled{opacity:.5;cursor:wait;transform:none;filter:none;}
 
 /* signed-in user + logout: a strip under the top bar, aligned with the page content */
 .auth-user-bar{
@@ -992,6 +1010,7 @@ html.auth-locked .side-drawer{visibility:hidden;transition:none !important;}
 }
 .auth-user-bar span{display:block;margin-top:1px;color:var(--text-muted);font-size:11px;}
 .auth-user-bar button{
+  position:relative;
   flex-shrink:0;
   min-height:36px;
   padding:8px 12px;
@@ -1001,8 +1020,16 @@ html.auth-locked .side-drawer{visibility:hidden;transition:none !important;}
   color:var(--primary);
   font-size:11px;font-weight:700;
   cursor:pointer;
+  transition:background var(--dur-2) var(--ease),color var(--dur-2) var(--ease),transform var(--dur-2) var(--ease);
 }
+/* Reach a 44px touch height without changing the drawn size. The inset
+   resolves against the padding box, so it has to clear the 1px border too. */
+.auth-user-bar button::after{content:"";position:absolute;inset-block:-5px;inset-inline:0;}
 .auth-user-bar button:hover{background:rgba(33,230,230,.14);color:var(--primary-bright);}
+.auth-user-bar button:active{
+  background:rgba(33,230,230,.22);color:var(--primary-bright);transform:scale(.955);
+  transition-duration:0s;
+}
 
 html[dir="rtl"] .auth-login-card,
 html[dir="rtl"] .auth-field{direction:rtl;text-align:right;}
@@ -1044,6 +1071,101 @@ html[lang="ar"] .card-title{font-size:13px;}
     scroll-behavior:auto !important;
   }
 }
+/* ---------- 18. GENERATOR MANAGEMENT ----------
+   Scoped to the existing Ops (#page-generators) and Overview (#page-home)
+   pages. Built on the existing .card, .btn-now, .photo-btn, .btn-submit and
+   .check-item styles and the existing tokens; nothing global changes here. */
+#page-generators .genmgr-add{min-height:44px;margin-top:10px;}
+#page-generators .genmgr-editor{scroll-margin-top:84px;}
+#page-generators .genmgr-toggle{margin-bottom:10px;}
+#page-generators .genmgr-cancel{width:100%;margin-top:9px;}
+
+#page-generators .genmgr-status-row{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:12px;row-gap:2px;align-items:baseline;
+  padding:11px 0;
+  border-bottom:1px solid rgba(77,220,235,.12);
+}
+#page-generators .genmgr-status-row:first-child{padding-top:0;}
+#page-generators .genmgr-status-row:last-child{padding-bottom:0;border-bottom:0;}
+#page-generators .genmgr-label{color:var(--text-primary);font-size:14.5px;font-weight:600;}
+#page-generators .genmgr-interval{color:var(--text-muted);font-size:12px;}
+#page-generators .genmgr-remaining,
+#page-home .genmgr-remaining{
+  color:var(--primary);
+  font-family:var(--font-num);font-weight:600;font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+#page-generators .genmgr-remaining{font-size:15px;text-align:end;}
+#page-generators .genmgr-rem-word{color:var(--text-muted);font-family:var(--font);font-size:12px;}
+/* Service-life status label: always shown, so colour is never the only signal. */
+#page-generators .genmgr-state,
+#page-home .genmgr-state{
+  display:inline-block;
+  padding:1px 7px;
+  border:1px solid transparent;
+  border-radius:var(--r-full);
+  color:var(--text-muted);
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  white-space:nowrap;
+}
+#page-generators .genmgr-state{justify-self:end;}
+/* Status treatments from getGeneratorServiceStatus(); existing tokens only. */
+#page-generators .genmgr-st-ok .genmgr-state,
+#page-home .genmgr-st-ok .genmgr-state{color:var(--primary);background:var(--primary-wash);}
+#page-generators .genmgr-st-due-soon .genmgr-remaining,
+#page-home .genmgr-st-due-soon .genmgr-remaining{color:var(--accent);}
+#page-generators .genmgr-st-due-soon .genmgr-state,
+#page-home .genmgr-st-due-soon .genmgr-state{color:var(--accent);background:var(--accent-wash);}
+#page-generators .genmgr-st-critical .genmgr-remaining,
+#page-home .genmgr-st-critical .genmgr-remaining,
+#page-generators .genmgr-st-overdue .genmgr-remaining,
+#page-home .genmgr-st-overdue .genmgr-remaining{color:var(--danger);}
+#page-generators .genmgr-st-critical .genmgr-state,
+#page-home .genmgr-st-critical .genmgr-state{color:var(--danger);background:var(--danger-wash);}
+/* Overdue: the same danger colour, set apart by a stronger wash, a border and weight. */
+#page-generators .genmgr-st-overdue .genmgr-state,
+#page-home .genmgr-st-overdue .genmgr-state{color:var(--danger);background:var(--danger-wash-2);border-color:var(--danger);font-weight:800;}
+#page-generators .genmgr-st-unavailable .genmgr-remaining,
+#page-home .genmgr-st-unavailable .genmgr-remaining{color:var(--text-muted);}
+html[lang="ar"] #page-generators .genmgr-state,
+html[lang="ar"] #page-home .genmgr-state{letter-spacing:0;text-transform:none;}
+
+#page-home .genmgr-ov-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+#page-home .genmgr-ov-id{min-width:0;}
+#page-home .genmgr-ov-name{color:var(--text-primary);font-size:17px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;}
+#page-home .genmgr-ov-size{margin-top:2px;color:var(--text-secondary);font-size:13px;overflow-wrap:anywhere;}
+#page-home .genmgr-ov-edit{flex-shrink:0;min-height:44px;}
+#page-home .genmgr-ring{position:relative;width:108px;height:108px;margin:12px auto 0;}
+#page-home .genmgr-ring svg{display:block;width:100%;height:100%;transform:rotate(-90deg);}
+#page-home .genmgr-ring circle{fill:none;stroke-width:7;}
+#page-home .genmgr-ring-track{stroke:var(--border-subtle);}
+#page-home .genmgr-ring-value{stroke:var(--primary);stroke-linecap:round;filter:drop-shadow(0 0 5px var(--glow-primary));}
+#page-home .genmgr-ring.genmgr-st-due-soon .genmgr-ring-value{stroke:var(--accent);filter:drop-shadow(0 0 5px var(--glow-accent));}
+#page-home .genmgr-ring.genmgr-st-critical .genmgr-ring-value,
+#page-home .genmgr-ring.genmgr-st-overdue .genmgr-ring-value{stroke:var(--danger);filter:drop-shadow(0 0 5px var(--glow-danger));}
+#page-home .genmgr-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+#page-home .genmgr-ring-num{
+  color:var(--primary);
+  font-family:var(--font-num);font-size:21px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums;
+  text-shadow:0 0 14px rgba(var(--primary-rgb),.55);
+}
+#page-home .genmgr-ring.genmgr-st-due-soon .genmgr-ring-num{color:var(--accent);text-shadow:none;}
+#page-home .genmgr-ring.genmgr-st-critical .genmgr-ring-num,
+#page-home .genmgr-ring.genmgr-st-overdue .genmgr-ring-num{color:var(--danger);text-shadow:none;}
+#page-home .genmgr-ring.genmgr-st-unavailable .genmgr-ring-num{color:var(--text-muted);text-shadow:none;}
+#page-home .genmgr-ring-unit{color:var(--text-muted);font-size:11px;font-weight:700;}
+#page-home .genmgr-ring-label{margin-top:6px;text-align:center;color:var(--text-secondary);font-size:12px;font-weight:700;}
+#page-home .genmgr-ring-label .genmgr-state{margin-inline-start:6px;}
+#page-home .genmgr-ov-runtime{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;
+  margin-top:10px;
+  color:var(--text-secondary);font-size:13px;
+}
+#page-home .genmgr-ov-runtime .genmgr-num{color:var(--text-primary);font-family:var(--font-num);font-weight:600;}
+#page-home .genmgr-ov-services{margin-top:14px;padding-top:6px;border-top:1px solid rgba(77,220,235,.12);}
+#page-home .genmgr-ov-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6px 0;font-size:13px;}
+#page-home .genmgr-ov-row .genmgr-label{min-width:0;color:var(--text-primary);font-weight:600;}
+#page-home .genmgr-ov-value{flex-shrink:0;display:flex;align-items:baseline;gap:8px;}
 </style>
 </head>
 <body>
@@ -1188,6 +1310,96 @@ html[lang="ar"] .card-title{font-size:13px;}
     <span class="qb-text" id="genQueueText">1 record saved offline — will submit when back online.</span>
   </div>
 
+  <!-- One editor for adding and editing generators (script section 6b). -->
+  <form class="card genmgr-editor" id="genmgrEditor" novalidate hidden aria-labelledby="genmgrEditorTitle">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M12 12v3M9 13.5h6"/></svg>
+      <span id="genmgrEditorTitle" data-auth-en="Add Generator" data-auth-ar="إضافة مولدة">Add Generator</span>
+    </div>
+
+    <div class="field">
+      <label for="genmgr-name"><span data-auth-en="Generator Name" data-auth-ar="اسم المولدة">Generator Name</span><span class="req">*</span></label>
+      <input class="input" type="text" id="genmgr-name" maxlength="60" autocomplete="off" required>
+      <div class="error-msg" id="err-genmgr-name" data-auth-en="Generator name is required" data-auth-ar="اسم المولدة مطلوب">Generator name is required</div>
+    </div>
+
+    <div class="field">
+      <label for="genmgr-size"><span data-auth-en="Generator Size" data-auth-ar="حجم المولدة">Generator Size</span><span class="req">*</span><span class="hint" data-auth-en="e.g. 250 kVA" data-auth-ar="مثال: 250 kVA">e.g. 250 kVA</span></label>
+      <input class="input" type="text" id="genmgr-size" maxlength="30" autocomplete="off" required>
+      <div class="error-msg" id="err-genmgr-size" data-auth-en="Generator size is required" data-auth-ar="حجم المولدة مطلوب">Generator size is required</div>
+    </div>
+
+    <div class="field">
+      <label for="genmgr-meter"><span data-auth-en="Initial / Current Hour Meter" data-auth-ar="قراءة العداد الأولية / الحالية">Initial / Current Hour Meter</span><span class="req">*</span><span class="hint" id="genmgr-meter-hint" data-auth-en="Reading in hours" data-auth-ar="القراءة بالساعات">Reading in hours</span><span class="hint" id="genmgr-meter-locked" data-auth-en="Taken from the latest run record" data-auth-ar="مأخوذة من آخر سجل تشغيل" hidden>Taken from the latest run record</span></label>
+      <input class="input" type="number" inputmode="decimal" step="0.1" min="0" id="genmgr-meter" autocomplete="off" required>
+      <div class="error-msg" id="err-genmgr-meter" data-auth-en="Enter a valid hour meter reading" data-auth-ar="أدخل قراءة عداد صحيحة">Enter a valid hour meter reading</div>
+    </div>
+
+    <div class="field">
+      <label for="genmgr-int-engine_oil"><span data-auth-en="Oil Life — hours" data-auth-ar="عمر الزيت — ساعات">Oil Life — hours</span><span class="req">*</span></label>
+      <input class="input" type="number" inputmode="decimal" step="any" min="0" id="genmgr-int-engine_oil" autocomplete="off" required>
+      <div class="error-msg" id="err-genmgr-int-engine_oil" data-auth-en="Enter hours greater than 0" data-auth-ar="أدخل عدد ساعات أكبر من 0">Enter hours greater than 0</div>
+    </div>
+
+    <div class="field">
+      <label for="genmgr-int-oil_filter"><span data-auth-en="Oil Filter Life — hours" data-auth-ar="عمر فلتر الزيت — ساعات">Oil Filter Life — hours</span><span class="req">*</span></label>
+      <input class="input" type="number" inputmode="decimal" step="any" min="0" id="genmgr-int-oil_filter" autocomplete="off" required>
+      <div class="error-msg" id="err-genmgr-int-oil_filter" data-auth-en="Enter hours greater than 0" data-auth-ar="أدخل عدد ساعات أكبر من 0">Enter hours greater than 0</div>
+    </div>
+
+    <div class="field">
+      <label for="genmgr-int-primary_fuel_filter"><span data-auth-en="Primary Fuel Filter Life — hours" data-auth-ar="عمر فلتر الوقود الرئيسي — ساعات">Primary Fuel Filter Life — hours</span><span class="req">*</span></label>
+      <input class="input" type="number" inputmode="decimal" step="any" min="0" id="genmgr-int-primary_fuel_filter" autocomplete="off" required>
+      <div class="error-msg" id="err-genmgr-int-primary_fuel_filter" data-auth-en="Enter hours greater than 0" data-auth-ar="أدخل عدد ساعات أكبر من 0">Enter hours greater than 0</div>
+    </div>
+
+    <div class="field">
+      <label for="genmgr-int-air_filter"><span data-auth-en="Air Filter Life — hours" data-auth-ar="عمر فلتر الهواء — ساعات">Air Filter Life — hours</span><span class="req">*</span></label>
+      <input class="input" type="number" inputmode="decimal" step="any" min="0" id="genmgr-int-air_filter" autocomplete="off" required>
+      <div class="error-msg" id="err-genmgr-int-air_filter" data-auth-en="Enter hours greater than 0" data-auth-ar="أدخل عدد ساعات أكبر من 0">Enter hours greater than 0</div>
+    </div>
+
+    <div class="check-grid genmgr-toggle">
+      <div class="check-item" id="genmgr-on-secondary_fuel_filter" data-value="secondary_fuel_filter" role="checkbox" aria-checked="false" tabindex="0">
+        <input type="checkbox" value="secondary_fuel_filter">
+        <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span data-auth-en="Secondary Fuel Filter Enabled" data-auth-ar="تفعيل فلتر الوقود الثانوي">Secondary Fuel Filter Enabled</span>
+      </div>
+    </div>
+    <div class="field">
+      <label for="genmgr-int-secondary_fuel_filter"><span data-auth-en="Secondary Fuel Filter Life — hours" data-auth-ar="عمر فلتر الوقود الثانوي — ساعات">Secondary Fuel Filter Life — hours</span><span class="req" hidden>*</span></label>
+      <input class="input" type="number" inputmode="decimal" step="any" min="0" id="genmgr-int-secondary_fuel_filter" autocomplete="off" disabled>
+      <div class="error-msg" id="err-genmgr-int-secondary_fuel_filter" data-auth-en="Enter hours greater than 0" data-auth-ar="أدخل عدد ساعات أكبر من 0">Enter hours greater than 0</div>
+    </div>
+
+    <div class="check-grid genmgr-toggle">
+      <div class="check-item" id="genmgr-on-water_separator_filter" data-value="water_separator_filter" role="checkbox" aria-checked="false" tabindex="0">
+        <input type="checkbox" value="water_separator_filter">
+        <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+        <span data-auth-en="Water Separator Filter Enabled" data-auth-ar="تفعيل فلتر فاصل الماء">Water Separator Filter Enabled</span>
+      </div>
+    </div>
+    <div class="field">
+      <label for="genmgr-int-water_separator_filter"><span data-auth-en="Water Separator Filter Life — hours" data-auth-ar="عمر فلتر فاصل الماء — ساعات">Water Separator Filter Life — hours</span><span class="req" hidden>*</span></label>
+      <input class="input" type="number" inputmode="decimal" step="any" min="0" id="genmgr-int-water_separator_filter" autocomplete="off" disabled>
+      <div class="error-msg" id="err-genmgr-int-water_separator_filter" data-auth-en="Enter hours greater than 0" data-auth-ar="أدخل عدد ساعات أكبر من 0">Enter hours greater than 0</div>
+    </div>
+
+    <div class="field">
+      <label for="genmgr-fuel-rate"><span data-auth-en="Fuel Consumption Per Hour" data-auth-ar="استهلاك الوقود بالساعة">Fuel Consumption Per Hour</span><span class="req">*</span><span class="hint" data-auth-en="Litres per hour" data-auth-ar="لتر لكل ساعة">Litres per hour</span></label>
+      <input class="input" type="number" inputmode="decimal" step="any" min="0" id="genmgr-fuel-rate" autocomplete="off" required>
+      <div class="error-msg" id="err-genmgr-fuel-rate" data-auth-en="Enter a valid consumption per hour" data-auth-ar="أدخل استهلاكاً صحيحاً لكل ساعة">Enter a valid consumption per hour</div>
+    </div>
+
+    <div class="genmgr-actions">
+      <button type="submit" class="btn-submit" id="genmgrSaveBtn">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
+        <span class="btn-label" id="genmgrSaveLabel" data-auth-en="Save" data-auth-ar="حفظ">Save</span>
+      </button>
+      <button type="button" class="photo-btn genmgr-cancel" id="genmgrCancelBtn"><span data-auth-en="Cancel" data-auth-ar="إلغاء">Cancel</span></button>
+    </div>
+  </form>
+
   <form id="formGenerators" novalidate>
     <div class="card">
       <div class="card-title">
@@ -1200,12 +1412,10 @@ html[lang="ar"] .card-title{font-size:13px;}
         <div class="select-wrap">
           <select class="input" id="gen-name" required>
             <option value="" disabled selected>Select generator…</option>
-            <option value="Gen1">Gen1</option>
-            <option value="Gen2">Gen2</option>
-            <option value="Gen3">Gen3</option>
           </select>
         </div>
-        <div class="error-msg" id="err-gen-name">Please select a generator</div>
+        <div class="error-msg" id="err-gen-name" data-auth-en="Please select a generator" data-auth-ar="اختر المولدة">Please select a generator</div>
+        <button type="button" class="btn-now genmgr-add" id="genmgrAddBtn" aria-controls="genmgrEditor"><span data-auth-en="Add Generator" data-auth-ar="إضافة مولدة">Add Generator</span></button>
       </div>
 
       <div class="field">
@@ -1214,14 +1424,14 @@ html[lang="ar"] .card-title{font-size:13px;}
           <input class="input" type="datetime-local" id="gen-start-dt" required readonly aria-readonly="true" step="any">
           <button type="button" class="btn-now" data-target="gen-start-dt" disabled aria-disabled="true">NOW</button>
         </div>
-        <div class="error-msg" id="err-gen-start-dt">Start date &amp; time is required</div>
+        <div class="error-msg" id="err-gen-start-dt" data-auth-en="Start date &amp; time is required" data-auth-ar="تاريخ ووقت البداية مطلوب">Start date &amp; time is required</div>
       </div>
 
       <div class="field">
         <label for="gen-start-hm">Start Hour Meter<span class="req">*</span><span class="hint">Reading at run start, in hours</span></label>
         <input class="input" type="number" inputmode="decimal" step="0.1" min="0" id="gen-start-hm" placeholder="—" readonly aria-readonly="true" autocomplete="off" required>
         <div id="gen-opening-status" role="status" style="font-size:11px;color:var(--steel-light);margin-top:6px;line-height:1.4"></div>
-        <div class="error-msg" id="err-gen-start-hm">Enter a valid start hour meter reading</div>
+        <div class="error-msg" id="err-gen-start-hm" data-auth-en="Enter a valid start hour meter reading" data-auth-ar="أدخل قراءة عداد بداية صحيحة">Enter a valid start hour meter reading</div>
       </div>
 
       <div class="field">
@@ -1230,13 +1440,13 @@ html[lang="ar"] .card-title{font-size:13px;}
           <input class="input" type="datetime-local" id="gen-end-dt" required>
           <button type="button" class="btn-now" data-target="gen-end-dt">NOW</button>
         </div>
-        <div class="error-msg" id="err-gen-end-dt">End date &amp; time is required</div>
+        <div class="error-msg" id="err-gen-end-dt" data-auth-en="End date &amp; time is required" data-auth-ar="تاريخ ووقت النهاية مطلوب">End date &amp; time is required</div>
       </div>
 
       <div class="field">
         <label for="gen-end-hm">End Hour Meter<span class="req">*</span><span class="hint">Reading at run end, in hours</span></label>
         <input class="input" type="number" inputmode="decimal" step="0.1" min="0" id="gen-end-hm" placeholder="e.g. 1251.2" required>
-        <div class="error-msg" id="err-gen-end-hm">Enter a valid end hour meter reading</div>
+        <div class="error-msg" id="err-gen-end-hm" data-auth-en="Enter a valid end hour meter reading" data-auth-ar="أدخل قراءة عداد نهاية صحيحة">Enter a valid end hour meter reading</div>
       </div>
 
       <div class="field">
@@ -1248,38 +1458,21 @@ html[lang="ar"] .card-title{font-size:13px;}
       </div>
     </div>
 
-    <div class="card">
+    <div class="card" id="genmgrStatusCard" hidden>
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <span data-auth-en="Service Status" data-auth-ar="حالة الصيانة">Service Status</span>
+      </div>
+      <div id="genmgrStatusList"></div>
+    </div>
+
+    <div class="card" id="genmgrChecklistCard" hidden>
       <div class="card-title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 005.6 15a1.65 1.65 0 00-1.51-1H4a2 2 0 110-4h.09A1.65 1.65 0 005.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         Oils &amp; Filters Changed
       </div>
-      <div class="check-grid" id="oilsFiltersGrid">
-        <label class="check-item" data-value="Engine Oil">
-          <input type="checkbox" value="Engine Oil">
-          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          <span>Engine Oil</span>
-        </label>
-        <label class="check-item" data-value="Oil Filter">
-          <input type="checkbox" value="Oil Filter">
-          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          <span>Oil Filter</span>
-        </label>
-        <label class="check-item" data-value="Primary Fuel Filter">
-          <input type="checkbox" value="Primary Fuel Filter">
-          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          <span>Primary Fuel Filter</span>
-        </label>
-        <label class="check-item" data-value="Water Separator Filter">
-          <input type="checkbox" value="Water Separator Filter">
-          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          <span>Water Separator Filter</span>
-        </label>
-        <label class="check-item" data-value="Air Filter">
-          <input type="checkbox" value="Air Filter">
-          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          <span>Air Filter</span>
-        </label>
-      </div>
+      <!-- Items are built for the selected generator (script section 6b). -->
+      <div class="check-grid" id="oilsFiltersGrid"></div>
     </div>
 
     <div class="submit-bar">
@@ -1518,7 +1711,7 @@ html[lang="ar"] .card-title{font-size:13px;}
       <div class="field">
         <label for="task-name">Task Name<span class="req">*</span></label>
         <input class="input" type="text" id="task-name" placeholder="e.g. Replace fuel filter housing seal" required>
-        <div class="error-msg" id="err-task-name">Task name is required</div>
+        <div class="error-msg" id="err-task-name" data-auth-en="Task name is required" data-auth-ar="اسم المهمة مطلوب">Task name is required</div>
       </div>
 <div class="field">
   <label for="task-employee">Submitted By<span class="req">*</span></label>
@@ -1527,7 +1720,7 @@ html[lang="ar"] .card-title{font-size:13px;}
       <option value="" disabled selected>Select employee…</option>
     </select>
   </div>
-  <div class="error-msg" id="err-task-employee">Please select the employee who submitted this task</div>
+  <div class="error-msg" id="err-task-employee" data-auth-en="Please select the employee who submitted this task" data-auth-ar="اختر الموظف الذي قدّم هذه المهمة">Please select the employee who submitted this task</div>
 </div>
        
       <div class="field">
@@ -1536,7 +1729,7 @@ html[lang="ar"] .card-title{font-size:13px;}
           <input class="input" type="datetime-local" id="task-start-dt" required>
           <button type="button" class="btn-now" data-target="task-start-dt">NOW</button>
         </div>
-        <div class="error-msg" id="err-task-start-dt">Start date &amp; time is required</div>
+        <div class="error-msg" id="err-task-start-dt" data-auth-en="Start date &amp; time is required" data-auth-ar="تاريخ ووقت البداية مطلوب">Start date &amp; time is required</div>
       </div>
 
       <div class="field">
@@ -1545,14 +1738,14 @@ html[lang="ar"] .card-title{font-size:13px;}
           <input class="input" type="datetime-local" id="task-end-dt" required>
           <button type="button" class="btn-now" data-target="task-end-dt">NOW</button>
         </div>
-        <div class="error-msg" id="err-task-end-dt">End date &amp; time is required</div>
+        <div class="error-msg" id="err-task-end-dt" data-auth-en="End date &amp; time is required" data-auth-ar="تاريخ ووقت النهاية مطلوب">End date &amp; time is required</div>
       </div>
 
       <div class="field">
         <label for="task-desc">Task Description<span class="req">*</span></label>
         <textarea class="input" id="task-desc" rows="4" maxlength="1000" placeholder="Describe the work performed, parts used, observations…" required></textarea>
         <div class="char-count"><span id="taskDescCount">0</span>/1000</div>
-        <div class="error-msg" id="err-task-desc">Task description is required</div>
+        <div class="error-msg" id="err-task-desc" data-auth-en="Task description is required" data-auth-ar="وصف المهمة مطلوب">Task description is required</div>
       </div>
     </div>
 
@@ -1562,7 +1755,8 @@ html[lang="ar"] .card-title{font-size:13px;}
         Task Photos
       </div>
       <div class="field" style="margin-bottom:0;">
-        <label for="task-photo-zone">Photos<span class="hint">Optional, multiple allowed — compressed automatically</span></label>
+        <!-- No `for`: the target is a div, not a labelable control. The zone keeps its own click handler. -->
+        <label>Photos<span class="hint">Optional, multiple allowed — compressed automatically</span></label>
         <div class="photo-zone" id="task-photo-zone">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
           <div class="pz-title">Tap to add photos</div>
@@ -1626,7 +1820,7 @@ html[lang="ar"] .card-title{font-size:13px;}
             <option value="" disabled selected>Select employee…</option>
           </select>
         </div>
-        <div class="error-msg" id="err-att-employee">Please select an employee</div>
+        <div class="error-msg" id="err-att-employee" data-auth-en="Please select an employee" data-auth-ar="اختر الموظف">Please select an employee</div>
       </div>
 
       <div class="field">
@@ -1640,7 +1834,7 @@ html[lang="ar"] .card-title{font-size:13px;}
             <option value="BREAK IN">BREAK IN</option>
           </select>
         </div>
-        <div class="error-msg" id="err-att-type">Please select attendance type</div>
+        <div class="error-msg" id="err-att-type" data-auth-en="Please select attendance type" data-auth-ar="اختر نوع الحضور">Please select attendance type</div>
       </div>
 
       <div class="field" style="margin-bottom:0;">
@@ -1649,7 +1843,7 @@ html[lang="ar"] .card-title{font-size:13px;}
           <input class="input" type="datetime-local" id="att-dt" required>
           <button type="button" class="btn-now" data-target="att-dt">NOW</button>
         </div>
-        <div class="error-msg" id="err-att-dt">Date &amp; time is required</div>
+        <div class="error-msg" id="err-att-dt" data-auth-en="Date &amp; time is required" data-auth-ar="التاريخ والوقت مطلوب">Date &amp; time is required</div>
       </div>
     </div>
 
@@ -1659,7 +1853,8 @@ html[lang="ar"] .card-title{font-size:13px;}
         Photo Verification
       </div>
       <div class="field" style="margin-bottom:0;">
-        <label for="att-photo-zone">Photo<span class="req">*</span><span class="hint">Required for verification — compressed automatically</span></label>
+        <!-- No `for`: the target is a div, not a labelable control. The zone keeps its own click handler. -->
+        <label>Photo<span class="req">*</span><span class="hint">Required for verification — compressed automatically</span></label>
         <div class="photo-zone" id="att-photo-zone">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
           <div class="pz-title">Tap to add photo</div>
@@ -1678,7 +1873,7 @@ html[lang="ar"] .card-title{font-size:13px;}
         <input type="file" accept="image/*" capture="user" id="att-photo-camera">
         <input type="file" accept="image/*" id="att-photo-gallery">
         <div class="preview-grid" id="att-preview-grid"></div>
-        <div class="error-msg" id="err-att-photo">A photo is required for attendance verification</div>
+        <div class="error-msg" id="err-att-photo" data-auth-en="A photo is required for attendance verification" data-auth-ar="الصورة مطلوبة للتحقق من الحضور">A photo is required for attendance verification</div>
       </div>
     </div>
 
@@ -1724,26 +1919,26 @@ html[lang="ar"] .card-title{font-size:13px;}
             <option value="" disabled selected>Select requester…</option>
           </select>
         </div>
-        <div class="error-msg" id="err-po-requester">Please select a requester</div>
+        <div class="error-msg" id="err-po-requester" data-auth-en="Please select a requester" data-auth-ar="اختر مقدم الطلب">Please select a requester</div>
       </div>
 
       <div class="field">
         <label for="po-desc">Purchase Description<span class="req">*</span></label>
         <textarea class="input" id="po-desc" rows="3" maxlength="500" placeholder="What needs to be purchased?" required></textarea>
-        <div class="error-msg" id="err-po-desc">Purchase description is required</div>
+        <div class="error-msg" id="err-po-desc" data-auth-en="Purchase description is required" data-auth-ar="وصف الشراء مطلوب">Purchase description is required</div>
       </div>
 
       <div class="field">
         <label for="po-purpose">Purpose of Purchase<span class="req">*</span></label>
         <textarea class="input" id="po-purpose" rows="3" maxlength="500" placeholder="Why is this needed?" required></textarea>
-        <div class="error-msg" id="err-po-purpose">Purpose of purchase is required</div>
+        <div class="error-msg" id="err-po-purpose" data-auth-en="Purpose of purchase is required" data-auth-ar="الغرض من الشراء مطلوب">Purpose of purchase is required</div>
       </div>
 
       <div class="field-row-2">
         <div class="field">
           <label for="po-qty">Quantity<span class="req">*</span></label>
           <input class="input" type="number" inputmode="numeric" min="1" step="1" id="po-qty" placeholder="e.g. 4" required>
-          <div class="error-msg" id="err-po-qty">Enter a valid quantity</div>
+          <div class="error-msg" id="err-po-qty" data-auth-en="Enter a valid quantity" data-auth-ar="أدخل كمية صحيحة">Enter a valid quantity</div>
         </div>
         <div class="field">
           <label for="po-cost">Expected Cost<span class="req">*</span></label>
@@ -1751,7 +1946,7 @@ html[lang="ar"] .card-title{font-size:13px;}
             <input class="input" type="number" inputmode="decimal" min="0" step="250" id="po-cost" placeholder="0">
             <span class="iqd-suffix">IQD</span>
           </div>
-          <div class="error-msg" id="err-po-cost">Enter a valid cost in IQD</div>
+          <div class="error-msg" id="err-po-cost" data-auth-en="Enter a valid cost in IQD" data-auth-ar="أدخل كلفة صحيحة بالدينار العراقي">Enter a valid cost in IQD</div>
         </div>
       </div>
     </div>
@@ -1762,7 +1957,8 @@ html[lang="ar"] .card-title{font-size:13px;}
         Supporting Photos
       </div>
       <div class="field" style="margin-bottom:0;">
-        <label for="po-photo-zone">Photos<span class="hint">Optional, multiple allowed — compressed automatically</span></label>
+        <!-- No `for`: the target is a div, not a labelable control. The zone keeps its own click handler. -->
+        <label>Photos<span class="hint">Optional, multiple allowed — compressed automatically</span></label>
         <div class="photo-zone" id="po-photo-zone">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
           <div class="pz-title">Tap to add photos</div>
@@ -1903,6 +2099,14 @@ html[lang="ar"] .card-title{font-size:13px;}
     errEl.classList.toggle('show', !!show);
   }
 
+  /* Restores an error element's default message in the current language.
+     Reads the same data-auth-* attributes applyAuthLanguage() already uses,
+     so a runtime message and a language switch cannot disagree. */
+  function defaultFieldError(id) {
+    const el = $(id);
+    return openingText(el.getAttribute('data-auth-en') || '', el.getAttribute('data-auth-ar') || '');
+  }
+
   function vibrateError() {
     if (window.navigator && window.navigator.vibrate) {
       try { window.navigator.vibrate(60); } catch (e) { /* no-op */ }
@@ -1978,12 +2182,33 @@ html[lang="ar"] .card-title{font-size:13px;}
     document.documentElement.style.setProperty('--drawer-top', qs('.topbar').getBoundingClientRect().bottom + 'px');
   }
 
+  // Jump to the top without animating. `behavior:'auto'` would honour the
+  // smooth scroll-behavior set on <html>, so it cannot be used here.
+  // `behavior:'instant'` is the right call but is a newer enum value that
+  // older engines reject with a TypeError during argument conversion, before
+  // any scrolling happens — hence the try/catch and the fallback below.
+  function scrollPageToTop() {
+    try {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+      return;
+    } catch (error) { /* older engine — use the fallback */ }
+    // Suspend the page-level smooth scrolling instead. The forced style read
+    // is required: without it scrollTo() runs against the previous computed
+    // value and still animates.
+    const root = document.documentElement;
+    const previous = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    void getComputedStyle(root).scrollBehavior;
+    window.scrollTo(0, 0);
+    root.style.scrollBehavior = previous;
+  }
+
   function resetNavigationToDefault() {
     // Select the landing page internally; only the auth lifecycle unlocks it.
     setDrawerOpen(false, false);
     qsa('.page').forEach((page) => page.classList.toggle('active', page.id === 'page-' + DEFAULT_PAGE));
     updateNavigationActiveState();
-    window.scrollTo({ top:0, behavior:'instant' });
+    scrollPageToTop();
   }
 
   function setDrawerOpen(open, restoreFocus = true) {
@@ -2087,7 +2312,7 @@ html[lang="ar"] .card-title{font-size:13px;}
         heading.focus({ preventScroll:true });
       }
     }
-    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+    scrollPageToTop();
   }
 
   /* ============================================================
@@ -2145,6 +2370,11 @@ function loadEmployeeNames() {
   populateEmployeeSelect($('po-requester'), names);
   populateEmployeeSelect($('task-employee'), names);
 
+  // The cached list already fills the dropdowns. Refreshing it from the sheet
+  // waits for a session, so this request is not occupying Apps Script while the
+  // user is about to press Sign In; the auth listener re-runs it after sign-in.
+  if (!authSessionExists()) return;
+
   fetchJSONP(CONFIG.WEB_APP_URL + '?action=getEmployees')
     .then((res) => {
       if (res && res.success && Array.isArray(res.employees) && res.employees.length && res.employees.every((name) => typeof name === 'string')) {
@@ -2170,7 +2400,7 @@ function loadEmployeeNames() {
         const target = $(btn.dataset.target);
         if (target) {
           if (target.readOnly) return;
-          target.value = ['gen-end-dt', 'fuel-second-dt'].includes(btn.dataset.target) ? openingNow() : nowForInput();
+          target.value = ['gen-start-dt', 'gen-end-dt', 'fuel-second-dt'].includes(btn.dataset.target) ? openingNow() : nowForInput();
           target.dispatchEvent(new Event('input', { bubbles: true }));
           target.dispatchEvent(new Event('change', { bubbles: true }));
         }
@@ -2181,9 +2411,10 @@ function loadEmployeeNames() {
   /* ============================================================
      6. GENERATORS FORM
      ============================================================ */
-  /* Automatic opening readings: fetched from Sheets and never typed. */
+  /* Automatic opening readings: fetched from Sheets and never typed.
+     Generators no longer use this path: during the UI-development phase
+     their start meter comes from the local generator catalog (6b). */
   const openingFields = {
-    'Generators': { input: 'gen-start-hm', date: 'gen-start-dt', entity: 'gen-name', status: 'gen-opening-status' },
     'Fuel Consumption': { input: 'fuel-first-reading', date: 'fuel-first-dt', entity: '', status: 'fuel-opening-status' }
   };
   const openingStates = {};
@@ -2415,15 +2646,8 @@ function loadEmployeeNames() {
     startHM.addEventListener('input', recalc);
     endHM.addEventListener('input', recalc);
 
-    // Checkbox group toggle styling
-    qsa('#oilsFiltersGrid .check-item').forEach((item) => {
-      const input = qs('input', item);
-      item.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        input.checked = !input.checked;
-        item.classList.toggle('checked', input.checked);
-      });
-    });
+    // Checkbox group toggle styling. Items are rebuilt per generator, so delegated.
+    genmgrBindCheckItems($('oilsFiltersGrid'));
 
     $('formGenerators').addEventListener('submit', onSubmitGenerators);
   }
@@ -2457,72 +2681,705 @@ function loadEmployeeNames() {
       setFieldError(endHm, $('err-gen-end-hm'), true); ok = false;
     } else setFieldError(endHm, $('err-gen-end-hm'), false);
 
-    // Cross-field: end hour meter should not be less than start
-    if (ok && parseFloat(endHm.value) < parseFloat(startHm.value)) {
+    // Cross-field: end hour meter should not be less than start. Guarded on the
+    // two values being finite rather than on `ok`, so an unrelated empty field
+    // no longer hides this error until a second submission attempt.
+    const startHmValue = parseFloat(startHm.value);
+    const endHmValue = parseFloat(endHm.value);
+    if (Number.isFinite(startHmValue) && Number.isFinite(endHmValue) && endHmValue < startHmValue) {
       setFieldError(endHm, $('err-gen-end-hm'), true);
-      $('err-gen-end-hm').textContent = 'End reading cannot be less than start reading';
+      $('err-gen-end-hm').textContent = openingText(
+        'End reading cannot be less than start reading',
+        'قراءة النهاية لا يمكن أن تقل عن قراءة البداية');
       ok = false;
     } else {
-      $('err-gen-end-hm').textContent = 'Enter a valid end hour meter reading';
+      $('err-gen-end-hm').textContent = defaultFieldError('err-gen-end-hm');
     }
 
     // Cross-field: end datetime should not be before start datetime
-    if (ok && startDt.value && endDt.value && new Date(endDt.value) < new Date(startDt.value)) {
+    if (startDt.value && endDt.value && new Date(endDt.value) < new Date(startDt.value)) {
       setFieldError(endDt, $('err-gen-end-dt'), true);
-      $('err-gen-end-dt').textContent = 'End time cannot be before start time';
+      $('err-gen-end-dt').textContent = openingText(
+        'End time cannot be before start time',
+        'وقت النهاية لا يمكن أن يسبق وقت البداية');
       ok = false;
     } else {
-      $('err-gen-end-dt').textContent = 'End date & time is required';
+      $('err-gen-end-dt').textContent = defaultFieldError('err-gen-end-dt');
     }
 
     return ok;
   }
 
-  function onSubmitGenerators(ev) {
+  // Saves the run for the selected generator locally (section 6b); this form
+  // does not depend on Apps Script during the UI-development phase.
+  async function onSubmitGenerators(ev) {
     ev.preventDefault();
-    if (!requireOpeningReading('Generators')) return;
-    if (!validateGenerators()) { vibrateError(); toast('error', 'Check the form', 'Some required fields need attention.'); return; }
+    if (!authSessionExists()) { showAuthLoginScreen(); return; }
+    const button = $('btnSubmitGen');
+    if (button.disabled) return;
+    if (!validateGenerators()) {
+      vibrateError();
+      toast('error', openingText('Check the form', 'راجع الاستمارة'),
+        openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.'));
+      return;
+    }
 
+    const generatorId = $('gen-name').value;
     const startHm = parseFloat($('gen-start-hm').value);
     const endHm = parseFloat($('gen-end-hm').value);
-    const operatingHours = (endHm - startHm).toFixed(2);
-
-    const record = {
-      sheet: 'Generators',
-      clientId: uid(),
-      data: {
-        'Submission Timestamp': isoTimestamp(),
-        'Generator Name': $('gen-name').value,
-        'Start Date Time': $('gen-start-dt').value,
-        'Start Hour Meter': startHm,
-        'End Date Time': $('gen-end-dt').value,
-        'End Hour Meter': endHm,
-        'Operating Hours': operatingHours,
-        'Oil Changed': getCheckedValues('oilsFiltersGrid').includes('Engine Oil') ? 'Yes' : 'No',
-        'Oil Filter Changed': getCheckedValues('oilsFiltersGrid').includes('Oil Filter') ? 'Yes' : 'No',
-        'Primary Fuel Filter Changed': getCheckedValues('oilsFiltersGrid').includes('Primary Fuel Filter') ? 'Yes' : 'No',
-        'Water Separator Filter Changed': getCheckedValues('oilsFiltersGrid').includes('Water Separator Filter') ? 'Yes' : 'No',
-        'Air Filter Changed': getCheckedValues('oilsFiltersGrid').includes('Air Filter') ? 'Yes' : 'No'
+    setButtonLoading(button, true);
+    try {
+      const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
+      const generator = data[0].find((item) => item.id === generatorId);
+      const runs = generator ? genmgrRunsOf(data[1], generatorId) : [];
+      const last = runs[runs.length - 1];
+      // The start must still be this generator's current meter; another tab
+      // may have saved a run for it after this form was filled.
+      if (!generator || startHm !== genmgrCurrentMeter(generator, runs) ||
+          (last && $('gen-start-dt').value !== last.endDateTime)) {
+        genmgrRefresh();
+        const message = openingFailureText({ code: 'OPENING_REFRESH_REQUIRED' });
+        toast('error', openingText('Save not confirmed', 'لم يتأكد الحفظ'), openingText(message[0], message[1]), 6000);
+        return;
       }
-    };
-
-    prepareOpeningAttempt(record);
-    submitRecord(record, $('btnSubmitGen'), resetGeneratorsForm, 'gen');
+      const active = genmgrActiveServices(generator).map((entry) => entry.service.type);
+      const performed = getCheckedValues('oilsFiltersGrid').filter((type) => active.includes(type));
+      const run = {
+        id: uid(),
+        generatorId: generatorId,
+        startDateTime: $('gen-start-dt').value,
+        startHourMeter: startHm,
+        endDateTime: $('gen-end-dt').value,
+        endHourMeter: endHm,
+        operatingHours: genmgrRound(endHm - startHm),
+        servicesPerformed: performed,
+        createdAt: isoTimestamp()
+      };
+      // TEMPORARY (UI-development phase): a checked item counts as a confirmed
+      // service as soon as the run is saved, so its baseline moves to this
+      // run's end meter. Supabase approval will become the authoritative
+      // confirmation of maintenance later.
+      const updated = performed.length ? Object.assign({}, generator, {
+        serviceItems: (generator.serviceItems || []).map((item) => (item && performed.includes(item.type)
+          ? Object.assign({}, item, { lastServiceHourMeter: endHm }) : item)),
+        updatedAt: run.createdAt
+      }) : null;
+      await generatorRepository.addRun(run, updated);
+    } catch (error) {
+      toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+        openingText('Device storage is full or unavailable. Your inputs are still in the form.',
+          'مساحة الجهاز ممتلئة أو غير متاحة. بياناتك باقية في الاستمارة.'), 6000);
+      return;
+    } finally {
+      setButtonLoading(button, false);
+    }
+    resetGeneratorsForm();
+    genmgrRenderOverview();
+    toast('success', openingText('Saved', 'تم الحفظ'),
+      openingText('Record saved on this device.', 'تم حفظ السجل على هذا الجهاز.'));
   }
 
   function resetGeneratorsForm() {
+    const generatorId = $('gen-name').value;
     $('formGenerators').reset();
+    // Keep the generator selected so its new start and service status show at once.
+    $('gen-name').value = generatorId;
     $('opHoursValue').textContent = '0.0';
     $('opHoursValue').classList.add('zero');
-    qsa('#oilsFiltersGrid .check-item').forEach((item) => {
-      item.classList.remove('checked');
-      qs('input', item).checked = false;
-    });
     qsa('#formGenerators .invalid').forEach((el) => el.classList.remove('invalid'));
     qsa('#formGenerators .error-msg.show').forEach((el) => el.classList.remove('show'));
-    // Re-prefill so the next log entry doesn't start with a blank required field.
-    delete openingAttempts.Generators;
-    refreshOpeningReading('Generators');
+    // Carried-forward start, updated service status and an unchecked checklist.
+    genmgrRenderSelection();
+  }
+
+  /* ============================================================
+     6b. GENERATOR MANAGEMENT
+     ============================================================
+     Generator profiles, service status and run records for the
+     UI-development phase. Every relationship uses generator.id;
+     the name is display text only. Data stays in this browser
+     through generatorRepository until Supabase replaces it.
+  */
+  const GENMGR_SERVICES = [
+    { type: 'engine_oil', optional: false, en: 'Engine Oil', ar: 'زيت المحرك' },
+    { type: 'oil_filter', optional: false, en: 'Oil Filter', ar: 'فلتر الزيت' },
+    { type: 'primary_fuel_filter', optional: false, en: 'Primary Fuel Filter', ar: 'فلتر الوقود الرئيسي' },
+    { type: 'air_filter', optional: false, en: 'Air Filter', ar: 'فلتر الهواء' },
+    { type: 'secondary_fuel_filter', optional: true, en: 'Secondary Fuel Filter', ar: 'فلتر الوقود الثانوي' },
+    { type: 'water_separator_filter', optional: true, en: 'Water Separator Filter', ar: 'فلتر فاصل الماء' }
+  ];
+  const GENMGR_CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>';
+  const genmgrView = { editingId: null, renderedId: null };
+
+  /* Temporary test persistence for this phase only. The UI reaches storage
+     through these methods alone and treats each one as asynchronous, so a
+     Supabase implementation can replace this object without UI changes. */
+  const generatorRepository = (function () {
+    const CATALOG_KEY = CONFIG.LS_PREFIX + 'generator_catalog_v1';
+    const RUNS_KEY = CONFIG.LS_PREFIX + 'generator_runs_v1';
+
+    function read(key) {
+      try {
+        const list = JSON.parse(localStorage.getItem(key));
+        return Array.isArray(list) ? list.filter((item) => item && typeof item.id === 'string') : [];
+      } catch (error) { return []; }
+    }
+    // Throws when storage is full or blocked; callers report it.
+    function write(key, list) {
+      localStorage.setItem(key, JSON.stringify(list));
+    }
+    function upsert(list, entry) {
+      const index = list.findIndex((item) => item.id === entry.id);
+      if (index === -1) list.push(entry);
+      else list[index] = entry;
+      return list;
+    }
+
+    return {
+      listGenerators: () => Promise.resolve().then(() => read(CATALOG_KEY)),
+      listRuns: () => Promise.resolve().then(() => read(RUNS_KEY)),
+      saveGenerator: (generator) => Promise.resolve().then(() => {
+        write(CATALOG_KEY, upsert(read(CATALOG_KEY), generator));
+      }),
+      // Saves a run together with the generator it updated, or neither.
+      addRun: (run, generator) => Promise.resolve().then(() => {
+        const previousRuns = localStorage.getItem(RUNS_KEY);
+        write(RUNS_KEY, read(RUNS_KEY).concat([run]));
+        if (!generator) return;
+        try {
+          write(CATALOG_KEY, upsert(read(CATALOG_KEY), generator));
+        } catch (error) {
+          if (previousRuns === null) localStorage.removeItem(RUNS_KEY);
+          else localStorage.setItem(RUNS_KEY, previousRuns);
+          throw error;
+        }
+      })
+    };
+  })();
+
+  function genmgrRound(value) {
+    return Math.round(value * 100) / 100;
+  }
+
+  function genmgrRunsOf(runs, generatorId) {
+    return runs.filter((run) => run.generatorId === generatorId);
+  }
+
+  // The latest run's closing meter, or the setup meter before the first run.
+  function genmgrCurrentMeter(generator, runs) {
+    const last = runs[runs.length - 1];
+    return last ? last.endHourMeter : generator.initialHourMeter;
+  }
+
+  // Standard items always; optional filters only while enabled.
+  function genmgrActiveServices(generator) {
+    return GENMGR_SERVICES.map((service) => ({
+      service: service,
+      item: (generator.serviceItems || []).find((entry) => entry && entry.type === service.type) || {}
+    })).filter((entry) => !entry.service.optional || entry.item.enabled === true);
+  }
+
+  // Service-life thresholds, as shares of each item's own interval (never
+  // fixed hours). This is the only place they are defined.
+  const GENMGR_STATUS_RATIO = { dueSoon: 0.25, critical: 0.10 };
+  const GENMGR_STATUS = {
+    ok: { key: 'ok', en: 'OK', ar: 'جيد', className: 'genmgr-st-ok' },
+    dueSoon: { key: 'due-soon', en: 'Due Soon', ar: 'اقترب الاستبدال', className: 'genmgr-st-due-soon' },
+    critical: { key: 'critical', en: 'Critical', ar: 'قريب جداً', className: 'genmgr-st-critical' },
+    overdue: { key: 'overdue', en: 'Overdue', ar: 'مستحق الاستبدال', className: 'genmgr-st-overdue' },
+    unavailable: { key: 'unavailable', en: '—', ar: '—', className: 'genmgr-st-unavailable' }
+  };
+
+  // The one status calculation, shared by Ops and Overview. Pure, derived on
+  // every render and never stored. With ratio = remaining / interval:
+  //   OK        ratio > 25%
+  //   Due Soon  10% <= ratio <= 25%
+  //   Critical  remaining > 0 and ratio < 10%
+  //   Overdue   remaining <= 0
+  // Each ratio is compared as hours of this interval, at the hundredth of an
+  // hour that remaining hours are kept to, so a decimal interval cannot land on
+  // the wrong side of a boundary through floating-point error.
+  function getGeneratorServiceStatus(intervalHours, remainingHours) {
+    if (!Number.isFinite(intervalHours) || intervalHours <= 0 || !Number.isFinite(remainingHours)) {
+      return GENMGR_STATUS.unavailable;
+    }
+    const remaining = genmgrRound(remainingHours);
+    if (remaining <= 0) return GENMGR_STATUS.overdue;
+    if (remaining < genmgrRound(intervalHours * GENMGR_STATUS_RATIO.critical)) return GENMGR_STATUS.critical;
+    if (remaining <= genmgrRound(intervalHours * GENMGR_STATUS_RATIO.dueSoon)) return GENMGR_STATUS.dueSoon;
+    return GENMGR_STATUS.ok;
+  }
+
+  // Derived on every render, never stored:
+  //   next due  = last service meter + interval
+  //   remaining = next due - current meter (negative = overdue, never clamped)
+  // A missing or invalid input gives NaN, which renders as unavailable.
+  function genmgrServiceStatus(item, currentMeter) {
+    const valid = Number.isFinite(item.lastServiceHourMeter) && Number.isFinite(item.intervalHours) &&
+      item.intervalHours > 0 && Number.isFinite(currentMeter);
+    const remaining = valid ? genmgrRound(item.lastServiceHourMeter + item.intervalHours - currentMeter) : NaN;
+    return { remaining: remaining, status: getGeneratorServiceStatus(item.intervalHours, remaining) };
+  }
+
+  // Today / This Month on the Asia/Baghdad calendar. Run times are Baghdad
+  // wall-clock values (the NOW buttons fill them with openingNow()), so the
+  // date part of endDateTime is compared with Baghdad's current date.
+  function genmgrRuntimeTotals(runs) {
+    const today = openingNow().slice(0, 10);
+    return runs.reduce((totals, run) => {
+      const end = String(run.endDateTime || '');
+      const hours = Number(run.operatingHours) || 0;
+      if (end.slice(0, 7) === today.slice(0, 7)) totals.month += hours;
+      if (end.slice(0, 10) === today) totals.today += hours;
+      return totals;
+    }, { today: 0, month: 0 });
+  }
+
+  function genmgrFormatHours(value) {
+    if (!Number.isFinite(value)) return '—';
+    const rounded = Math.round(value * 10) / 10;
+    return (rounded === 0 ? 0 : rounded).toFixed(1); // never "-0.0"
+  }
+
+  function genmgrFormatInterval(value) {
+    return Number.isFinite(value) ? String(genmgrRound(value)) : '—';
+  }
+
+  function genmgrNumber(id) {
+    const raw = $(id).value.trim();
+    return raw === '' ? NaN : Number(raw);
+  }
+
+  function genmgrPositive(value) {
+    return Number.isFinite(value) && value > 0;
+  }
+
+  function genmgrEl(tag, className, text) {
+    const element = document.createElement(tag);
+    if (className) element.className = className;
+    if (text != null) element.textContent = text;
+    return element;
+  }
+
+  // New visible text goes through the existing data-auth-en / data-auth-ar
+  // attributes, which applyAuthLanguage() re-renders on every language change.
+  function genmgrText(element, en, ar) {
+    element.setAttribute('data-auth-en', en);
+    element.setAttribute('data-auth-ar', ar);
+    element.textContent = openingText(en, ar);
+    return element;
+  }
+
+  // Generator names and sizes are user data and are never translated. The
+  // legacy word-replacement layers rewrite document text nodes, so user text
+  // is kept out of them: option labels use the label attribute, and other
+  // text sits in a shadow root, which those document tree walks do not enter.
+  function genmgrUserText(host, text) {
+    (host.shadowRoot || host.attachShadow({ mode: 'open' })).textContent = text;
+    return host;
+  }
+
+  function genmgrHours(text, className) {
+    const wrap = genmgrEl('span', className);
+    const number = wrap.appendChild(genmgrEl('span', 'genmgr-num', text));
+    number.dir = 'ltr'; // keeps a minus sign on the correct side in RTL
+    wrap.appendChild(document.createTextNode(' '));
+    wrap.appendChild(genmgrText(genmgrEl('span'), 'h', 'ساعة'));
+    return wrap;
+  }
+
+  // Same markup and classes as the original checklist items, exposed as an
+  // ARIA checkbox so it can be reached and toggled from the keyboard.
+  function genmgrCheckItem(value, en, ar) {
+    const item = genmgrEl('div', 'check-item');
+    item.dataset.value = value;
+    item.setAttribute('role', 'checkbox');
+    item.setAttribute('aria-checked', 'false');
+    item.tabIndex = 0;
+    const input = item.appendChild(genmgrEl('input'));
+    input.type = 'checkbox';
+    input.value = value;
+    item.appendChild(genmgrEl('span', 'check-box')).innerHTML = GENMGR_CHECK_ICON;
+    item.appendChild(genmgrText(genmgrEl('span'), en, ar));
+    return item;
+  }
+
+  function genmgrSetChecked(item, checked) {
+    qs('input', item).checked = checked;
+    item.classList.toggle('checked', checked);
+    item.setAttribute('aria-checked', String(checked));
+  }
+
+  // Delegated, so rebuilt items need no rebinding. Space toggles, as it does
+  // for a native checkbox.
+  function genmgrBindCheckItems(container, onToggle) {
+    function toggle(item) {
+      genmgrSetChecked(item, !qs('input', item).checked);
+      if (onToggle) onToggle(item);
+    }
+    container.addEventListener('click', (ev) => {
+      const item = ev.target.closest('.check-item');
+      if (!item || !container.contains(item)) return;
+      ev.preventDefault();
+      toggle(item);
+    });
+    container.addEventListener('keydown', (ev) => {
+      if (ev.key !== ' ' && ev.key !== 'Spacebar') return;
+      const item = ev.target.closest('.check-item');
+      if (!item || item !== ev.target || !container.contains(item)) return;
+      ev.preventDefault();
+      toggle(item);
+    });
+  }
+
+  function genmgrRenderStart(generator, runs) {
+    const startDt = $('gen-start-dt');
+    const startHm = $('gen-start-hm');
+    const nowButton = qs('.btn-now[data-target="gen-start-dt"]');
+    const last = runs[runs.length - 1];
+    // After the first run the start is carried forward and locked, as before.
+    // A new generator's first run has no previous end time to carry.
+    const lockDate = !generator || !!last;
+    startHm.value = generator ? String(genmgrCurrentMeter(generator, runs)) : '';
+    startDt.value = last ? last.endDateTime : '';
+    startDt.readOnly = lockDate;
+    startDt.setAttribute('aria-readonly', String(lockDate));
+    nowButton.disabled = lockDate;
+    nowButton.setAttribute('aria-disabled', String(lockDate));
+    setFieldError(startDt, $('err-gen-start-dt'), false);
+    setFieldError(startHm, $('err-gen-start-hm'), false);
+    const status = $('gen-opening-status');
+    if (!generator) {
+      genmgrText(status, 'Select the generator to load its last closing reading and time.',
+        'اختر المولدة لجلب آخر قراءة نهاية ووقتها.');
+    } else if (last) {
+      genmgrText(status, 'Start = this generator’s last closing reading and time. Reading and time are locked.',
+        'البداية = آخر قراءة نهاية لهذه المولدة ووقتها. القراءة والوقت غير قابلين للتعديل.');
+    } else {
+      genmgrText(status, 'No runs yet: start = the initial hour meter. Enter the start date and time.',
+        'لا توجد سجلات تشغيل بعد: البداية = قراءة العداد الأولية. أدخل تاريخ ووقت البداية.');
+    }
+    startHm.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  function genmgrRenderStatus(generator, runs) {
+    const list = $('genmgrStatusList');
+    list.textContent = '';
+    $('genmgrStatusCard').hidden = !generator;
+    if (!generator) return;
+    const current = genmgrCurrentMeter(generator, runs);
+    genmgrActiveServices(generator).forEach((entry) => {
+      const result = genmgrServiceStatus(entry.item, current);
+      const row = list.appendChild(genmgrEl('div', 'genmgr-status-row ' + result.status.className));
+      row.appendChild(genmgrText(genmgrEl('span', 'genmgr-label'), entry.service.en, entry.service.ar));
+      const remaining = row.appendChild(genmgrHours(genmgrFormatHours(result.remaining), 'genmgr-remaining'));
+      if (Number.isFinite(result.remaining)) {
+        remaining.appendChild(document.createTextNode(' '));
+        remaining.appendChild(genmgrText(genmgrEl('span', 'genmgr-rem-word'), 'remaining', 'متبقي'));
+      }
+      const interval = row.appendChild(genmgrEl('span', 'genmgr-interval'));
+      interval.appendChild(genmgrText(genmgrEl('span'), 'Every', 'كل'));
+      interval.appendChild(document.createTextNode(' '));
+      interval.appendChild(genmgrHours(genmgrFormatInterval(entry.item.intervalHours)));
+      row.appendChild(genmgrText(genmgrEl('span', 'genmgr-state'), result.status.en, result.status.ar));
+    });
+  }
+
+  // Fills the existing Oils & Filters checklist. Nothing is ever pre-checked:
+  // a check means the service was actually performed on this run.
+  function genmgrRenderChecklist(generator) {
+    const grid = $('oilsFiltersGrid');
+    grid.textContent = '';
+    $('genmgrChecklistCard').hidden = !generator;
+    if (!generator) return;
+    genmgrActiveServices(generator).forEach((entry) => {
+      grid.appendChild(genmgrCheckItem(entry.service.type, entry.service.en, entry.service.ar));
+    });
+  }
+
+  // Renders the selected generator only; a newer selection wins any race.
+  async function genmgrRenderSelection() {
+    const select = $('gen-name');
+    const id = select.value;
+    genmgrView.renderedId = id;
+    const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
+    if (select.value !== id) return;
+    const generator = (id && data[0].find((item) => item.id === id)) || null;
+    const runs = generator ? genmgrRunsOf(data[1], id) : [];
+    genmgrRenderStart(generator, runs);
+    genmgrRenderStatus(generator, runs);
+    genmgrRenderChecklist(generator);
+  }
+
+  function genmgrOverviewCard(generator, runs) {
+    const current = genmgrCurrentMeter(generator, runs);
+    const services = genmgrActiveServices(generator);
+    const card = genmgrEl('div', 'card genmgr-ov');
+
+    const head = card.appendChild(genmgrEl('div', 'genmgr-ov-head'));
+    const identity = head.appendChild(genmgrEl('div', 'genmgr-ov-id'));
+    const name = identity.appendChild(genmgrUserText(genmgrEl('div', 'genmgr-ov-name'), generator.name));
+    name.id = 'genmgr-ov-name-' + generator.id;
+    identity.appendChild(genmgrUserText(genmgrEl('div', 'genmgr-ov-size'), generator.size));
+    const edit = head.appendChild(genmgrEl('button', 'btn-now genmgr-ov-edit'));
+    edit.type = 'button';
+    edit.dataset.genmgrEdit = generator.id;
+    edit.setAttribute('aria-describedby', name.id);
+    edit.appendChild(genmgrText(genmgrEl('span'), 'Edit', 'تعديل'));
+
+    // Engine Oil remaining hours: the ring is the remaining share of the
+    // interval, in the same status as the Engine Oil row, drawn full once overdue.
+    const oil = services.find((entry) => entry.service.type === 'engine_oil');
+    const oilStatus = genmgrServiceStatus(oil.item, current);
+    const fill = oilStatus.status === GENMGR_STATUS.overdue ? 1
+      : (Math.max(0, Math.min(1, oilStatus.remaining / oil.item.intervalHours)) || 0);
+    const ring = card.appendChild(genmgrEl('div', 'genmgr-ring ' + oilStatus.status.className));
+    ring.innerHTML = '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+      '<circle class="genmgr-ring-track" cx="50" cy="50" r="44"/>' +
+      '<circle class="genmgr-ring-value" cx="50" cy="50" r="44" pathLength="100" stroke-dasharray="100" stroke-dashoffset="' +
+      (100 - fill * 100).toFixed(2) + '"' + (fill > 0 ? '' : ' visibility="hidden"') + '/></svg>';
+    const center = ring.appendChild(genmgrEl('div', 'genmgr-ring-center'));
+    center.appendChild(genmgrEl('span', 'genmgr-ring-num', genmgrFormatHours(oilStatus.remaining))).dir = 'ltr';
+    center.appendChild(genmgrText(genmgrEl('span', 'genmgr-ring-unit'), 'h', 'ساعة'));
+    const oilLabel = card.appendChild(genmgrEl('div', 'genmgr-ring-label ' + oilStatus.status.className));
+    oilLabel.appendChild(genmgrText(genmgrEl('span'), oil.service.en, oil.service.ar));
+    oilLabel.appendChild(genmgrText(genmgrEl('span', 'genmgr-state'), oilStatus.status.en, oilStatus.status.ar));
+
+    const totals = genmgrRuntimeTotals(runs);
+    const runtime = card.appendChild(genmgrEl('div', 'genmgr-ov-runtime'));
+    [['Today:', 'اليوم:', totals.today], ['This Month:', 'هذا الشهر:', totals.month]].forEach((entry) => {
+      const item = runtime.appendChild(genmgrEl('span'));
+      item.appendChild(genmgrText(genmgrEl('span'), entry[0], entry[1]));
+      item.appendChild(document.createTextNode(' '));
+      item.appendChild(genmgrHours(genmgrFormatHours(entry[2])));
+    });
+
+    const list = card.appendChild(genmgrEl('div', 'genmgr-ov-services'));
+    services.forEach((entry) => {
+      const result = genmgrServiceStatus(entry.item, current);
+      const row = list.appendChild(genmgrEl('div', 'genmgr-ov-row ' + result.status.className));
+      row.appendChild(genmgrText(genmgrEl('span', 'genmgr-label'), entry.service.en, entry.service.ar));
+      const value = row.appendChild(genmgrEl('span', 'genmgr-ov-value'));
+      value.appendChild(genmgrText(genmgrEl('span', 'genmgr-state'), result.status.en, result.status.ar));
+      value.appendChild(genmgrHours(genmgrFormatHours(result.remaining), 'genmgr-remaining'));
+    });
+    return card;
+  }
+
+  async function genmgrRenderOverview() {
+    const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
+    const list = $('generatorOverviewList');
+    list.textContent = '';
+    data[0].forEach((generator) => list.appendChild(genmgrOverviewCard(generator, genmgrRunsOf(data[1], generator.id))));
+    // With generators present only the "No content yet" line is hidden.
+    $('nav-empty-home').hidden = data[0].length > 0;
+  }
+
+  function genmgrFillSelect(generators, selectedId) {
+    const select = $('gen-name');
+    // The placeholder option stays; the existing layers translate it.
+    Array.from(select.options).forEach((option) => { if (option.value) option.remove(); });
+    generators.forEach((generator) => {
+      const option = document.createElement('option');
+      option.value = generator.id;
+      option.label = generator.name; // no text node for the legacy layers to rewrite
+      select.appendChild(option);
+    });
+    select.value = generators.some((generator) => generator.id === selectedId) ? selectedId : '';
+  }
+
+  async function genmgrRefresh(selectedId) {
+    const generators = await generatorRepository.listGenerators();
+    genmgrFillSelect(generators, selectedId === undefined ? $('gen-name').value : selectedId);
+    await Promise.all([genmgrRenderSelection(), genmgrRenderOverview()]);
+  }
+
+  function genmgrClearEditorErrors() {
+    qsa('#genmgrEditor .invalid').forEach((el) => el.classList.remove('invalid'));
+    qsa('#genmgrEditor .error-msg.show').forEach((el) => el.classList.remove('show'));
+  }
+
+  function genmgrSyncOptional(type) {
+    const enabled = qs('input', $('genmgr-on-' + type)).checked;
+    const input = $('genmgr-int-' + type);
+    input.disabled = !enabled;
+    input.required = enabled; // `required` is not permitted together with `disabled`
+    qs('label[for="genmgr-int-' + type + '"] .req').hidden = !enabled;
+    if (!enabled) setFieldError(input, $('err-genmgr-int-' + type), false);
+  }
+
+  // The single Add / Edit editor. id = null opens it in Add mode.
+  async function genmgrOpenEditor(id) {
+    const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
+    const generator = id ? data[0].find((item) => item.id === id) : null;
+    if (id && !generator) return;
+    const runs = generator ? genmgrRunsOf(data[1], id) : [];
+    // Once runs exist the current meter comes from them: shown, not edited.
+    const meterLocked = runs.length > 0;
+    genmgrView.editingId = generator ? generator.id : null;
+    genmgrClearEditorErrors();
+    genmgrText($('genmgrEditorTitle'), generator ? 'Edit Generator' : 'Add Generator',
+      generator ? 'تعديل المولدة' : 'إضافة مولدة');
+    genmgrText($('genmgrSaveLabel'), generator ? 'Save Changes' : 'Save', generator ? 'حفظ التعديل' : 'حفظ');
+    $('genmgr-name').value = generator ? generator.name : '';
+    $('genmgr-size').value = generator ? generator.size : '';
+    const meter = $('genmgr-meter');
+    meter.value = generator ? String(genmgrCurrentMeter(generator, runs)) : '';
+    meter.readOnly = meterLocked;
+    meter.setAttribute('aria-readonly', String(meterLocked));
+    $('genmgr-meter-hint').hidden = meterLocked;
+    $('genmgr-meter-locked').hidden = !meterLocked;
+    GENMGR_SERVICES.forEach((service) => {
+      const item = generator && (generator.serviceItems || []).find((entry) => entry && entry.type === service.type);
+      $('genmgr-int-' + service.type).value = item && Number.isFinite(item.intervalHours) ? String(item.intervalHours) : '';
+      if (!service.optional) return;
+      genmgrSetChecked($('genmgr-on-' + service.type), !!(item && item.enabled));
+      genmgrSyncOptional(service.type);
+    });
+    $('genmgr-fuel-rate').value = generator && Number.isFinite(generator.fuelConsumptionPerHour)
+      ? String(generator.fuelConsumptionPerHour) : '';
+    const form = $('genmgrEditor');
+    form.hidden = false;
+    form.scrollIntoView({ block: 'start' });
+    $('genmgr-name').focus({ preventScroll: true });
+  }
+
+  function genmgrCloseEditor(restoreFocus) {
+    $('genmgrEditor').hidden = true;
+    genmgrView.editingId = null;
+    genmgrClearEditorErrors();
+    if (restoreFocus) $('genmgrAddBtn').focus();
+  }
+
+  async function genmgrSaveEditor(ev) {
+    ev.preventDefault();
+    const saveButton = $('genmgrSaveBtn');
+    if (saveButton.disabled) return;
+    const name = $('genmgr-name').value.trim();
+    const size = $('genmgr-size').value.trim();
+    const meter = genmgrNumber('genmgr-meter');
+    const rate = genmgrNumber('genmgr-fuel-rate');
+    let ok = true;
+    function check(id, valid) {
+      setFieldError($(id), $('err-' + id), !valid);
+      if (!valid) ok = false;
+    }
+    check('genmgr-name', name !== '');
+    check('genmgr-size', size !== '');
+    check('genmgr-meter', Number.isFinite(meter) && meter >= 0);
+    GENMGR_SERVICES.forEach((service) => {
+      const id = 'genmgr-int-' + service.type;
+      if (!$(id).disabled) check(id, genmgrPositive(genmgrNumber(id)));
+    });
+    check('genmgr-fuel-rate', genmgrPositive(rate));
+    if (!ok) {
+      vibrateError();
+      toast('error', openingText('Check the form', 'راجع الاستمارة'),
+        openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.'));
+      return;
+    }
+
+    saveButton.disabled = true;
+    let generator;
+    let existing;
+    try {
+      const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
+      existing = genmgrView.editingId ? data[0].find((item) => item.id === genmgrView.editingId) : null;
+      if (genmgrView.editingId && !existing) {
+        genmgrCloseEditor(true);
+        genmgrRefresh();
+        return;
+      }
+      const runs = existing ? genmgrRunsOf(data[1], existing.id) : [];
+      const hasRuns = runs.length > 0;
+      const initialHourMeter = hasRuns ? existing.initialHourMeter : meter;
+      const currentMeter = hasRuns ? genmgrCurrentMeter(existing, runs) : initialHourMeter;
+      const now = isoTimestamp();
+      generator = {
+        id: existing ? existing.id : uid(),
+        name: name,
+        size: size,
+        initialHourMeter: initialHourMeter,
+        fuelConsumptionPerHour: rate,
+        serviceItems: GENMGR_SERVICES.map((service) => {
+          const previous = (existing && (existing.serviceItems || []).find((item) => item && item.type === service.type)) || {};
+          const enabled = service.optional ? qs('input', $('genmgr-on-' + service.type)).checked : true;
+          const entered = genmgrNumber('genmgr-int-' + service.type);
+          let lastServiceHourMeter = null;
+          if (enabled) {
+            // Before the first run nothing can have been serviced, so every
+            // baseline follows the setup meter. After that a tracked item keeps
+            // its baseline and a newly enabled one starts at the current meter.
+            if (!hasRuns) lastServiceHourMeter = initialHourMeter;
+            else if (previous.enabled === true && Number.isFinite(previous.lastServiceHourMeter)) lastServiceHourMeter = previous.lastServiceHourMeter;
+            else lastServiceHourMeter = currentMeter;
+          }
+          return {
+            type: service.type,
+            enabled: enabled,
+            // A disabled filter keeps its last interval so re-enabling can prefill it.
+            intervalHours: genmgrPositive(entered) ? entered
+              : (Number.isFinite(previous.intervalHours) ? previous.intervalHours : null),
+            lastServiceHourMeter: lastServiceHourMeter
+          };
+        }),
+        createdAt: existing ? existing.createdAt : now,
+        updatedAt: now
+      };
+      await generatorRepository.saveGenerator(generator);
+    } catch (error) {
+      toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+        openingText('Device storage is full or unavailable. Your inputs are still in the form.',
+          'مساحة الجهاز ممتلئة أو غير متاحة. بياناتك باقية في الاستمارة.'), 6000);
+      return;
+    } finally {
+      saveButton.disabled = false;
+    }
+    genmgrCloseEditor(false);
+    toast('success', existing ? openingText('Generator updated', 'تم تحديث المولدة')
+      : openingText('Generator added', 'تمت إضافة المولدة'));
+    await genmgrRefresh(generator.id);
+    $('gen-name').focus();
+  }
+
+  // Overview Edit reuses the one editor: select, go to Ops, open in Edit mode.
+  function genmgrEditFromOverview(id) {
+    $('gen-name').value = id;
+    genmgrRenderSelection();
+    goToPage('generators');
+    if (!$('page-generators').classList.contains('active')) return;
+    if ($('secBodyGen').hidden) $('secHeadGen').click(); // the existing accordion toggle
+    genmgrOpenEditor(id);
+  }
+
+  function initGeneratorManagement() {
+    // #page-home is built by initNavigation(); the list sits under its header.
+    const overview = genmgrEl('div');
+    overview.id = 'generatorOverviewList';
+    qs('#page-home > .page-header').after(overview);
+    overview.addEventListener('click', (ev) => {
+      const button = ev.target.closest('[data-genmgr-edit]');
+      if (button) genmgrEditFromOverview(button.dataset.genmgrEdit);
+    });
+
+    const editor = $('genmgrEditor');
+    genmgrBindCheckItems(editor, (item) => genmgrSyncOptional(item.dataset.value));
+    editor.addEventListener('submit', genmgrSaveEditor);
+    // A discarded session calls reset() on every form; the editor closes with it.
+    editor.addEventListener('reset', () => genmgrCloseEditor(false));
+    $('genmgrAddBtn').addEventListener('click', () => genmgrOpenEditor(null));
+    $('genmgrCancelBtn').addEventListener('click', () => genmgrCloseEditor(true));
+    $('gen-name').addEventListener('change', genmgrRenderSelection);
+
+    // A discarded session also resets #formGenerators; follow its selection.
+    window.addEventListener('genops-auth-changed', () => {
+      if ($('gen-name').value !== genmgrView.renderedId) genmgrRenderSelection();
+    });
+    // Today / This Month follow the Baghdad date, so refresh when the app returns.
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) genmgrRenderOverview();
+    });
+    genmgrRefresh();
   }
 
   /* ============================================================
@@ -2592,12 +3449,15 @@ function validateTasks() {
     setFieldError(desc, $('err-task-desc'), false);
   }
 
-  if (ok && startDt.value && endDt.value && new Date(endDt.value) < new Date(startDt.value)) {
+  // Evaluated independently of `ok` so it surfaces in the same attempt.
+  if (startDt.value && endDt.value && new Date(endDt.value) < new Date(startDt.value)) {
     setFieldError(endDt, $('err-task-end-dt'), true);
-    $('err-task-end-dt').textContent = 'End time cannot be before start time';
+    $('err-task-end-dt').textContent = openingText(
+      'End time cannot be before start time',
+      'وقت النهاية لا يمكن أن يسبق وقت البداية');
     ok = false;
   } else {
-    $('err-task-end-dt').textContent = 'End date & time is required';
+    $('err-task-end-dt').textContent = defaultFieldError('err-task-end-dt');
   }
 
   return ok;
@@ -2608,7 +3468,7 @@ function onSubmitTasks(ev) {
 
   if (!validateTasks()) {
     vibrateError();
-    toast('error', 'Check the form', 'Some required fields need attention.');
+    toast('error', openingText('Check the form', 'راجع الاستمارة'), openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.'));
     return;
   }
 
@@ -2687,7 +3547,7 @@ function onSubmitTasks(ev) {
 
   function onSubmitAttendance(ev) {
     ev.preventDefault();
-    if (!validateAttendance()) { vibrateError(); toast('error', 'Check the form', 'Some required fields need attention.'); return; }
+    if (!validateAttendance()) { vibrateError(); toast('error', openingText('Check the form', 'راجع الاستمارة'), openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.')); return; }
 
     const record = {
       sheet: 'Attendance',
@@ -2763,7 +3623,7 @@ function onSubmitTasks(ev) {
 
   function onSubmitPurchase(ev) {
     ev.preventDefault();
-    if (!validatePurchase()) { vibrateError(); toast('error', 'Check the form', 'Some required fields need attention.'); return; }
+    if (!validatePurchase()) { vibrateError(); toast('error', openingText('Check the form', 'راجع الاستمارة'), openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.')); return; }
 
     const record = {
       sheet: 'Purchase Orders',
@@ -2999,7 +3859,8 @@ function resetFuelForm() {
         if (!opts.multiple) storeArr.length = 0; // single-photo fields replace existing
 
         if (files.length > toProcess.length && opts.multiple) {
-          toast('info', 'Some photos skipped', `Maximum ${CONFIG.MAX_IMAGES_PER_FIELD} photos per submission.`);
+          toast('info', openingText('Some photos skipped', 'تم تخطي بعض الصور'),
+            openingText(`Maximum ${CONFIG.MAX_IMAGES_PER_FIELD} photos per submission.`, `الحد الأقصى ${CONFIG.MAX_IMAGES_PER_FIELD} صور لكل إرسال.`));
         }
 
         for (const file of toProcess) {
@@ -3009,7 +3870,8 @@ function resetFuelForm() {
             storeArr.push(compressed);
           } catch (e) {
             if (epoch !== sessionEpoch || storeArr !== getStoreByKey(opts)) return;
-            toast('error', 'Photo failed', 'Could not process one of the selected photos.');
+            toast('error', openingText('Photo failed', 'تعذّرت معالجة الصورة'),
+              openingText('Could not process one of the selected photos.', 'تعذّرت معالجة إحدى الصور المختارة.'));
           }
         }
         renderPreviewGrid(opts.previewGridId, storeArr);
@@ -3130,12 +3992,21 @@ function resetFuelForm() {
     return true;
   }
 
+  // arOne / arMany are whole phrases rather than a noun plus a suffix, because
+  // Arabic agreement differs per noun and cannot be built by concatenation.
+  const AR_RECORD_ONE = 'سجل واحد محفوظ دون اتصال — سيُرسل عند عودة الإنترنت.';
+  const AR_RECORD_MANY = 'سجلات محفوظة دون اتصال — سترسل عند عودة الإنترنت.';
   const SHEET_TO_BANNER = {
-    'Generators': { banner: 'genQueueBanner', text: 'genQueueText', noun: 'record' },
-    'Tasks': { banner: 'taskQueueBanner', text: 'taskQueueText', noun: 'task' },
-    'Attendance': { banner: 'attQueueBanner', text: 'attQueueText', noun: 'record' },
-    'Purchase Orders': { banner: 'poQueueBanner', text: 'poQueueText', noun: 'request' },
-     'Fuel Consumption': { banner: 'fuelQueueBanner', text: 'fuelQueueText', noun: 'record' }
+    'Generators': { banner: 'genQueueBanner', text: 'genQueueText', noun: 'record',
+      arOne: AR_RECORD_ONE, arMany: AR_RECORD_MANY },
+    'Tasks': { banner: 'taskQueueBanner', text: 'taskQueueText', noun: 'task',
+      arOne: 'مهمة واحدة محفوظة دون اتصال — سترسل عند عودة الإنترنت.', arMany: 'مهام محفوظة دون اتصال — سترسل عند عودة الإنترنت.' },
+    'Attendance': { banner: 'attQueueBanner', text: 'attQueueText', noun: 'record',
+      arOne: AR_RECORD_ONE, arMany: AR_RECORD_MANY },
+    'Purchase Orders': { banner: 'poQueueBanner', text: 'poQueueText', noun: 'request',
+      arOne: 'طلب واحد محفوظ دون اتصال — سيُرسل عند عودة الإنترنت.', arMany: 'طلبات محفوظة دون اتصال — سترسل عند عودة الإنترنت.' },
+     'Fuel Consumption': { banner: 'fuelQueueBanner', text: 'fuelQueueText', noun: 'record',
+      arOne: AR_RECORD_ONE, arMany: AR_RECORD_MANY }
   };
 
   function updateQueueBanners() {
@@ -3146,8 +4017,9 @@ function resetFuelForm() {
       const bannerEl = $(cfg.banner);
       if (!bannerEl) return;
       if (count > 0) {
-        $(cfg.text).textContent = count + ' ' + cfg.noun + (count > 1 ? 's' : '') +
-          ' saved offline — will submit when back online.';
+        $(cfg.text).textContent = openingText(
+          count + ' ' + cfg.noun + (count > 1 ? 's' : '') + ' saved offline — will submit when back online.',
+          count === 1 ? cfg.arOne : count + ' ' + cfg.arMany);
         bannerEl.classList.add('show');
       } else {
         bannerEl.classList.remove('show');
@@ -3161,11 +4033,11 @@ function resetFuelForm() {
     if (online) {
       dot.classList.remove('offline');
       dot.classList.add('pulse');
-      text.textContent = 'Online';
+      text.textContent = openingText('Online', 'متصل');
     } else {
       dot.classList.add('offline');
       dot.classList.remove('pulse');
-      text.textContent = 'Offline';
+      text.textContent = openingText('Offline', 'غير متصل');
     }
   }
 
@@ -3185,7 +4057,8 @@ function resetFuelForm() {
     if (!authSessionExists()) { showAuthLoginScreen(); return; }
     const epoch = sessionEpoch;
     if (isSubmitting) {
-      toast('info', 'Please wait', 'A submission is already in progress.');
+      toast('info', openingText('Please wait', 'انتظر قليلاً'),
+        openingText('A submission is already in progress.', 'هناك إرسال قيد التنفيذ.'));
       return;
     }
     // Duplicate-submission guard: ignore an identical resubmission
@@ -3202,7 +4075,8 @@ function resetFuelForm() {
       try {
         const parsed = JSON.parse(last);
         if (parsed && parsed.sig === sig && (Date.now() - parsed.t) < 8000) {
-          toast('info', 'Already submitted', 'This record was just submitted.');
+          toast('info', openingText('Already submitted', 'تم الإرسال مسبقاً'),
+            openingText('This record was just submitted.', 'تم إرسال هذا السجل للتو.'));
           return;
         }
       } catch (error) { sessionStorage.removeItem(dupKey); }
@@ -3222,7 +4096,9 @@ function resetFuelForm() {
         isSubmitting = false;
         removeFromQueue(record.clientId);
         onSuccessReset();
-        toast('success', 'Submitted', record.sheet === 'Purchase Orders' ? 'Purchase request sent for approval.' : 'Record saved to Google Sheets.');
+        toast('success', openingText('Submitted', 'تم الإرسال'), record.sheet === 'Purchase Orders'
+          ? openingText('Purchase request sent for approval.', 'أُرسل طلب الشراء للموافقة.')
+          : openingText('Record saved to Google Sheets.', 'تم حفظ السجل في Google Sheets.'));
       })
       .catch((error) => {
         if (epoch !== sessionEpoch) return;
@@ -3254,7 +4130,9 @@ function resetFuelForm() {
           return;
         }
         onSuccessReset();
-        toast('info', 'Saved offline', 'No connection — this will sync automatically once you\u2019re back online.');
+        toast('info', openingText('Saved offline', 'حُفظ دون اتصال'),
+          openingText('No connection — this will sync automatically once you\u2019re back online.',
+            'لا يوجد اتصال — ستتم المزامنة تلقائياً عند عودة الإنترنت.'));
       });
   }
 
@@ -3277,7 +4155,8 @@ function resetFuelForm() {
       if (epoch !== sessionEpoch) return;
       const remaining = readQueue().length;
       if (remaining === 0 && q.length > 0) {
-        toast('success', 'Synced', 'All offline records have been submitted.');
+        toast('success', openingText('Synced', 'تمت المزامنة'),
+          openingText('All offline records have been submitted.', 'تم إرسال جميع السجلات المحفوظة دون اتصال.'));
       }
     }).finally(() => {
       queueFlushPromise = null;
@@ -3395,6 +4274,7 @@ function resetFuelForm() {
     initNavigation();
     initNowButtons();
     initGeneratorsForm();
+    initGeneratorManagement();
     initTasksForm();
     initAttendanceForm();
     initPurchaseForm();
@@ -3402,6 +4282,15 @@ function resetFuelForm() {
     loadEmployeeNames();
     setConnStatus(navigator.onLine);
     updateQueueBanners();
+    // Persistent runtime text is written by JS, so it has to be re-rendered
+    // when the language changes; the DOM-walking layers never reach it.
+    document.addEventListener('genops-language-changed', function () {
+      setConnStatus(navigator.onLine);
+      updateQueueBanners();
+    });
+    window.addEventListener('genops-auth-changed', function () {
+      if (authSessionExists()) loadEmployeeNames();
+    });
 
     // Pre-fill "now" for all datetime fields so the field worker
     // rarely has to think about timestamps at all.
