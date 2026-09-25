@@ -273,7 +273,6 @@ html[dir="rtl"] .topbar .brand-mark svg{transform:scaleX(-1);}
   border:1px solid var(--border-subtle);
 }
 .lang-btn{
-  position:relative;
   min-width:34px;min-height:28px;
   padding:4px 9px;
   border:0;border-radius:var(--r-full);
@@ -282,9 +281,6 @@ html[dir="rtl"] .topbar .brand-mark svg{transform:scaleX(-1);}
   cursor:pointer;
   transition:background var(--dur-2) var(--ease),color var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease);
 }
-/* Reach a 44px touch height without changing the control's drawn size.
-   Vertical only, so the two adjacent buttons never overlap. */
-.lang-btn::after{content:"";position:absolute;inset-block:-8px;inset-inline:0;}
 .lang-btn:hover{color:var(--primary);}
 .lang-btn.active{
   background:var(--grad-primary);
@@ -606,8 +602,6 @@ input[type="file"]{display:none;}
   cursor:pointer;
   box-shadow:0 0 12px var(--glow-danger);
 }
-/* Reach a 44px touch target without changing the drawn 26px badge. */
-.preview-thumb .rm::after{content:"";position:absolute;inset:-9px;border-radius:50%;}
 .preview-thumb .compress-tag{
   position:absolute;bottom:7px;left:7px;
   padding:3px 8px;
@@ -617,9 +611,6 @@ input[type="file"]{display:none;}
   color:var(--primary);
   font-size:9.5px;font-weight:700;letter-spacing:.04em;
 }
-/* The two overlays are physically positioned, so they need an explicit mirror. */
-html[dir="rtl"] .preview-thumb .rm{right:auto;left:7px;}
-html[dir="rtl"] .preview-thumb .compress-tag{left:auto;right:7px;}
 
 /* ---------- 10. SUBMIT BUTTON ---------- */
 /* part of the page: sits right after the last section of each tab and scrolls with it */
@@ -674,8 +665,6 @@ html[dir="rtl"] .preview-thumb .compress-tag{left:auto;right:7px;}
   color:rgba(4,34,43,.7);
   font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;
 }
-/* Generated content cannot be reached by the JS translation layers. */
-html[lang="ar"] .btn-submit.loading::before{content:"جارٍ الإرسال...";}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ---------- 11. TOAST NOTIFICATIONS ---------- */
@@ -689,8 +678,7 @@ html[lang="ar"] .btn-submit.loading::before{content:"جارٍ الإرسال..."
 .toast{
   width:100%;max-width:460px;
   display:flex;align-items:flex-start;gap:10px;
-  /* Logical padding: the icon gutter has to follow the reading direction. */
-  padding:12px;padding-inline-end:16px;
+  padding:12px 16px 12px 12px;
   border-radius:var(--r-lg);
   background-color:rgba(18,49,66,.96);
   color:var(--text-primary);
@@ -977,17 +965,11 @@ html.auth-locked .side-drawer{visibility:hidden;transition:none !important;}
   color:var(--on-primary);
   font-size:16px;font-weight:700;
   cursor:pointer;
-  transition:opacity var(--dur-2) var(--ease),transform var(--dur-2) var(--ease),filter var(--dur-2) var(--ease);
+  transition:opacity var(--dur-2) var(--ease);
 }
 .auth-login-button:hover{background:var(--grad-primary-hover);}
-/* The global tap-highlight is transparent, so the press has to be drawn here.
-   transition-duration:0s makes it land on the same frame as the touch; the
-   release still eases back through the rule above. */
-.auth-login-button:active{
-  opacity:.82;transform:scale(.978);filter:brightness(.9);
-  transition-duration:0s;
-}
-.auth-login-button:disabled{opacity:.5;cursor:wait;transform:none;filter:none;}
+.auth-login-button:active{opacity:.85;}
+.auth-login-button:disabled{opacity:.5;cursor:wait;}
 
 /* signed-in user + logout: a strip under the top bar, aligned with the page content */
 .auth-user-bar{
@@ -1010,7 +992,6 @@ html.auth-locked .side-drawer{visibility:hidden;transition:none !important;}
 }
 .auth-user-bar span{display:block;margin-top:1px;color:var(--text-muted);font-size:11px;}
 .auth-user-bar button{
-  position:relative;
   flex-shrink:0;
   min-height:36px;
   padding:8px 12px;
@@ -1020,16 +1001,8 @@ html.auth-locked .side-drawer{visibility:hidden;transition:none !important;}
   color:var(--primary);
   font-size:11px;font-weight:700;
   cursor:pointer;
-  transition:background var(--dur-2) var(--ease),color var(--dur-2) var(--ease),transform var(--dur-2) var(--ease);
 }
-/* Reach a 44px touch height without changing the drawn size. The inset
-   resolves against the padding box, so it has to clear the 1px border too. */
-.auth-user-bar button::after{content:"";position:absolute;inset-block:-5px;inset-inline:0;}
 .auth-user-bar button:hover{background:rgba(33,230,230,.14);color:var(--primary-bright);}
-.auth-user-bar button:active{
-  background:rgba(33,230,230,.22);color:var(--primary-bright);transform:scale(.955);
-  transition-duration:0s;
-}
 
 html[dir="rtl"] .auth-login-card,
 html[dir="rtl"] .auth-field{direction:rtl;text-align:right;}
@@ -1232,7 +1205,7 @@ html[lang="ar"] .card-title{font-size:13px;}
             <option value="Gen3">Gen3</option>
           </select>
         </div>
-        <div class="error-msg" id="err-gen-name" data-auth-en="Please select a generator" data-auth-ar="اختر المولدة">Please select a generator</div>
+        <div class="error-msg" id="err-gen-name">Please select a generator</div>
       </div>
 
       <div class="field">
@@ -1241,14 +1214,14 @@ html[lang="ar"] .card-title{font-size:13px;}
           <input class="input" type="datetime-local" id="gen-start-dt" required readonly aria-readonly="true" step="any">
           <button type="button" class="btn-now" data-target="gen-start-dt" disabled aria-disabled="true">NOW</button>
         </div>
-        <div class="error-msg" id="err-gen-start-dt" data-auth-en="Start date &amp; time is required" data-auth-ar="تاريخ ووقت البداية مطلوب">Start date &amp; time is required</div>
+        <div class="error-msg" id="err-gen-start-dt">Start date &amp; time is required</div>
       </div>
 
       <div class="field">
         <label for="gen-start-hm">Start Hour Meter<span class="req">*</span><span class="hint">Reading at run start, in hours</span></label>
         <input class="input" type="number" inputmode="decimal" step="0.1" min="0" id="gen-start-hm" placeholder="—" readonly aria-readonly="true" autocomplete="off" required>
         <div id="gen-opening-status" role="status" style="font-size:11px;color:var(--steel-light);margin-top:6px;line-height:1.4"></div>
-        <div class="error-msg" id="err-gen-start-hm" data-auth-en="Enter a valid start hour meter reading" data-auth-ar="أدخل قراءة عداد بداية صحيحة">Enter a valid start hour meter reading</div>
+        <div class="error-msg" id="err-gen-start-hm">Enter a valid start hour meter reading</div>
       </div>
 
       <div class="field">
@@ -1257,13 +1230,13 @@ html[lang="ar"] .card-title{font-size:13px;}
           <input class="input" type="datetime-local" id="gen-end-dt" required>
           <button type="button" class="btn-now" data-target="gen-end-dt">NOW</button>
         </div>
-        <div class="error-msg" id="err-gen-end-dt" data-auth-en="End date &amp; time is required" data-auth-ar="تاريخ ووقت النهاية مطلوب">End date &amp; time is required</div>
+        <div class="error-msg" id="err-gen-end-dt">End date &amp; time is required</div>
       </div>
 
       <div class="field">
         <label for="gen-end-hm">End Hour Meter<span class="req">*</span><span class="hint">Reading at run end, in hours</span></label>
         <input class="input" type="number" inputmode="decimal" step="0.1" min="0" id="gen-end-hm" placeholder="e.g. 1251.2" required>
-        <div class="error-msg" id="err-gen-end-hm" data-auth-en="Enter a valid end hour meter reading" data-auth-ar="أدخل قراءة عداد نهاية صحيحة">Enter a valid end hour meter reading</div>
+        <div class="error-msg" id="err-gen-end-hm">Enter a valid end hour meter reading</div>
       </div>
 
       <div class="field">
@@ -1545,7 +1518,7 @@ html[lang="ar"] .card-title{font-size:13px;}
       <div class="field">
         <label for="task-name">Task Name<span class="req">*</span></label>
         <input class="input" type="text" id="task-name" placeholder="e.g. Replace fuel filter housing seal" required>
-        <div class="error-msg" id="err-task-name" data-auth-en="Task name is required" data-auth-ar="اسم المهمة مطلوب">Task name is required</div>
+        <div class="error-msg" id="err-task-name">Task name is required</div>
       </div>
 <div class="field">
   <label for="task-employee">Submitted By<span class="req">*</span></label>
@@ -1554,7 +1527,7 @@ html[lang="ar"] .card-title{font-size:13px;}
       <option value="" disabled selected>Select employee…</option>
     </select>
   </div>
-  <div class="error-msg" id="err-task-employee" data-auth-en="Please select the employee who submitted this task" data-auth-ar="اختر الموظف الذي قدّم هذه المهمة">Please select the employee who submitted this task</div>
+  <div class="error-msg" id="err-task-employee">Please select the employee who submitted this task</div>
 </div>
        
       <div class="field">
@@ -1563,7 +1536,7 @@ html[lang="ar"] .card-title{font-size:13px;}
           <input class="input" type="datetime-local" id="task-start-dt" required>
           <button type="button" class="btn-now" data-target="task-start-dt">NOW</button>
         </div>
-        <div class="error-msg" id="err-task-start-dt" data-auth-en="Start date &amp; time is required" data-auth-ar="تاريخ ووقت البداية مطلوب">Start date &amp; time is required</div>
+        <div class="error-msg" id="err-task-start-dt">Start date &amp; time is required</div>
       </div>
 
       <div class="field">
@@ -1572,14 +1545,14 @@ html[lang="ar"] .card-title{font-size:13px;}
           <input class="input" type="datetime-local" id="task-end-dt" required>
           <button type="button" class="btn-now" data-target="task-end-dt">NOW</button>
         </div>
-        <div class="error-msg" id="err-task-end-dt" data-auth-en="End date &amp; time is required" data-auth-ar="تاريخ ووقت النهاية مطلوب">End date &amp; time is required</div>
+        <div class="error-msg" id="err-task-end-dt">End date &amp; time is required</div>
       </div>
 
       <div class="field">
         <label for="task-desc">Task Description<span class="req">*</span></label>
         <textarea class="input" id="task-desc" rows="4" maxlength="1000" placeholder="Describe the work performed, parts used, observations…" required></textarea>
         <div class="char-count"><span id="taskDescCount">0</span>/1000</div>
-        <div class="error-msg" id="err-task-desc" data-auth-en="Task description is required" data-auth-ar="وصف المهمة مطلوب">Task description is required</div>
+        <div class="error-msg" id="err-task-desc">Task description is required</div>
       </div>
     </div>
 
@@ -1589,8 +1562,7 @@ html[lang="ar"] .card-title{font-size:13px;}
         Task Photos
       </div>
       <div class="field" style="margin-bottom:0;">
-        <!-- No `for`: the target is a div, not a labelable control. The zone keeps its own click handler. -->
-        <label>Photos<span class="hint">Optional, multiple allowed — compressed automatically</span></label>
+        <label for="task-photo-zone">Photos<span class="hint">Optional, multiple allowed — compressed automatically</span></label>
         <div class="photo-zone" id="task-photo-zone">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
           <div class="pz-title">Tap to add photos</div>
@@ -1654,7 +1626,7 @@ html[lang="ar"] .card-title{font-size:13px;}
             <option value="" disabled selected>Select employee…</option>
           </select>
         </div>
-        <div class="error-msg" id="err-att-employee" data-auth-en="Please select an employee" data-auth-ar="اختر الموظف">Please select an employee</div>
+        <div class="error-msg" id="err-att-employee">Please select an employee</div>
       </div>
 
       <div class="field">
@@ -1668,7 +1640,7 @@ html[lang="ar"] .card-title{font-size:13px;}
             <option value="BREAK IN">BREAK IN</option>
           </select>
         </div>
-        <div class="error-msg" id="err-att-type" data-auth-en="Please select attendance type" data-auth-ar="اختر نوع الحضور">Please select attendance type</div>
+        <div class="error-msg" id="err-att-type">Please select attendance type</div>
       </div>
 
       <div class="field" style="margin-bottom:0;">
@@ -1677,7 +1649,7 @@ html[lang="ar"] .card-title{font-size:13px;}
           <input class="input" type="datetime-local" id="att-dt" required>
           <button type="button" class="btn-now" data-target="att-dt">NOW</button>
         </div>
-        <div class="error-msg" id="err-att-dt" data-auth-en="Date &amp; time is required" data-auth-ar="التاريخ والوقت مطلوب">Date &amp; time is required</div>
+        <div class="error-msg" id="err-att-dt">Date &amp; time is required</div>
       </div>
     </div>
 
@@ -1687,8 +1659,7 @@ html[lang="ar"] .card-title{font-size:13px;}
         Photo Verification
       </div>
       <div class="field" style="margin-bottom:0;">
-        <!-- No `for`: the target is a div, not a labelable control. The zone keeps its own click handler. -->
-        <label>Photo<span class="req">*</span><span class="hint">Required for verification — compressed automatically</span></label>
+        <label for="att-photo-zone">Photo<span class="req">*</span><span class="hint">Required for verification — compressed automatically</span></label>
         <div class="photo-zone" id="att-photo-zone">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
           <div class="pz-title">Tap to add photo</div>
@@ -1707,7 +1678,7 @@ html[lang="ar"] .card-title{font-size:13px;}
         <input type="file" accept="image/*" capture="user" id="att-photo-camera">
         <input type="file" accept="image/*" id="att-photo-gallery">
         <div class="preview-grid" id="att-preview-grid"></div>
-        <div class="error-msg" id="err-att-photo" data-auth-en="A photo is required for attendance verification" data-auth-ar="الصورة مطلوبة للتحقق من الحضور">A photo is required for attendance verification</div>
+        <div class="error-msg" id="err-att-photo">A photo is required for attendance verification</div>
       </div>
     </div>
 
@@ -1753,26 +1724,26 @@ html[lang="ar"] .card-title{font-size:13px;}
             <option value="" disabled selected>Select requester…</option>
           </select>
         </div>
-        <div class="error-msg" id="err-po-requester" data-auth-en="Please select a requester" data-auth-ar="اختر مقدم الطلب">Please select a requester</div>
+        <div class="error-msg" id="err-po-requester">Please select a requester</div>
       </div>
 
       <div class="field">
         <label for="po-desc">Purchase Description<span class="req">*</span></label>
         <textarea class="input" id="po-desc" rows="3" maxlength="500" placeholder="What needs to be purchased?" required></textarea>
-        <div class="error-msg" id="err-po-desc" data-auth-en="Purchase description is required" data-auth-ar="وصف الشراء مطلوب">Purchase description is required</div>
+        <div class="error-msg" id="err-po-desc">Purchase description is required</div>
       </div>
 
       <div class="field">
         <label for="po-purpose">Purpose of Purchase<span class="req">*</span></label>
         <textarea class="input" id="po-purpose" rows="3" maxlength="500" placeholder="Why is this needed?" required></textarea>
-        <div class="error-msg" id="err-po-purpose" data-auth-en="Purpose of purchase is required" data-auth-ar="الغرض من الشراء مطلوب">Purpose of purchase is required</div>
+        <div class="error-msg" id="err-po-purpose">Purpose of purchase is required</div>
       </div>
 
       <div class="field-row-2">
         <div class="field">
           <label for="po-qty">Quantity<span class="req">*</span></label>
           <input class="input" type="number" inputmode="numeric" min="1" step="1" id="po-qty" placeholder="e.g. 4" required>
-          <div class="error-msg" id="err-po-qty" data-auth-en="Enter a valid quantity" data-auth-ar="أدخل كمية صحيحة">Enter a valid quantity</div>
+          <div class="error-msg" id="err-po-qty">Enter a valid quantity</div>
         </div>
         <div class="field">
           <label for="po-cost">Expected Cost<span class="req">*</span></label>
@@ -1780,7 +1751,7 @@ html[lang="ar"] .card-title{font-size:13px;}
             <input class="input" type="number" inputmode="decimal" min="0" step="250" id="po-cost" placeholder="0">
             <span class="iqd-suffix">IQD</span>
           </div>
-          <div class="error-msg" id="err-po-cost" data-auth-en="Enter a valid cost in IQD" data-auth-ar="أدخل كلفة صحيحة بالدينار العراقي">Enter a valid cost in IQD</div>
+          <div class="error-msg" id="err-po-cost">Enter a valid cost in IQD</div>
         </div>
       </div>
     </div>
@@ -1791,8 +1762,7 @@ html[lang="ar"] .card-title{font-size:13px;}
         Supporting Photos
       </div>
       <div class="field" style="margin-bottom:0;">
-        <!-- No `for`: the target is a div, not a labelable control. The zone keeps its own click handler. -->
-        <label>Photos<span class="hint">Optional, multiple allowed — compressed automatically</span></label>
+        <label for="po-photo-zone">Photos<span class="hint">Optional, multiple allowed — compressed automatically</span></label>
         <div class="photo-zone" id="po-photo-zone">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
           <div class="pz-title">Tap to add photos</div>
@@ -1933,14 +1903,6 @@ html[lang="ar"] .card-title{font-size:13px;}
     errEl.classList.toggle('show', !!show);
   }
 
-  /* Restores an error element's default message in the current language.
-     Reads the same data-auth-* attributes applyAuthLanguage() already uses,
-     so a runtime message and a language switch cannot disagree. */
-  function defaultFieldError(id) {
-    const el = $(id);
-    return openingText(el.getAttribute('data-auth-en') || '', el.getAttribute('data-auth-ar') || '');
-  }
-
   function vibrateError() {
     if (window.navigator && window.navigator.vibrate) {
       try { window.navigator.vibrate(60); } catch (e) { /* no-op */ }
@@ -2016,33 +1978,12 @@ html[lang="ar"] .card-title{font-size:13px;}
     document.documentElement.style.setProperty('--drawer-top', qs('.topbar').getBoundingClientRect().bottom + 'px');
   }
 
-  // Jump to the top without animating. `behavior:'auto'` would honour the
-  // smooth scroll-behavior set on <html>, so it cannot be used here.
-  // `behavior:'instant'` is the right call but is a newer enum value that
-  // older engines reject with a TypeError during argument conversion, before
-  // any scrolling happens — hence the try/catch and the fallback below.
-  function scrollPageToTop() {
-    try {
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-      return;
-    } catch (error) { /* older engine — use the fallback */ }
-    // Suspend the page-level smooth scrolling instead. The forced style read
-    // is required: without it scrollTo() runs against the previous computed
-    // value and still animates.
-    const root = document.documentElement;
-    const previous = root.style.scrollBehavior;
-    root.style.scrollBehavior = 'auto';
-    void getComputedStyle(root).scrollBehavior;
-    window.scrollTo(0, 0);
-    root.style.scrollBehavior = previous;
-  }
-
   function resetNavigationToDefault() {
     // Select the landing page internally; only the auth lifecycle unlocks it.
     setDrawerOpen(false, false);
     qsa('.page').forEach((page) => page.classList.toggle('active', page.id === 'page-' + DEFAULT_PAGE));
     updateNavigationActiveState();
-    scrollPageToTop();
+    window.scrollTo({ top:0, behavior:'instant' });
   }
 
   function setDrawerOpen(open, restoreFocus = true) {
@@ -2146,7 +2087,7 @@ html[lang="ar"] .card-title{font-size:13px;}
         heading.focus({ preventScroll:true });
       }
     }
-    scrollPageToTop();
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
   }
 
   /* ============================================================
@@ -2203,11 +2144,6 @@ function loadEmployeeNames() {
   populateEmployeeSelect($('att-employee'), names);
   populateEmployeeSelect($('po-requester'), names);
   populateEmployeeSelect($('task-employee'), names);
-
-  // The cached list already fills the dropdowns. Refreshing it from the sheet
-  // waits for a session, so this request is not occupying Apps Script while the
-  // user is about to press Sign In; the auth listener re-runs it after sign-in.
-  if (!authSessionExists()) return;
 
   fetchJSONP(CONFIG.WEB_APP_URL + '?action=getEmployees')
     .then((res) => {
@@ -2521,30 +2457,22 @@ function loadEmployeeNames() {
       setFieldError(endHm, $('err-gen-end-hm'), true); ok = false;
     } else setFieldError(endHm, $('err-gen-end-hm'), false);
 
-    // Cross-field: end hour meter should not be less than start. Guarded on the
-    // two values being finite rather than on `ok`, so an unrelated empty field
-    // no longer hides this error until a second submission attempt.
-    const startHmValue = parseFloat(startHm.value);
-    const endHmValue = parseFloat(endHm.value);
-    if (Number.isFinite(startHmValue) && Number.isFinite(endHmValue) && endHmValue < startHmValue) {
+    // Cross-field: end hour meter should not be less than start
+    if (ok && parseFloat(endHm.value) < parseFloat(startHm.value)) {
       setFieldError(endHm, $('err-gen-end-hm'), true);
-      $('err-gen-end-hm').textContent = openingText(
-        'End reading cannot be less than start reading',
-        'قراءة النهاية لا يمكن أن تقل عن قراءة البداية');
+      $('err-gen-end-hm').textContent = 'End reading cannot be less than start reading';
       ok = false;
     } else {
-      $('err-gen-end-hm').textContent = defaultFieldError('err-gen-end-hm');
+      $('err-gen-end-hm').textContent = 'Enter a valid end hour meter reading';
     }
 
     // Cross-field: end datetime should not be before start datetime
-    if (startDt.value && endDt.value && new Date(endDt.value) < new Date(startDt.value)) {
+    if (ok && startDt.value && endDt.value && new Date(endDt.value) < new Date(startDt.value)) {
       setFieldError(endDt, $('err-gen-end-dt'), true);
-      $('err-gen-end-dt').textContent = openingText(
-        'End time cannot be before start time',
-        'وقت النهاية لا يمكن أن يسبق وقت البداية');
+      $('err-gen-end-dt').textContent = 'End time cannot be before start time';
       ok = false;
     } else {
-      $('err-gen-end-dt').textContent = defaultFieldError('err-gen-end-dt');
+      $('err-gen-end-dt').textContent = 'End date & time is required';
     }
 
     return ok;
@@ -2553,7 +2481,7 @@ function loadEmployeeNames() {
   function onSubmitGenerators(ev) {
     ev.preventDefault();
     if (!requireOpeningReading('Generators')) return;
-    if (!validateGenerators()) { vibrateError(); toast('error', openingText('Check the form', 'راجع الاستمارة'), openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.')); return; }
+    if (!validateGenerators()) { vibrateError(); toast('error', 'Check the form', 'Some required fields need attention.'); return; }
 
     const startHm = parseFloat($('gen-start-hm').value);
     const endHm = parseFloat($('gen-end-hm').value);
@@ -2664,15 +2592,12 @@ function validateTasks() {
     setFieldError(desc, $('err-task-desc'), false);
   }
 
-  // Evaluated independently of `ok` so it surfaces in the same attempt.
-  if (startDt.value && endDt.value && new Date(endDt.value) < new Date(startDt.value)) {
+  if (ok && startDt.value && endDt.value && new Date(endDt.value) < new Date(startDt.value)) {
     setFieldError(endDt, $('err-task-end-dt'), true);
-    $('err-task-end-dt').textContent = openingText(
-      'End time cannot be before start time',
-      'وقت النهاية لا يمكن أن يسبق وقت البداية');
+    $('err-task-end-dt').textContent = 'End time cannot be before start time';
     ok = false;
   } else {
-    $('err-task-end-dt').textContent = defaultFieldError('err-task-end-dt');
+    $('err-task-end-dt').textContent = 'End date & time is required';
   }
 
   return ok;
@@ -2683,7 +2608,7 @@ function onSubmitTasks(ev) {
 
   if (!validateTasks()) {
     vibrateError();
-    toast('error', openingText('Check the form', 'راجع الاستمارة'), openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.'));
+    toast('error', 'Check the form', 'Some required fields need attention.');
     return;
   }
 
@@ -2762,7 +2687,7 @@ function onSubmitTasks(ev) {
 
   function onSubmitAttendance(ev) {
     ev.preventDefault();
-    if (!validateAttendance()) { vibrateError(); toast('error', openingText('Check the form', 'راجع الاستمارة'), openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.')); return; }
+    if (!validateAttendance()) { vibrateError(); toast('error', 'Check the form', 'Some required fields need attention.'); return; }
 
     const record = {
       sheet: 'Attendance',
@@ -2838,7 +2763,7 @@ function onSubmitTasks(ev) {
 
   function onSubmitPurchase(ev) {
     ev.preventDefault();
-    if (!validatePurchase()) { vibrateError(); toast('error', openingText('Check the form', 'راجع الاستمارة'), openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.')); return; }
+    if (!validatePurchase()) { vibrateError(); toast('error', 'Check the form', 'Some required fields need attention.'); return; }
 
     const record = {
       sheet: 'Purchase Orders',
@@ -3074,8 +2999,7 @@ function resetFuelForm() {
         if (!opts.multiple) storeArr.length = 0; // single-photo fields replace existing
 
         if (files.length > toProcess.length && opts.multiple) {
-          toast('info', openingText('Some photos skipped', 'تم تخطي بعض الصور'),
-            openingText(`Maximum ${CONFIG.MAX_IMAGES_PER_FIELD} photos per submission.`, `الحد الأقصى ${CONFIG.MAX_IMAGES_PER_FIELD} صور لكل إرسال.`));
+          toast('info', 'Some photos skipped', `Maximum ${CONFIG.MAX_IMAGES_PER_FIELD} photos per submission.`);
         }
 
         for (const file of toProcess) {
@@ -3085,8 +3009,7 @@ function resetFuelForm() {
             storeArr.push(compressed);
           } catch (e) {
             if (epoch !== sessionEpoch || storeArr !== getStoreByKey(opts)) return;
-            toast('error', openingText('Photo failed', 'تعذّرت معالجة الصورة'),
-              openingText('Could not process one of the selected photos.', 'تعذّرت معالجة إحدى الصور المختارة.'));
+            toast('error', 'Photo failed', 'Could not process one of the selected photos.');
           }
         }
         renderPreviewGrid(opts.previewGridId, storeArr);
@@ -3207,21 +3130,12 @@ function resetFuelForm() {
     return true;
   }
 
-  // arOne / arMany are whole phrases rather than a noun plus a suffix, because
-  // Arabic agreement differs per noun and cannot be built by concatenation.
-  const AR_RECORD_ONE = 'سجل واحد محفوظ دون اتصال — سيُرسل عند عودة الإنترنت.';
-  const AR_RECORD_MANY = 'سجلات محفوظة دون اتصال — سترسل عند عودة الإنترنت.';
   const SHEET_TO_BANNER = {
-    'Generators': { banner: 'genQueueBanner', text: 'genQueueText', noun: 'record',
-      arOne: AR_RECORD_ONE, arMany: AR_RECORD_MANY },
-    'Tasks': { banner: 'taskQueueBanner', text: 'taskQueueText', noun: 'task',
-      arOne: 'مهمة واحدة محفوظة دون اتصال — سترسل عند عودة الإنترنت.', arMany: 'مهام محفوظة دون اتصال — سترسل عند عودة الإنترنت.' },
-    'Attendance': { banner: 'attQueueBanner', text: 'attQueueText', noun: 'record',
-      arOne: AR_RECORD_ONE, arMany: AR_RECORD_MANY },
-    'Purchase Orders': { banner: 'poQueueBanner', text: 'poQueueText', noun: 'request',
-      arOne: 'طلب واحد محفوظ دون اتصال — سيُرسل عند عودة الإنترنت.', arMany: 'طلبات محفوظة دون اتصال — سترسل عند عودة الإنترنت.' },
-     'Fuel Consumption': { banner: 'fuelQueueBanner', text: 'fuelQueueText', noun: 'record',
-      arOne: AR_RECORD_ONE, arMany: AR_RECORD_MANY }
+    'Generators': { banner: 'genQueueBanner', text: 'genQueueText', noun: 'record' },
+    'Tasks': { banner: 'taskQueueBanner', text: 'taskQueueText', noun: 'task' },
+    'Attendance': { banner: 'attQueueBanner', text: 'attQueueText', noun: 'record' },
+    'Purchase Orders': { banner: 'poQueueBanner', text: 'poQueueText', noun: 'request' },
+     'Fuel Consumption': { banner: 'fuelQueueBanner', text: 'fuelQueueText', noun: 'record' }
   };
 
   function updateQueueBanners() {
@@ -3232,9 +3146,8 @@ function resetFuelForm() {
       const bannerEl = $(cfg.banner);
       if (!bannerEl) return;
       if (count > 0) {
-        $(cfg.text).textContent = openingText(
-          count + ' ' + cfg.noun + (count > 1 ? 's' : '') + ' saved offline — will submit when back online.',
-          count === 1 ? cfg.arOne : count + ' ' + cfg.arMany);
+        $(cfg.text).textContent = count + ' ' + cfg.noun + (count > 1 ? 's' : '') +
+          ' saved offline — will submit when back online.';
         bannerEl.classList.add('show');
       } else {
         bannerEl.classList.remove('show');
@@ -3248,11 +3161,11 @@ function resetFuelForm() {
     if (online) {
       dot.classList.remove('offline');
       dot.classList.add('pulse');
-      text.textContent = openingText('Online', 'متصل');
+      text.textContent = 'Online';
     } else {
       dot.classList.add('offline');
       dot.classList.remove('pulse');
-      text.textContent = openingText('Offline', 'غير متصل');
+      text.textContent = 'Offline';
     }
   }
 
@@ -3272,8 +3185,7 @@ function resetFuelForm() {
     if (!authSessionExists()) { showAuthLoginScreen(); return; }
     const epoch = sessionEpoch;
     if (isSubmitting) {
-      toast('info', openingText('Please wait', 'انتظر قليلاً'),
-        openingText('A submission is already in progress.', 'هناك إرسال قيد التنفيذ.'));
+      toast('info', 'Please wait', 'A submission is already in progress.');
       return;
     }
     // Duplicate-submission guard: ignore an identical resubmission
@@ -3290,8 +3202,7 @@ function resetFuelForm() {
       try {
         const parsed = JSON.parse(last);
         if (parsed && parsed.sig === sig && (Date.now() - parsed.t) < 8000) {
-          toast('info', openingText('Already submitted', 'تم الإرسال مسبقاً'),
-            openingText('This record was just submitted.', 'تم إرسال هذا السجل للتو.'));
+          toast('info', 'Already submitted', 'This record was just submitted.');
           return;
         }
       } catch (error) { sessionStorage.removeItem(dupKey); }
@@ -3311,9 +3222,7 @@ function resetFuelForm() {
         isSubmitting = false;
         removeFromQueue(record.clientId);
         onSuccessReset();
-        toast('success', openingText('Submitted', 'تم الإرسال'), record.sheet === 'Purchase Orders'
-          ? openingText('Purchase request sent for approval.', 'أُرسل طلب الشراء للموافقة.')
-          : openingText('Record saved to Google Sheets.', 'تم حفظ السجل في Google Sheets.'));
+        toast('success', 'Submitted', record.sheet === 'Purchase Orders' ? 'Purchase request sent for approval.' : 'Record saved to Google Sheets.');
       })
       .catch((error) => {
         if (epoch !== sessionEpoch) return;
@@ -3345,9 +3254,7 @@ function resetFuelForm() {
           return;
         }
         onSuccessReset();
-        toast('info', openingText('Saved offline', 'حُفظ دون اتصال'),
-          openingText('No connection — this will sync automatically once you\u2019re back online.',
-            'لا يوجد اتصال — ستتم المزامنة تلقائياً عند عودة الإنترنت.'));
+        toast('info', 'Saved offline', 'No connection — this will sync automatically once you\u2019re back online.');
       });
   }
 
@@ -3370,8 +3277,7 @@ function resetFuelForm() {
       if (epoch !== sessionEpoch) return;
       const remaining = readQueue().length;
       if (remaining === 0 && q.length > 0) {
-        toast('success', openingText('Synced', 'تمت المزامنة'),
-          openingText('All offline records have been submitted.', 'تم إرسال جميع السجلات المحفوظة دون اتصال.'));
+        toast('success', 'Synced', 'All offline records have been submitted.');
       }
     }).finally(() => {
       queueFlushPromise = null;
@@ -3496,15 +3402,6 @@ function resetFuelForm() {
     loadEmployeeNames();
     setConnStatus(navigator.onLine);
     updateQueueBanners();
-    // Persistent runtime text is written by JS, so it has to be re-rendered
-    // when the language changes; the DOM-walking layers never reach it.
-    document.addEventListener('genops-language-changed', function () {
-      setConnStatus(navigator.onLine);
-      updateQueueBanners();
-    });
-    window.addEventListener('genops-auth-changed', function () {
-      if (authSessionExists()) loadEmployeeNames();
-    });
 
     // Pre-fill "now" for all datetime fields so the field worker
     // rarely has to think about timestamps at all.
