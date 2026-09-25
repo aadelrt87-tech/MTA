@@ -1072,6 +1072,7 @@ html[lang="ar"] .card-title{font-size:13px;}
   }
 }
 </style>
+<link rel="stylesheet" href="generators.css">
 </head>
 <body>
 <!-- =========================================================
@@ -1215,15 +1216,10 @@ html[lang="ar"] .card-title{font-size:13px;}
     <span class="qb-text" id="genQueueText">1 record saved offline — will submit when back online.</span>
   </div>
 
-  <form id="formGenerators" novalidate>
-    <div class="card">
-      <div class="card-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M12 12v3M9 13.5h6"/></svg>
-        Generator &amp; Run Time
-      </div>
-
+  <div class="card" id="gm-management" data-gm-owned>
+    <div class="gm-toolbar">
       <div class="field">
-        <label for="gen-name">Generator Name<span class="req">*</span></label>
+        <label for="gen-name" data-gm-en="Select Generator" data-gm-ar="اختيار المولدة">Select Generator</label>
         <div class="select-wrap">
           <select class="input" id="gen-name" required>
             <option value="" disabled selected>Select generator…</option>
@@ -1233,6 +1229,23 @@ html[lang="ar"] .card-title{font-size:13px;}
           </select>
         </div>
         <div class="error-msg" id="err-gen-name" data-auth-en="Please select a generator" data-auth-ar="اختر المولدة">Please select a generator</div>
+      </div>
+      <button type="button" class="gm-button gm-button-primary" id="gm-add" data-gm-en="Add Generator" data-gm-ar="إضافة مولدة">Add Generator</button>
+    </div>
+    <p class="gm-note" id="gm-storage-note"></p>
+  </div>
+  <div id="gm-summary" data-gm-owned></div>
+  <div class="card" id="gm-pending" data-gm-owned hidden>
+    <p class="gm-note" data-gm-en="A run is awaiting confirmation. Retry the same record before entering another run or replacement." data-gm-ar="يوجد سجل تشغيل بانتظار التأكيد. أعد تأكيد السجل نفسه قبل تسجيل تشغيل أو تبديل آخر."></p>
+    <button type="button" class="gm-button" id="gm-retry" data-gm-en="Retry confirmation" data-gm-ar="إعادة تأكيد الحفظ">Retry confirmation</button>
+  </div>
+
+  <form id="formGenerators" novalidate>
+    <fieldset id="gm-run-fields">
+    <div class="card">
+      <div class="card-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M12 12v3M9 13.5h6"/></svg>
+        Generator &amp; Run Time
       </div>
 
       <div class="field">
@@ -1280,33 +1293,9 @@ html[lang="ar"] .card-title{font-size:13px;}
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 005.6 15a1.65 1.65 0 00-1.51-1H4a2 2 0 110-4h.09A1.65 1.65 0 005.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         Oils &amp; Filters Changed
       </div>
-      <div class="check-grid" id="oilsFiltersGrid">
-        <label class="check-item" data-value="Engine Oil">
-          <input type="checkbox" value="Engine Oil">
-          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          <span>Engine Oil</span>
-        </label>
-        <label class="check-item" data-value="Oil Filter">
-          <input type="checkbox" value="Oil Filter">
-          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          <span>Oil Filter</span>
-        </label>
-        <label class="check-item" data-value="Primary Fuel Filter">
-          <input type="checkbox" value="Primary Fuel Filter">
-          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          <span>Primary Fuel Filter</span>
-        </label>
-        <label class="check-item" data-value="Water Separator Filter">
-          <input type="checkbox" value="Water Separator Filter">
-          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          <span>Water Separator Filter</span>
-        </label>
-        <label class="check-item" data-value="Air Filter">
-          <input type="checkbox" value="Air Filter">
-          <span class="check-box"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
-          <span>Air Filter</span>
-        </label>
-      </div>
+      <div class="gm-checklist" id="oilsFiltersGrid" data-gm-owned></div>
+      <p class="gm-note" id="gm-maintenance-note" data-gm-owned></p>
+      <button type="button" class="gm-button" id="gm-confirm-maintenance" data-gm-owned data-gm-en="Confirm replacement" data-gm-ar="تأكيد التبديل">Confirm replacement</button>
     </div>
 
     <div class="submit-bar">
@@ -1316,7 +1305,14 @@ html[lang="ar"] .card-title{font-size:13px;}
         <span class="spinner"></span>
       </button>
     </div>
+    </fieldset>
   </form>
+
+  <div class="card" id="gm-run-history" data-gm-owned hidden>
+    <h3 data-gm-en="Run records · latest 20" data-gm-ar="سجلات التشغيل · آخر ٢٠ سجل">Run records · latest 20</h3>
+    <div class="gm-records" id="gm-records"></div>
+  </div>
+
   </div>
 
   <!-- ===== SECTION: FUEL CONSUMPTION (moved from its own tab) ===== -->
@@ -1828,6 +1824,29 @@ html[lang="ar"] .card-title{font-size:13px;}
 <!-- ================= BOTTOM NAVIGATION ================= -->
 <nav class="bottom-nav" id="quickNav" aria-label="Quick navigation"></nav>
 
+<dialog class="gm-dialog" id="gm-editor" aria-labelledby="gm-editor-title" data-gm-owned>
+  <form id="gm-editor-form">
+    <h2 id="gm-editor-title"></h2>
+    <div id="gm-editor-body"></div>
+    <p class="gm-error" id="gm-editor-error" role="alert"></p>
+    <div class="gm-actions">
+      <button type="button" class="gm-button" id="gm-editor-cancel" data-gm-en="Cancel" data-gm-ar="إلغاء">Cancel</button>
+      <button type="submit" class="gm-button gm-button-primary" id="gm-editor-save">Save Generator</button>
+    </div>
+  </form>
+</dialog>
+<dialog class="gm-dialog" id="gm-confirm-dialog" aria-labelledby="gm-confirm-title" data-gm-owned>
+  <h2 id="gm-confirm-title" data-gm-en="Confirm replacement" data-gm-ar="تأكيد التبديل">Confirm replacement</h2>
+  <p id="gm-confirm-text"></p>
+  <p class="gm-note" data-gm-en="Confirm only after the work is complete. This saves the replacement on this browser at the current confirmed meter." data-gm-ar="أكّد بعد إنجاز العمل فعلياً فقط. يُحفظ التبديل على هذا المتصفح عند قراءة العداد الحالية المعتمدة."></p>
+  <p class="gm-error" id="gm-confirm-error" role="alert"></p>
+  <div class="gm-actions">
+    <button type="button" class="gm-button" id="gm-confirm-cancel" data-gm-en="Cancel" data-gm-ar="إلغاء">Cancel</button>
+    <button type="button" class="gm-button gm-button-primary" id="gm-confirm-save" data-gm-en="Confirm & save" data-gm-ar="تأكيد وحفظ">Confirm &amp; save</button>
+  </div>
+</dialog>
+<script src="generator-model.js"></script>
+<script src="generator-ui.js"></script>
 <script>
 /* ============================================================
    GENERATOR OPS & MAINTENANCE LOG
@@ -2271,7 +2290,8 @@ function loadEmployeeNames() {
   function openingSelection(sheet) {
     const fields = openingFields[sheet];
     return { sheet: sheet,
-      generatorName: fields.entity ? $(fields.entity).value : '' };
+      generatorName: fields.entity ? GeneratorUI.legacyName() : '',
+      generator_id: fields.entity ? $(fields.entity).value : undefined };
   }
 
   function openingLocalDateTime(value) {
@@ -2294,6 +2314,7 @@ function loadEmployeeNames() {
     const state = openingStates[sheet];
     state.en = en; state.ar = ar;
     renderOpeningStatus(sheet);
+    if (sheet === 'Generators') GeneratorUI.refreshAvailability();
   }
 
   function notifyOpeningInput(sheet) {
@@ -2358,6 +2379,22 @@ function loadEmployeeNames() {
       setOpeningStatus(sheet, 'Sign in to load the opening reading.', 'سجّل الدخول لجلب قراءة البداية.');
       return;
     }
+    if (sheet === 'Generators') {
+      const local = GeneratorUI.localOpening();
+      const unresolved = GeneratorUI.pending();
+      if (unresolved) {
+        setOpeningStatus(sheet, 'Confirm the pending run before entering another reading.', 'أكّد سجل التشغيل المعلّق قبل إدخال قراءة جديدة.');
+        return;
+      }
+      if (local) {
+        local.sourceDateTime = openingLocalDateTime(local.sourceDateTime);
+        state.ready = true; state.source = local;
+        input.value = local.value; $(fields.date).value = local.sourceDateTime;
+        notifyOpeningInput(sheet);
+        setOpeningStatus(sheet, 'Start = last confirmed reading on this browser (Baghdad).', 'البداية = آخر قراءة معتمدة على هذا المتصفح (بغداد).');
+        return;
+      }
+    }
     if (!navigator.onLine) {
       setOpeningStatus(sheet, 'Connect to the internet to load the opening reading from the sheet.', 'اتصل بالإنترنت لجلب قراءة البداية من الشيت.');
       return;
@@ -2390,6 +2427,8 @@ function loadEmployeeNames() {
           !Number.isFinite(source.value) || source.value < 0 || !source.sourceKey) {
         throw new Error('Invalid opening reading response');
       }
+      source.sourceDateTime = openingLocalDateTime(source.sourceDateTime);
+      if (sheet === 'Generators') GeneratorUI.syncOpening(selection.generator_id, source);
       state.ready = true; state.source = source;
       input.value = source.value;
       $(fields.date).value = source.sourceDateTime;
@@ -2479,16 +2518,6 @@ function loadEmployeeNames() {
     startHM.addEventListener('input', recalc);
     endHM.addEventListener('input', recalc);
 
-    // Checkbox group toggle styling
-    qsa('#oilsFiltersGrid .check-item').forEach((item) => {
-      const input = qs('input', item);
-      item.addEventListener('click', (ev) => {
-        ev.preventDefault();
-        input.checked = !input.checked;
-        item.classList.toggle('checked', input.checked);
-      });
-    });
-
     $('formGenerators').addEventListener('submit', onSubmitGenerators);
   }
 
@@ -2562,9 +2591,13 @@ function loadEmployeeNames() {
     const record = {
       sheet: 'Generators',
       clientId: uid(),
+      generator_id: $('gen-name').value,
+      service_item_ids: GeneratorUI.selectedServices(),
+      performed_by: localStorage.getItem(CONFIG.LS_PREFIX + 'auth_username') || '',
+      generator_source: GeneratorUI.generator().legacy_name ? 'sheets' : 'local',
       data: {
         'Submission Timestamp': isoTimestamp(),
-        'Generator Name': $('gen-name').value,
+        'Generator Name': GeneratorUI.legacyName(),
         'Start Date Time': $('gen-start-dt').value,
         'Start Hour Meter': startHm,
         'End Date Time': $('gen-end-dt').value,
@@ -2578,6 +2611,7 @@ function loadEmployeeNames() {
       }
     };
 
+    if (!GeneratorUI.validateRecord(record)) return;
     prepareOpeningAttempt(record);
     submitRecord(record, $('btnSubmitGen'), resetGeneratorsForm, 'gen');
   }
@@ -2586,10 +2620,7 @@ function loadEmployeeNames() {
     $('formGenerators').reset();
     $('opHoursValue').textContent = '0.0';
     $('opHoursValue').classList.add('zero');
-    qsa('#oilsFiltersGrid .check-item').forEach((item) => {
-      item.classList.remove('checked');
-      qs('input', item).checked = false;
-    });
+    GeneratorUI.clearChecks();
     qsa('#formGenerators .invalid').forEach((el) => el.classList.remove('invalid'));
     qsa('#formGenerators .error-msg.show').forEach((el) => el.classList.remove('show'));
     // Re-prefill so the next log entry doesn't start with a blank required field.
@@ -3283,6 +3314,7 @@ function resetFuelForm() {
     // true duplicate fired a fraction of a second later.
     const dupKey = CONFIG.LS_PREFIX + 'lastsig_' + keyPrefix;
     const sigPayload = Object.assign({}, record.data);
+    if (record.generator_id) sigPayload.generator_id = record.generator_id;
     delete sigPayload['Submission Timestamp'];
     const sig = JSON.stringify(sigPayload);
     const last = sessionStorage.getItem(dupKey);
@@ -3304,7 +3336,9 @@ function resetFuelForm() {
     if (openingFields[record.sheet] && openingAttempts[record.sheet]) {
       openingAttempts[record.sheet].awaitingConfirmation = true;
     }
-    sendToAppsScript(record)
+    (record.sheet === 'Generators' && record.generator_id
+      ? GeneratorUI.submitRun(record, sendToAppsScript)
+      : sendToAppsScript(record))
       .then(() => {
         if (epoch !== sessionEpoch) return;
         setButtonLoading(btn, false);
@@ -3313,7 +3347,9 @@ function resetFuelForm() {
         onSuccessReset();
         toast('success', openingText('Submitted', 'تم الإرسال'), record.sheet === 'Purchase Orders'
           ? openingText('Purchase request sent for approval.', 'أُرسل طلب الشراء للموافقة.')
-          : openingText('Record saved to Google Sheets.', 'تم حفظ السجل في Google Sheets.'));
+          : record.generator_source === 'local'
+            ? openingText('Run record saved on this browser.', 'حُفظ سجل التشغيل على هذا المتصفح.')
+            : openingText('Record saved to Google Sheets.', 'تم حفظ السجل في Google Sheets.'));
       })
       .catch((error) => {
         if (epoch !== sessionEpoch) return;
@@ -3487,6 +3523,37 @@ function resetFuelForm() {
   document.addEventListener('DOMContentLoaded', function () {
     window.addEventListener('genops-auth-changed', resetSessionContent);
     initNavigation();
+    GeneratorUI.init({
+      toast: toast, auth: authSessionExists, send: sendToAppsScript,
+      openingReady: function () {
+        const state = openingStates.Generators;
+        return !!(state && state.ready && state.key === openingSelectionKey('Generators'));
+      },
+      refresh: function () { refreshOpeningReading('Generators'); },
+      retryFailed: function (error) {
+        if (isOpeningAuthError(error)) {
+          clearAuthSession(); showAuthLoginScreen();
+          toast('error', openingText('Sign in again', 'سجّل الدخول مجدداً'),
+            openingText('Your inputs are still in the form.', 'بياناتك باقية بالاستمارة.'));
+          return true;
+        }
+        if (error.serverRejected) {
+          delete openingAttempts.Generators;
+          refreshOpeningReading('Generators');
+          const message = openingFailureText(error);
+          toast('error', openingText('Save not confirmed', 'لم يتأكد الحفظ'), openingText(message[0], message[1]), 6000);
+          return true;
+        }
+        return false;
+      },
+      clearRun: function () {
+        $('formGenerators').reset();
+        $('opHoursValue').textContent = '0.0';
+        $('opHoursValue').classList.add('zero');
+        qsa('#formGenerators .invalid, #formGenerators .error-msg.show').forEach(function (el) { el.classList.remove('invalid', 'show'); });
+        delete openingAttempts.Generators;
+      }
+    });
     initNowButtons();
     initGeneratorsForm();
     initTasksForm();
@@ -3585,7 +3652,7 @@ function applySmallTitleTranslation(lang) {
     let node;
 
     while (node = walker.nextNode()) {
-      if (node.nodeValue && node.nodeValue.trim()) {
+      if (node.nodeValue && node.nodeValue.trim() && !node.parentElement.closest('[data-gm-owned]')) {
         textNodes.push(node);
       }
     }
@@ -3764,7 +3831,7 @@ function applySmallButtonTranslation(lang) {
     let node;
 
     while (node = walker.nextNode()) {
-      if (node.nodeValue && node.nodeValue.trim()) {
+      if (node.nodeValue && node.nodeValue.trim() && !node.parentElement.closest('[data-gm-owned]')) {
         textNodes.push(node);
       }
     }
@@ -3943,7 +4010,7 @@ function applyFinalLanguageFix(lang) {
     let node;
 
     while (node = walker.nextNode()) {
-      if (node.nodeValue && node.nodeValue.trim()) {
+      if (node.nodeValue && node.nodeValue.trim() && !node.parentElement.closest('[data-gm-owned]')) {
         nodes.push(node);
       }
     }
@@ -4069,7 +4136,7 @@ function applyMixedLanguageCleanup(lang) {
     document.body,
     NodeFilter.SHOW_TEXT,
     { acceptNode: function (node) {
-      return node.parentElement.closest('script, style') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
+      return node.parentElement.closest('script, style, [data-gm-owned]') ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT;
     } }
   );
 
@@ -4077,7 +4144,7 @@ function applyMixedLanguageCleanup(lang) {
   let node;
 
   while (node = walker.nextNode()) {
-    if (node.nodeValue && node.nodeValue.trim()) {
+    if (node.nodeValue && node.nodeValue.trim() && !node.parentElement.closest('[data-gm-owned]')) {
       nodes.push(node);
     }
   }
@@ -4160,7 +4227,7 @@ function fixPurchaseButtonLanguage() {
     let node;
 
     while (node = walker.nextNode()) {
-      if (node.nodeValue && node.nodeValue.trim()) {
+      if (node.nodeValue && node.nodeValue.trim() && !node.parentElement.closest('[data-gm-owned]')) {
         nodes.push(node);
       }
     }
@@ -4735,7 +4802,7 @@ function applyFuelLanguage(lang) {
     let node;
 
     while (node = walker.nextNode()) {
-      if (node.nodeValue && node.nodeValue.trim()) {
+      if (node.nodeValue && node.nodeValue.trim() && !node.parentElement.closest('[data-gm-owned]')) {
         textNodes.push(node);
       }
     }
