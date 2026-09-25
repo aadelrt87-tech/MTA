@@ -1166,6 +1166,98 @@ html[lang="ar"] #page-home .genmgr-state{letter-spacing:0;text-transform:none;}
 #page-home .genmgr-ov-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6px 0;font-size:13px;}
 #page-home .genmgr-ov-row .genmgr-label{min-width:0;color:var(--text-primary);font-weight:600;}
 #page-home .genmgr-ov-value{flex-shrink:0;display:flex;align-items:baseline;gap:8px;}
+/* ---------- 19. FUEL TANK MANAGEMENT ----------
+   Scoped to the existing Fuel section (#page-fuel) and Overview (#page-home).
+   Built on the existing .card, .btn-now, .photo-btn, .btn-submit and .error-msg
+   styles and the existing tokens; nothing global changes here. */
+#page-fuel .fuelmgr-editor{scroll-margin-top:84px;}
+#page-fuel .fuelmgr-cancel{width:100%;margin-top:9px;}
+#page-fuel .fuelmgr-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+#page-fuel .fuelmgr-actions .btn-now{min-height:44px;}
+#page-fuel .fuelmgr-status{margin-top:6px;color:var(--text-muted);font-size:11px;line-height:1.4;}
+#page-fuel .fuelmgr-status:empty{display:none;}
+#page-fuel .fuelmgr-list:not(:empty){margin-top:18px;}
+
+#page-fuel .fuelmgr-head,
+#page-home .fuelmgr-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+#page-fuel .fuelmgr-id,
+#page-home .fuelmgr-id{min-width:0;}
+#page-fuel .fuelmgr-name,
+#page-home .fuelmgr-name{color:var(--text-primary);font-size:17px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;}
+#page-fuel .fuelmgr-cap,
+#page-home .fuelmgr-cap{margin-top:2px;color:var(--text-secondary);font-size:13px;}
+#page-fuel .fuelmgr-edit,
+#page-home .fuelmgr-edit{flex-shrink:0;min-height:44px;}
+#page-fuel .fuelmgr-gauge,
+#page-home .fuelmgr-gauge{height:12px;margin-top:14px;overflow:hidden;border-radius:var(--r-full);background:var(--border-subtle);}
+#page-fuel .fuelmgr-gauge-fill,
+#page-home .fuelmgr-gauge-fill{height:100%;border-radius:inherit;background:var(--primary);box-shadow:0 0 10px var(--glow-primary);}
+#page-fuel .fuelmgr-lv-low .fuelmgr-gauge-fill,
+#page-home .fuelmgr-lv-low .fuelmgr-gauge-fill{background:var(--accent);box-shadow:0 0 10px var(--glow-accent);}
+#page-fuel .fuelmgr-lv-critical .fuelmgr-gauge-fill,
+#page-home .fuelmgr-lv-critical .fuelmgr-gauge-fill{background:var(--danger);box-shadow:0 0 10px var(--glow-danger);}
+#page-fuel .fuelmgr-level,
+#page-home .fuelmgr-level{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 10px;margin-top:10px;}
+#page-fuel .fuelmgr-litres,
+#page-home .fuelmgr-litres{
+  color:var(--primary);
+  font-family:var(--font-num);font-size:21px;font-weight:600;font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+#page-fuel .fuelmgr-lv-low .fuelmgr-litres,
+#page-home .fuelmgr-lv-low .fuelmgr-litres{color:var(--accent);}
+#page-fuel .fuelmgr-lv-critical .fuelmgr-litres,
+#page-home .fuelmgr-lv-critical .fuelmgr-litres{color:var(--danger);}
+#page-fuel .fuelmgr-lv-unavailable .fuelmgr-litres,
+#page-home .fuelmgr-lv-unavailable .fuelmgr-litres{color:var(--text-muted);}
+#page-fuel .fuelmgr-level-meta,
+#page-home .fuelmgr-level-meta{display:flex;align-items:baseline;gap:8px;}
+#page-fuel .fuelmgr-pct,
+#page-home .fuelmgr-pct{color:var(--text-primary);font-family:var(--font-num);font-size:15px;font-weight:600;}
+/* Level label: always shown next to the figures, so colour is never the only signal. */
+#page-fuel .fuelmgr-state,
+#page-home .fuelmgr-state{
+  display:inline-block;
+  padding:1px 7px;
+  border-radius:var(--r-full);
+  color:var(--text-muted);
+  font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  white-space:nowrap;
+}
+#page-fuel .fuelmgr-lv-normal .fuelmgr-state,
+#page-home .fuelmgr-lv-normal .fuelmgr-state{color:var(--primary);background:var(--primary-wash);}
+#page-fuel .fuelmgr-lv-low .fuelmgr-state,
+#page-home .fuelmgr-lv-low .fuelmgr-state{color:var(--accent);background:var(--accent-wash);}
+#page-fuel .fuelmgr-lv-critical .fuelmgr-state,
+#page-home .fuelmgr-lv-critical .fuelmgr-state{color:var(--danger);background:var(--danger-wash);}
+html[lang="ar"] #page-fuel .fuelmgr-state,
+html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
+#page-fuel .fuelmgr-basis,
+#page-home .fuelmgr-basis{margin-top:4px;color:var(--text-muted);font-size:11.5px;}
+#page-fuel .fuelmgr-warning,
+#page-home .fuelmgr-warning{margin-top:10px;}
+#page-fuel .fuelmgr-stats,
+#page-home .fuelmgr-stats{
+  display:flex;flex-wrap:wrap;gap:4px 18px;
+  margin-top:12px;padding-top:10px;
+  border-top:1px solid var(--border-subtle);
+  color:var(--text-secondary);font-size:13px;
+}
+#page-fuel .fuelmgr-stats .fuelmgr-num,
+#page-home .fuelmgr-stats .fuelmgr-num{color:var(--text-primary);font-family:var(--font-num);font-weight:600;}
+#page-fuel .fuelmgr-last,
+#page-home .fuelmgr-last{margin-top:6px;color:var(--text-muted);font-size:12px;}
+
+#page-fuel .fuelmgr-move{padding:10px 0;border-bottom:1px solid var(--border-subtle);}
+#page-fuel .fuelmgr-move:first-child{padding-top:0;}
+#page-fuel .fuelmgr-move:last-child{padding-bottom:0;border-bottom:0;}
+#page-fuel .fuelmgr-move-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;}
+#page-fuel .fuelmgr-move-route{min-width:0;color:var(--text-primary);font-size:14px;font-weight:600;overflow-wrap:anywhere;}
+#page-fuel .fuelmgr-move-qty{color:var(--primary);font-family:var(--font-num);font-weight:600;white-space:nowrap;}
+#page-fuel .fuelmgr-move-meta{margin-top:2px;color:var(--text-muted);font-size:11.5px;overflow-wrap:anywhere;}
+#page-fuel .fuelmgr-move-notes{margin-top:4px;color:var(--text-secondary);font-size:12.5px;overflow-wrap:anywhere;}
+/* Overview: the "No content yet" line also gives way to tank cards. */
+#page-home:has(#fuelOverviewList > .card) #nav-empty-home{display:none;}
 </style>
 </head>
 <body>
@@ -1511,6 +1603,81 @@ html[lang="ar"] #page-home .genmgr-state{letter-spacing:0;text-transform:none;}
     </span>
   </div>
 
+  <!-- One editor for adding and editing fuel tanks (script section 9b). -->
+  <form class="card fuelmgr-editor" id="fuelmgrTankEditor" novalidate hidden aria-labelledby="fuelmgrTankEditorTitle">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 22V4a2 2 0 012-2h8a2 2 0 012 2v18"/><path d="M4 12h12"/><path d="M16 7h2l2 3v8a2 2 0 01-2 2h-2"/><path d="M8 6h4"/></svg>
+      <span id="fuelmgrTankEditorTitle" data-auth-en="Add Fuel Tank" data-auth-ar="إضافة خزان وقود">Add Fuel Tank</span>
+    </div>
+
+    <div class="field">
+      <label for="fuelmgr-tank-name"><span data-auth-en="Tank Name" data-auth-ar="اسم الخزان">Tank Name</span><span class="req">*</span></label>
+      <input class="input" type="text" id="fuelmgr-tank-name" maxlength="60" autocomplete="off" required>
+      <div class="error-msg" id="err-fuelmgr-tank-name"></div>
+    </div>
+
+    <div class="field">
+      <label for="fuelmgr-tank-capacity"><span data-auth-en="Tank Capacity" data-auth-ar="سعة الخزان">Tank Capacity</span><span class="req">*</span><span class="hint" data-auth-en="Litres" data-auth-ar="باللتر">Litres</span></label>
+      <input class="input" type="number" inputmode="decimal" step="any" min="0" id="fuelmgr-tank-capacity" autocomplete="off" required>
+      <div class="error-msg" id="err-fuelmgr-tank-capacity"></div>
+    </div>
+
+    <div class="fuelmgr-actions-row">
+      <button type="submit" class="btn-submit" id="fuelmgrTankSaveBtn">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
+        <span class="btn-label" data-auth-en="Save" data-auth-ar="حفظ">Save</span>
+      </button>
+      <button type="button" class="photo-btn fuelmgr-cancel" id="fuelmgrTankCancelBtn"><span data-auth-en="Cancel" data-auth-ar="إلغاء">Cancel</span></button>
+    </div>
+  </form>
+
+  <!-- One tank-to-tank transfer form (script section 9b). -->
+  <form class="card fuelmgr-editor" id="fuelmgrTransferEditor" novalidate hidden aria-labelledby="fuelmgrTransferTitle">
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7h12l-4-4M17 17H5l4 4"/></svg>
+      <span id="fuelmgrTransferTitle" data-auth-en="Transfer Fuel" data-auth-ar="مناقلة الوقود بين الخزانات">Transfer Fuel</span>
+    </div>
+
+    <div class="field">
+      <label for="fuelmgr-from"><span data-auth-en="From Tank" data-auth-ar="من خزان">From Tank</span><span class="req">*</span></label>
+      <div class="select-wrap">
+        <select class="input" id="fuelmgr-from" required>
+          <option value="" disabled selected data-auth-en="Select tank…" data-auth-ar="اختر الخزان…">Select tank…</option>
+        </select>
+      </div>
+      <div class="error-msg" id="err-fuelmgr-from"></div>
+    </div>
+
+    <div class="field">
+      <label for="fuelmgr-to"><span data-auth-en="To Tank" data-auth-ar="إلى خزان">To Tank</span><span class="req">*</span></label>
+      <div class="select-wrap">
+        <select class="input" id="fuelmgr-to" required>
+          <option value="" disabled selected data-auth-en="Select tank…" data-auth-ar="اختر الخزان…">Select tank…</option>
+        </select>
+      </div>
+      <div class="error-msg" id="err-fuelmgr-to"></div>
+    </div>
+
+    <div class="field">
+      <label for="fuelmgr-qty"><span data-auth-en="Quantity" data-auth-ar="الكمية">Quantity</span><span class="req">*</span><span class="hint" data-auth-en="Litres" data-auth-ar="باللتر">Litres</span></label>
+      <input class="input" type="number" inputmode="decimal" step="any" min="0" id="fuelmgr-qty" autocomplete="off" required>
+      <div class="error-msg" id="err-fuelmgr-qty"></div>
+    </div>
+
+    <div class="field">
+      <label for="fuelmgr-notes"><span data-auth-en="Notes" data-auth-ar="الملاحظات">Notes</span></label>
+      <textarea class="input" id="fuelmgr-notes" rows="3" maxlength="500"></textarea>
+    </div>
+
+    <div class="fuelmgr-actions-row">
+      <button type="submit" class="btn-submit" id="fuelmgrTransferSaveBtn">
+        <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
+        <span class="btn-label" data-auth-en="Save" data-auth-ar="حفظ">Save</span>
+      </button>
+      <button type="button" class="photo-btn fuelmgr-cancel" id="fuelmgrTransferCancelBtn"><span data-auth-en="Cancel" data-auth-ar="إلغاء">Cancel</span></button>
+    </div>
+  </form>
+
   <form id="formFuel" novalidate>
 
     <div class="card">
@@ -1526,6 +1693,20 @@ html[lang="ar"] #page-home .genmgr-state{letter-spacing:0;text-transform:none;}
           <path d="M8 6h4"/>
         </svg>
         Fuel Readings
+      </div>
+
+      <div class="field">
+        <label for="fuel-tank"><span data-auth-en="Tank Selector" data-auth-ar="اختيار الخزان">Tank Selector</span><span class="req">*</span></label>
+        <div class="select-wrap">
+          <select class="input" id="fuel-tank" required>
+            <option value="" disabled selected data-auth-en="Select tank…" data-auth-ar="اختر الخزان…">Select tank…</option>
+          </select>
+        </div>
+        <div class="error-msg" id="err-fuel-tank"></div>
+        <div class="fuelmgr-actions">
+          <button type="button" class="btn-now" id="fuelmgrAddTankBtn" aria-controls="fuelmgrTankEditor"><span data-auth-en="Add Fuel Tank" data-auth-ar="إضافة خزان وقود">Add Fuel Tank</span></button>
+          <button type="button" class="btn-now" id="fuelmgrTransferBtn" aria-controls="fuelmgrTransferEditor"><span data-auth-en="Transfer Fuel" data-auth-ar="مناقلة الوقود بين الخزانات">Transfer Fuel</span></button>
+        </div>
       </div>
 
       <div class="field">
@@ -1629,9 +1810,7 @@ html[lang="ar"] #page-home .genmgr-state{letter-spacing:0;text-transform:none;}
       <div class="field">
         <label for="fuel-consumption">
           Consumption
-          <span class="hint">
-            Auto-calculated — First Reading minus Second Reading
-          </span>
+          <span class="hint" data-auth-en="Auto-calculated — First Reading + transfers in − transfers out − Second Reading" data-auth-ar="يُحسب تلقائياً — القراءة الأولى + المناقلات الداخلة − المناقلات الخارجة − القراءة الثانية">Auto-calculated — First Reading + transfers in − transfers out − Second Reading</span>
         </label>
 
         <div class="iqd-input-wrap">
@@ -1644,6 +1823,8 @@ html[lang="ar"] #page-home .genmgr-state{letter-spacing:0;text-transform:none;}
 
           <span class="iqd-suffix">L</span>
         </div>
+        <div class="fuelmgr-status" id="fuel-interval-status" role="status"></div>
+        <div class="error-msg" id="err-fuel-consumption"></div>
       </div>
 
       <div class="field">
@@ -1682,6 +1863,16 @@ html[lang="ar"] #page-home .genmgr-state{letter-spacing:0;text-transform:none;}
     </div>
 
   </form>
+  <!-- One card per fuel tank; the same renderer fills the Overview (script section 9b). -->
+  <div class="fuelmgr-list" id="fuelTankList"></div>
+
+  <div class="card" id="fuelmgrMovementCard" hidden>
+    <div class="card-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7h12l-4-4M17 17H5l4 4"/></svg>
+      <span data-auth-en="Fuel Movement Log" data-auth-ar="سجل حركات الوقود">Fuel Movement Log</span>
+    </div>
+    <div id="fuelmgrMovementList"></div>
+  </div>
     </div>
   </div>
 </div>
@@ -2412,11 +2603,10 @@ function loadEmployeeNames() {
      6. GENERATORS FORM
      ============================================================ */
   /* Automatic opening readings: fetched from Sheets and never typed.
-     Generators no longer use this path: during the UI-development phase
-     their start meter comes from the local generator catalog (6b). */
-  const openingFields = {
-    'Fuel Consumption': { input: 'fuel-first-reading', date: 'fuel-first-dt', entity: '', status: 'fuel-opening-status' }
-  };
+     Generators and Fuel no longer use this path: during the UI-development
+     phase their opening values come from the local generator catalog (6b)
+     and the local fuel-tank model (9b). */
+  const openingFields = {};
   const openingStates = {};
   const openingAttempts = {};
   const openingSchemaVersion = 'carry-forward-v2';
@@ -3650,176 +3840,702 @@ function onSubmitTasks(ev) {
     qsa('#formPurchase .invalid').forEach((el) => el.classList.remove('invalid'));
     qsa('#formPurchase .error-msg.show').forEach((el) => el.classList.remove('show'));
   }
-   /* ============================================================
-   FUEL CONSUMPTION FORM
-   ============================================================ */
-
-function initFuelForm() {
-  const form = $('formFuel');
-
-  if (!form) return;
-
-  form.addEventListener('submit', onSubmitFuel);
-
-  // The opening date and reading are loaded together from Sheets.
-}
-
-function validateFuel() {
-  let ok = true;
-
-  const firstDate = $('fuel-first-dt');
-  const firstReading = $('fuel-first-reading');
-  const secondDate = $('fuel-second-dt');
-  const secondReading = $('fuel-second-reading');
-
-  const firstValue = parseFloat(firstReading.value);
-  const secondValue = parseFloat(secondReading.value);
-
-  if (!firstDate.value) {
-    setFieldError(
-      firstDate,
-      $('err-fuel-first-dt'),
-      true
-    );
-    ok = false;
-  } else {
-    setFieldError(
-      firstDate,
-      $('err-fuel-first-dt'),
-      false
-    );
-  }
-
-  if (
-    firstReading.value === '' ||
-    !Number.isFinite(firstValue) ||
-    firstValue < 0
-  ) {
-    setFieldError(
-      firstReading,
-      $('err-fuel-first-reading'),
-      true
-    );
-    ok = false;
-  } else {
-    setFieldError(
-      firstReading,
-      $('err-fuel-first-reading'),
-      false
-    );
-  }
-
-  if (!secondDate.value) {
-    setFieldError(
-      secondDate,
-      $('err-fuel-second-dt'),
-      true
-    );
-    ok = false;
-  } else {
-    setFieldError(
-      secondDate,
-      $('err-fuel-second-dt'),
-      false
-    );
-  }
-
-  if (
-    secondReading.value === '' ||
-    !Number.isFinite(secondValue) ||
-    secondValue < 0 ||
-    secondValue > firstValue
-  ) {
-    setFieldError(
-      secondReading,
-      $('err-fuel-second-reading'),
-      true
-    );
-    ok = false;
-  } else {
-    setFieldError(
-      secondReading,
-      $('err-fuel-second-reading'),
-      false
-    );
-  }
-
-  return ok;
-}
-
-function onSubmitFuel(event) {
-  event.preventDefault();
-  if (!requireOpeningReading('Fuel Consumption')) return;
-
-  if (!validateFuel()) {
-    vibrateError();
-
-    toast(
-      'error',
-      'Check the form',
-      'Some required fields need attention.'
-    );
-
-    return;
-  }
-
-  const firstReading =
-    parseFloat($('fuel-first-reading').value);
-
-  const secondReading =
-    parseFloat($('fuel-second-reading').value);
-
-  const consumption =
-    Number((firstReading - secondReading).toFixed(2));
-
-  const record = {
-    sheet: 'Fuel Consumption',
-    clientId: uid(),
-
-    data: {
-      'Submission Timestamp': isoTimestamp(),
-
-      'Date and Time of First Reading':
-        $('fuel-first-dt').value,
-
-      'First Reading': firstReading,
-
-      'Date and Time of Second Reading':
-        $('fuel-second-dt').value,
-
-      'Second Reading': secondReading,
-
-      'Consumption': consumption,
-
-      'Note': $('fuel-note').value.trim()
-    }
+  /* ============================================================
+     9b. FUEL TANKS, READINGS & TRANSFERS (Ops → Fuel Consumption)
+     ============================================================
+     Fuel tanks, physical readings and tank-to-tank transfers for the
+     UI-development phase. Every relationship uses tank.id; the tank name
+     is display text only. This form no longer reads from or writes to the
+     Fuel sheet: data stays in this browser through fuelRepository until
+     Supabase replaces it (fuel_tanks, fuel_readings, fuel_movements).
+  */
+  // Tank level thresholds, as shares of the tank's own capacity.
+  const FUELMGR_LEVEL_RATIO = { low: 0.25, critical: 0.10 };
+  const FUELMGR_LEVEL = {
+    normal: { key: 'normal', en: 'Normal', ar: 'طبيعي', className: 'fuelmgr-lv-normal' },
+    low: { key: 'low', en: 'Low', ar: 'منخفض', className: 'fuelmgr-lv-low' },
+    critical: { key: 'critical', en: 'Critical', ar: 'حرج', className: 'fuelmgr-lv-critical' },
+    unavailable: { key: 'unavailable', en: '—', ar: '—', className: 'fuelmgr-lv-unavailable' }
   };
+  const FUELMGR_NUMBER = new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 });
+  const FUELMGR_PERCENT = new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 });
+  const fuelmgrView = { data: null, renderedTankId: null, openingReadingId: null, editingTankId: null };
 
-  prepareOpeningAttempt(record);
-  submitRecord(
-    record,
-    $('btnSubmitFuel'),
-    resetFuelForm,
-    'fuel'
-  );
-}
+  /* Temporary test persistence for this phase only, the same pattern as
+     generatorRepository: the UI reaches storage through these methods alone
+     and treats each one as asynchronous. */
+  const fuelRepository = (function () {
+    const TANKS_KEY = CONFIG.LS_PREFIX + 'fuel_tanks_v1';
+    const READINGS_KEY = CONFIG.LS_PREFIX + 'fuel_readings_v1';
+    const MOVEMENTS_KEY = CONFIG.LS_PREFIX + 'fuel_movements_v1';
 
-function resetFuelForm() {
-  $('formFuel').reset();
+    function read(key) {
+      try {
+        const list = JSON.parse(localStorage.getItem(key));
+        return Array.isArray(list) ? list.filter((item) => item && typeof item.id === 'string') : [];
+      } catch (error) { return []; }
+    }
+    // Throws when storage is full or blocked; callers report it.
+    function write(key, list) {
+      localStorage.setItem(key, JSON.stringify(list));
+    }
+    function append(key, entry) {
+      write(key, read(key).concat([entry]));
+    }
 
-  $('fuel-consumption').value = '0';
+    return {
+      listTanks: () => Promise.resolve().then(() => read(TANKS_KEY)),
+      listReadings: () => Promise.resolve().then(() => read(READINGS_KEY)),
+      listMovements: () => Promise.resolve().then(() => read(MOVEMENTS_KEY)),
+      saveTank: (tank) => Promise.resolve().then(() => {
+        const list = read(TANKS_KEY);
+        const index = list.findIndex((item) => item.id === tank.id);
+        if (index === -1) list.push(tank);
+        else list[index] = tank;
+        write(TANKS_KEY, list);
+      }),
+      addReading: (reading) => Promise.resolve().then(() => append(READINGS_KEY, reading)),
+      // A transfer is one record holding both sides (one id, one time), so a
+      // single write takes the fuel out of one tank and into the other, or
+      // leaves both untouched. Supabase will do this in one transaction.
+      addMovement: (movement) => Promise.resolve().then(() => append(MOVEMENTS_KEY, movement))
+    };
+  })();
 
-  qsa('#formFuel .invalid').forEach(function (element) {
-    element.classList.remove('invalid');
-  });
+  function fuelmgrLoad() {
+    return Promise.all([fuelRepository.listTanks(), fuelRepository.listReadings(), fuelRepository.listMovements()])
+      .then((lists) => ({ tanks: lists[0], readings: lists[1], movements: lists[2] }));
+  }
 
-  qsa('#formFuel .error-msg.show').forEach(function (element) {
-    element.classList.remove('show');
-  });
+  // Reading and movement times are Baghdad wall-clock values. Normalised to
+  // YYYY-MM-DDTHH:MM:SS.mmm, plain string order is time order.
+  function fuelmgrTime(value) {
+    return openingLocalDateTime(value);
+  }
 
-  delete openingAttempts['Fuel Consumption'];
-  refreshOpeningReading('Fuel Consumption');
-}
+  // Baghdad now, to the millisecond, for movement timestamps. Readings cannot
+  // be in the future, so a transfer is always later than every saved reading
+  // and falls into exactly one reading interval.
+  function fuelmgrNowPrecise() {
+    const now = new Date();
+    const parts = {};
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Asia/Baghdad', year: 'numeric', month: '2-digit', day: '2-digit',
+      hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+    }).formatToParts(now).forEach((part) => { parts[part.type] = part.value; });
+    return parts.year + '-' + parts.month + '-' + parts.day + 'T' + parts.hour + ':' + parts.minute + ':' +
+      parts.second + '.' + String(now.getMilliseconds()).padStart(3, '0');
+  }
+
+  function fuelmgrReadingsOf(readings, tankId) {
+    return readings.filter((reading) => reading.tankId === tankId && fuelmgrTime(reading.readingDateTime))
+      .sort((a, b) => (fuelmgrTime(a.readingDateTime) < fuelmgrTime(b.readingDateTime) ? -1 : 1));
+  }
+
+  // Transfers into and out of one tank with  after < time <= upTo  (no upTo:
+  // no upper bound). The same boundary everywhere, so no movement is counted
+  // in two intervals.
+  function fuelmgrFlows(movements, tankId, after, upTo) {
+    return movements.reduce((flows, movement) => {
+      const time = fuelmgrTime(movement.movementDateTime);
+      const quantity = Number(movement.quantityLitres);
+      if (!time || !Number.isFinite(quantity) || (after && time <= after) || (upTo && time > upTo)) return flows;
+      if (movement.destinationType === 'tank' && movement.destinationId === tankId) flows.inflow += quantity;
+      if (movement.sourceType === 'tank' && movement.sourceId === tankId) flows.outflow += quantity;
+      return flows;
+    }, { inflow: 0, outflow: 0 });
+  }
+
+  // Measured consumption of one reading interval. It is derived here and is
+  // never stored as a movement:
+  //   previous reading + transfers in - transfers out - current reading
+  function fuelmgrConsumption(previousLitres, flows, currentLitres) {
+    return genmgrRound(previousLitres + flows.inflow - flows.outflow - currentLitres);
+  }
+
+  // Book balance: the latest physical reading plus the transfers since it. It
+  // is not a measurement; the next reading reconciles it into consumption.
+  function fuelmgrBalance(tankId, readings, movements) {
+    const own = fuelmgrReadingsOf(readings, tankId);
+    const last = own[own.length - 1] || null;
+    if (!last) return { litres: NaN, last: null, flows: { inflow: 0, outflow: 0 } };
+    const flows = fuelmgrFlows(movements, tankId, fuelmgrTime(last.readingDateTime));
+    return { litres: genmgrRound(Number(last.measuredLitres) + flows.inflow - flows.outflow), last: last, flows: flows };
+  }
+
+  //   Normal    level > 25% of capacity
+  //   Low       10% < level <= 25%
+  //   Critical  level <= 10%
+  // Compared in hundredths of a litre, like getGeneratorServiceStatus.
+  function getFuelLevelStatus(litres, capacityLitres) {
+    if (!Number.isFinite(litres) || !Number.isFinite(capacityLitres) || capacityLitres <= 0) return FUELMGR_LEVEL.unavailable;
+    const level = genmgrRound(litres);
+    if (level > genmgrRound(capacityLitres * FUELMGR_LEVEL_RATIO.low)) return FUELMGR_LEVEL.normal;
+    if (level > genmgrRound(capacityLitres * FUELMGR_LEVEL_RATIO.critical)) return FUELMGR_LEVEL.low;
+    return FUELMGR_LEVEL.critical;
+  }
+
+  // Today / This Month: each interval's consumption belongs to the Baghdad
+  // date of its closing reading. First readings carry no consumption.
+  function fuelmgrConsumptionTotals(readings) {
+    const today = openingNow().slice(0, 10);
+    return readings.reduce((totals, reading) => {
+      const value = reading.calculatedConsumption;
+      if (typeof value !== 'number' || !Number.isFinite(value)) return totals;
+      const day = String(reading.readingDateTime || '').slice(0, 10);
+      if (day.slice(0, 7) === today.slice(0, 7)) totals.month += value;
+      if (day === today) totals.today += value;
+      return totals;
+    }, { today: 0, month: 0 });
+  }
+
+  function fuelmgrLitres(value) {
+    if (!Number.isFinite(value)) return '—';
+    const rounded = genmgrRound(value);
+    return FUELMGR_NUMBER.format(rounded === 0 ? 0 : rounded); // never "-0"
+  }
+
+  function fuelmgrQuantity(text, className) {
+    const wrap = genmgrEl('span', className);
+    const number = wrap.appendChild(genmgrEl('span', 'fuelmgr-num', text));
+    number.dir = 'ltr';
+    wrap.appendChild(document.createTextNode(' '));
+    wrap.appendChild(genmgrText(genmgrEl('span'), 'L', 'لتر'));
+    return wrap;
+  }
+
+  function fuelmgrError(input, errorId, en, ar) {
+    genmgrText($(errorId), en, ar);
+    setFieldError(input, $(errorId), true);
+  }
+
+  function fuelmgrCheckFormToast() {
+    vibrateError();
+    toast('error', openingText('Check the form', 'راجع الاستمارة'),
+      openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.'));
+  }
+
+  function fuelmgrNotSavedToast() {
+    toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+      openingText('Device storage is full or unavailable. Your inputs are still in the form.',
+        'مساحة الجهاز ممتلئة أو غير متاحة. بياناتك باقية في الاستمارة.'), 6000);
+  }
+
+  // Tank names are user data: they go in option labels, never option text
+  // (see genmgrUserText for why).
+  function fuelmgrFillSelect(select, tanks, selectedId) {
+    Array.from(select.options).forEach((option) => { if (option.value) option.remove(); });
+    tanks.forEach((tank) => {
+      const option = document.createElement('option');
+      option.value = tank.id;
+      option.label = tank.name;
+      select.appendChild(option);
+    });
+    select.value = tanks.some((tank) => tank.id === selectedId) ? selectedId : '';
+  }
+
+  // One card for both Fuel and Overview, rendered from the same repository data.
+  function fuelmgrTankCard(tank, data, where) {
+    const capacity = Number(tank.capacityLitres);
+    const balance = fuelmgrBalance(tank.id, data.readings, data.movements);
+    const level = getFuelLevelStatus(balance.litres, capacity);
+    const percent = Number.isFinite(balance.litres) && capacity > 0 ? balance.litres / capacity * 100 : NaN;
+    const card = genmgrEl('div', 'card fuelmgr-card ' + level.className);
+
+    const head = card.appendChild(genmgrEl('div', 'fuelmgr-head'));
+    const identity = head.appendChild(genmgrEl('div', 'fuelmgr-id'));
+    const name = identity.appendChild(genmgrUserText(genmgrEl('div', 'fuelmgr-name'), tank.name));
+    name.id = 'fuelmgr-name-' + where + '-' + tank.id;
+    const cap = identity.appendChild(genmgrEl('div', 'fuelmgr-cap'));
+    cap.appendChild(genmgrText(genmgrEl('span'), 'Capacity:', 'السعة:'));
+    cap.appendChild(document.createTextNode(' '));
+    cap.appendChild(fuelmgrQuantity(fuelmgrLitres(capacity)));
+    const edit = head.appendChild(genmgrEl('button', 'btn-now fuelmgr-edit'));
+    edit.type = 'button';
+    edit.dataset.fuelmgrEdit = tank.id;
+    edit.setAttribute('aria-describedby', name.id);
+    edit.appendChild(genmgrText(genmgrEl('span'), 'Edit', 'تعديل'));
+
+    // The gauge fill is clamped to 0–100% for drawing only; the figures are not.
+    const fill = Number.isFinite(percent) ? Math.max(0, Math.min(100, percent)) : 0;
+    const gauge = card.appendChild(genmgrEl('div', 'fuelmgr-gauge'));
+    gauge.setAttribute('role', 'meter');
+    gauge.setAttribute('aria-labelledby', name.id);
+    gauge.setAttribute('aria-valuemin', '0');
+    gauge.setAttribute('aria-valuemax', '100');
+    gauge.setAttribute('aria-valuenow', String(genmgrRound(fill)));
+    gauge.appendChild(genmgrEl('div', 'fuelmgr-gauge-fill')).style.width = fill.toFixed(2) + '%';
+
+    const levelRow = card.appendChild(genmgrEl('div', 'fuelmgr-level'));
+    levelRow.appendChild(fuelmgrQuantity(fuelmgrLitres(balance.litres), 'fuelmgr-litres'));
+    const meta = levelRow.appendChild(genmgrEl('span', 'fuelmgr-level-meta'));
+    meta.appendChild(genmgrEl('span', 'fuelmgr-pct',
+      Number.isFinite(percent) ? FUELMGR_PERCENT.format(genmgrRound(percent)) + '%' : '—')).dir = 'ltr';
+    meta.appendChild(genmgrText(genmgrEl('span', 'fuelmgr-state'), level.en, level.ar));
+
+    // Say what the quantity is: a measurement, or a book figure since one.
+    const basis = card.appendChild(genmgrEl('div', 'fuelmgr-basis'));
+    if (!balance.last) genmgrText(basis, 'No readings yet', 'لا توجد قراءات بعد');
+    else if (balance.flows.inflow || balance.flows.outflow) {
+      genmgrText(basis, 'Calculated: last reading ± transfers since', 'محسوبة: آخر قراءة ± المناقلات بعدها');
+    } else genmgrText(basis, 'Measured at the last reading', 'مقاسة عند آخر قراءة');
+
+    // Source data is shown as it is; an impossible level is flagged, not corrected.
+    if (balance.last && (Number(balance.last.measuredLitres) > capacity || balance.litres > capacity || balance.litres < 0)) {
+      card.appendChild(genmgrText(genmgrEl('div', 'error-msg show fuelmgr-warning'),
+        'Data check: the level is outside the tank capacity. Review the readings and transfers.',
+        'تحقق من البيانات: المستوى خارج حدود سعة الخزان. راجع القراءات والمناقلات.'));
+    }
+
+    const totals = fuelmgrConsumptionTotals(fuelmgrReadingsOf(data.readings, tank.id));
+    const stats = card.appendChild(genmgrEl('div', 'fuelmgr-stats'));
+    [['Today’s consumption:', 'استهلاك اليوم:', totals.today],
+      ['This month’s consumption:', 'استهلاك هذا الشهر:', totals.month]].forEach((entry) => {
+      const item = stats.appendChild(genmgrEl('span'));
+      item.appendChild(genmgrText(genmgrEl('span'), entry[0], entry[1]));
+      item.appendChild(document.createTextNode(' '));
+      item.appendChild(fuelmgrQuantity(fuelmgrLitres(entry[2])));
+    });
+    const last = card.appendChild(genmgrEl('div', 'fuelmgr-last'));
+    last.appendChild(genmgrText(genmgrEl('span'), 'Last reading:', 'آخر قراءة:'));
+    last.appendChild(document.createTextNode(' '));
+    last.appendChild(genmgrEl('span', null,
+      balance.last ? balance.last.readingDateTime.slice(0, 16).replace('T', ' ') : '—')).dir = 'ltr';
+    return card;
+  }
+
+  function fuelmgrRenderMovements(data) {
+    const list = $('fuelmgrMovementList');
+    list.textContent = '';
+    $('fuelmgrMovementCard').hidden = data.movements.length === 0;
+    const names = new Map(data.tanks.map((tank) => [tank.id, tank.name]));
+    data.movements.slice().reverse().forEach((movement) => {
+      const row = list.appendChild(genmgrEl('div', 'fuelmgr-move'));
+      const head = row.appendChild(genmgrEl('div', 'fuelmgr-move-head'));
+      const route = head.appendChild(genmgrEl('span', 'fuelmgr-move-route'));
+      route.appendChild(genmgrUserText(genmgrEl('span'), names.get(movement.sourceId) || movement.sourceId));
+      route.appendChild(document.createTextNode(' '));
+      route.appendChild(genmgrText(genmgrEl('span'), '→', '←'));
+      route.appendChild(document.createTextNode(' '));
+      route.appendChild(genmgrUserText(genmgrEl('span'), names.get(movement.destinationId) || movement.destinationId));
+      head.appendChild(fuelmgrQuantity(fuelmgrLitres(Number(movement.quantityLitres)), 'fuelmgr-move-qty'));
+      const meta = row.appendChild(genmgrEl('div', 'fuelmgr-move-meta'));
+      meta.appendChild(genmgrEl('span', null, String(movement.movementDateTime || '').slice(0, 16).replace('T', ' '))).dir = 'ltr';
+      meta.appendChild(document.createTextNode(' · '));
+      meta.appendChild(genmgrEl('span', null, movement.id)).dir = 'ltr';
+      if (movement.notes) row.appendChild(genmgrUserText(genmgrEl('div', 'fuelmgr-move-notes'), movement.notes));
+    });
+  }
+
+  async function fuelmgrRenderCards() {
+    const data = await fuelmgrLoad();
+    [['fuelTankList', 'fuel'], ['fuelOverviewList', 'home']].forEach((target) => {
+      const list = $(target[0]);
+      list.textContent = '';
+      data.tanks.forEach((tank) => list.appendChild(fuelmgrTankCard(tank, data, target[1])));
+    });
+    fuelmgrRenderMovements(data);
+  }
+
+  // Loads the selected tank's latest reading as the locked opening values.
+  async function fuelmgrRenderSelection() {
+    const select = $('fuel-tank');
+    const id = select.value;
+    fuelmgrView.renderedTankId = id;
+    const data = await fuelmgrLoad();
+    if (select.value !== id) return;
+    const tank = (id && data.tanks.find((item) => item.id === id)) || null;
+    const own = tank ? fuelmgrReadingsOf(data.readings, id) : [];
+    const last = own[own.length - 1] || null;
+    fuelmgrView.data = data;
+    fuelmgrView.openingReadingId = last ? last.id : null;
+    $('fuel-first-reading').value = last ? String(last.measuredLitres) : '';
+    $('fuel-first-dt').value = last ? last.readingDateTime : '';
+    setFieldError($('fuel-first-dt'), $('err-fuel-first-dt'), false);
+    setFieldError($('fuel-first-reading'), $('err-fuel-first-reading'), false);
+    const status = $('fuel-opening-status');
+    if (!tank) {
+      genmgrText(status, 'Select a tank to load its last reading and time.', 'اختر الخزان لجلب آخر قراءة له ووقتها.');
+    } else if (!last) {
+      genmgrText(status, 'No readings yet: this reading sets the tank’s baseline. No consumption is calculated.',
+        'لا توجد قراءات بعد: هذه القراءة تحدد خط الأساس للخزان، ولا يُحسب لها استهلاك.');
+    } else {
+      genmgrText(status, 'Start = this tank’s last reading and time. Reading and time are locked.',
+        'البداية = آخر قراءة لهذا الخزان ووقتها. القراءة والوقت غير قابلين للتعديل.');
+    }
+    fuelmgrPreview();
+  }
+
+  // Live consumption for the interval being entered, by the same equation
+  // that is saved. Nothing is shown for a first reading or an invalid interval.
+  function fuelmgrPreview() {
+    const output = $('fuel-consumption');
+    const status = $('fuel-interval-status');
+    output.value = '';
+    status.textContent = '';
+    status.removeAttribute('data-auth-en');
+    status.removeAttribute('data-auth-ar');
+    setFieldError(output, $('err-fuel-consumption'), false);
+    const data = fuelmgrView.data;
+    const tankId = $('fuel-tank').value;
+    if (!data || !tankId) return;
+    const own = fuelmgrReadingsOf(data.readings, tankId);
+    const last = own[own.length - 1];
+    const time = fuelmgrTime($('fuel-second-dt').value);
+    if (!last || !time || time <= fuelmgrTime(last.readingDateTime)) return;
+    const flows = fuelmgrFlows(data.movements, tankId, fuelmgrTime(last.readingDateTime), time);
+    genmgrText(status,
+      'Transfers in this interval: +' + fuelmgrLitres(flows.inflow) + ' L in, −' + fuelmgrLitres(flows.outflow) + ' L out',
+      'المناقلات خلال هذه الفترة: +' + fuelmgrLitres(flows.inflow) + ' لتر داخلة، −' + fuelmgrLitres(flows.outflow) + ' لتر خارجة');
+    const current = genmgrNumber('fuel-second-reading');
+    if (!Number.isFinite(current)) return;
+    const consumption = fuelmgrConsumption(Number(last.measuredLitres), flows, current);
+    if (consumption < 0) {
+      fuelmgrError(output, 'err-fuel-consumption',
+        'Consumption would be negative. Check the reading, its time, or a missing transfer.',
+        'سيكون الاستهلاك سالباً. راجع القراءة أو وقتها أو وجود مناقلة غير مسجلة.');
+      return;
+    }
+    output.value = String(consumption);
+  }
+
+  async function onSubmitFuel(event) {
+    event.preventDefault();
+    if (!authSessionExists()) { showAuthLoginScreen(); return; }
+    const button = $('btnSubmitFuel');
+    if (button.disabled) return;
+    const data = await fuelmgrLoad();
+    const tankId = $('fuel-tank').value;
+    const tank = data.tanks.find((item) => item.id === tankId) || null;
+    const own = tank ? fuelmgrReadingsOf(data.readings, tankId) : [];
+    const last = own[own.length - 1] || null;
+    // Another tab may have saved a reading for this tank after the form was filled.
+    if (tank && (last ? last.id : null) !== fuelmgrView.openingReadingId) {
+      fuelmgrRefresh();
+      const message = openingFailureText({ code: 'OPENING_REFRESH_REQUIRED' });
+      toast('error', openingText('Save not confirmed', 'لم يتأكد الحفظ'), openingText(message[0], message[1]), 6000);
+      return;
+    }
+
+    const select = $('fuel-tank');
+    const dt = $('fuel-second-dt');
+    const readingInput = $('fuel-second-reading');
+    const output = $('fuel-consumption');
+    const time = fuelmgrTime(dt.value);
+    const current = genmgrNumber('fuel-second-reading');
+    const capacity = tank ? Number(tank.capacityLitres) : NaN;
+    let ok = true;
+    function fail(input, errorId, en, ar) {
+      fuelmgrError(input, errorId, en, ar);
+      ok = false;
+    }
+
+    if (!tank) fail(select, 'err-fuel-tank', 'Please select a tank', 'اختر الخزان');
+    else setFieldError(select, $('err-fuel-tank'), false);
+
+    if (!time) {
+      fail(dt, 'err-fuel-second-dt', 'Second reading date and time is required', 'تاريخ ووقت القراءة الثانية مطلوب');
+    } else if (last && time <= fuelmgrTime(last.readingDateTime)) {
+      fail(dt, 'err-fuel-second-dt', 'The reading time must be after the previous reading',
+        'يجب أن يكون وقت القراءة بعد وقت القراءة السابقة');
+    } else if (time > fuelmgrTime(openingNow())) {
+      fail(dt, 'err-fuel-second-dt', 'The reading time cannot be in the future', 'لا يمكن أن يكون وقت القراءة في المستقبل');
+    } else setFieldError(dt, $('err-fuel-second-dt'), false);
+
+    if (!Number.isFinite(current) || current < 0) {
+      fail(readingInput, 'err-fuel-second-reading', 'Enter a valid reading in litres', 'أدخل قراءة صحيحة باللتر');
+    } else if (tank && current > capacity) {
+      fail(readingInput, 'err-fuel-second-reading',
+        'The reading cannot exceed the tank capacity (' + fuelmgrLitres(capacity) + ' L)',
+        'لا يمكن أن تتجاوز القراءة سعة الخزان (' + fuelmgrLitres(capacity) + ' لتر)');
+    } else setFieldError(readingInput, $('err-fuel-second-reading'), false);
+
+    let consumption = null;
+    setFieldError(output, $('err-fuel-consumption'), false);
+    if (ok && last) {
+      const flows = fuelmgrFlows(data.movements, tankId, fuelmgrTime(last.readingDateTime), time);
+      consumption = fuelmgrConsumption(Number(last.measuredLitres), flows, current);
+      // A negative result means a missing transfer, a wrong reading or a wrong
+      // time. It is blocked here; nothing is stored, rewritten or invented.
+      if (consumption < 0) {
+        fail(output, 'err-fuel-consumption',
+          'Consumption would be negative. Check the reading, its time, or a missing transfer.',
+          'سيكون الاستهلاك سالباً. راجع القراءة أو وقتها أو وجود مناقلة غير مسجلة.');
+      }
+    }
+    if (!ok) { fuelmgrCheckFormToast(); return; }
+
+    const reading = {
+      id: uid(),
+      tankId: tankId,
+      readingDateTime: dt.value,
+      measuredLitres: current,
+      previousReadingId: last ? last.id : null,
+      // A tank's first reading only sets its baseline: no interval, no consumption.
+      calculatedConsumption: last ? consumption : null,
+      notes: $('fuel-note').value.trim(),
+      createdAt: isoTimestamp()
+    };
+    setButtonLoading(button, true);
+    try {
+      await fuelRepository.addReading(reading);
+    } catch (error) {
+      fuelmgrNotSavedToast();
+      return;
+    } finally {
+      setButtonLoading(button, false);
+    }
+    resetFuelForm();
+    fuelmgrRenderCards();
+    toast('success', openingText('Saved', 'تم الحفظ'),
+      openingText('Reading saved on this device.', 'تم حفظ القراءة على هذا الجهاز.'));
+  }
+
+  function resetFuelForm() {
+    const tankId = $('fuel-tank').value;
+    $('formFuel').reset();
+    // Keep the tank selected so its new opening reading shows at once.
+    $('fuel-tank').value = tankId;
+    qsa('#formFuel .invalid').forEach((el) => el.classList.remove('invalid'));
+    qsa('#formFuel .error-msg.show').forEach((el) => el.classList.remove('show'));
+    fuelmgrRenderSelection();
+  }
+
+  async function fuelmgrRefresh(selectedTankId) {
+    const data = await fuelmgrLoad();
+    fuelmgrFillSelect($('fuel-tank'), data.tanks, selectedTankId === undefined ? $('fuel-tank').value : selectedTankId);
+    await Promise.all([fuelmgrRenderSelection(), fuelmgrRenderCards()]);
+  }
+
+  function fuelmgrClearErrors(formId) {
+    qsa('#' + formId + ' .invalid').forEach((el) => el.classList.remove('invalid'));
+    qsa('#' + formId + ' .error-msg.show').forEach((el) => el.classList.remove('show'));
+  }
+
+  function fuelmgrCloseEditor(formId, restoreFocus) {
+    $(formId).hidden = true;
+    fuelmgrClearErrors(formId);
+    if (formId === 'fuelmgrTankEditor') fuelmgrView.editingTankId = null;
+    if (restoreFocus) $(formId === 'fuelmgrTankEditor' ? 'fuelmgrAddTankBtn' : 'fuelmgrTransferBtn').focus();
+  }
+
+  // The single Add / Edit tank editor. id = null opens it in Add mode.
+  async function fuelmgrOpenTankEditor(id) {
+    const data = await fuelmgrLoad();
+    const tank = id ? data.tanks.find((item) => item.id === id) : null;
+    if (id && !tank) return;
+    fuelmgrCloseEditor('fuelmgrTransferEditor', false);
+    fuelmgrView.editingTankId = tank ? tank.id : null;
+    fuelmgrClearErrors('fuelmgrTankEditor');
+    genmgrText($('fuelmgrTankEditorTitle'), tank ? 'Edit Fuel Tank' : 'Add Fuel Tank',
+      tank ? 'تعديل خزان الوقود' : 'إضافة خزان وقود');
+    $('fuelmgr-tank-name').value = tank ? tank.name : '';
+    $('fuelmgr-tank-capacity').value = tank && Number.isFinite(Number(tank.capacityLitres)) ? String(tank.capacityLitres) : '';
+    const form = $('fuelmgrTankEditor');
+    form.hidden = false;
+    form.scrollIntoView({ block: 'start' });
+    $('fuelmgr-tank-name').focus({ preventScroll: true });
+  }
+
+  async function fuelmgrSaveTank(ev) {
+    ev.preventDefault();
+    const saveButton = $('fuelmgrTankSaveBtn');
+    if (saveButton.disabled) return;
+    const nameInput = $('fuelmgr-tank-name');
+    const capacityInput = $('fuelmgr-tank-capacity');
+    const name = nameInput.value.trim();
+    const capacity = genmgrNumber('fuelmgr-tank-capacity');
+    let ok = true;
+    if (!name) {
+      fuelmgrError(nameInput, 'err-fuelmgr-tank-name', 'Tank name is required', 'اسم الخزان مطلوب');
+      ok = false;
+    } else setFieldError(nameInput, $('err-fuelmgr-tank-name'), false);
+    if (!genmgrPositive(capacity)) {
+      fuelmgrError(capacityInput, 'err-fuelmgr-tank-capacity', 'Enter a capacity greater than 0', 'أدخل سعة أكبر من 0');
+      ok = false;
+    } else setFieldError(capacityInput, $('err-fuelmgr-tank-capacity'), false);
+    if (!ok) { fuelmgrCheckFormToast(); return; }
+
+    saveButton.disabled = true;
+    let tank;
+    let existing;
+    try {
+      const data = await fuelmgrLoad();
+      existing = fuelmgrView.editingTankId ? data.tanks.find((item) => item.id === fuelmgrView.editingTankId) : null;
+      if (fuelmgrView.editingTankId && !existing) {
+        fuelmgrCloseEditor('fuelmgrTankEditor', true);
+        fuelmgrRefresh();
+        return;
+      }
+      if (existing) {
+        const balance = fuelmgrBalance(existing.id, data.readings, data.movements);
+        if (Number.isFinite(balance.litres) && genmgrRound(capacity - balance.litres) < 0) {
+          fuelmgrError(capacityInput, 'err-fuelmgr-tank-capacity',
+            'Capacity cannot be less than the current quantity (' + fuelmgrLitres(balance.litres) + ' L)',
+            'لا يمكن أن تقل السعة عن الكمية الحالية (' + fuelmgrLitres(balance.litres) + ' لتر)');
+          fuelmgrCheckFormToast();
+          return;
+        }
+      }
+      const now = isoTimestamp();
+      tank = {
+        id: existing ? existing.id : uid(),
+        name: name,
+        capacityLitres: capacity,
+        createdAt: existing ? existing.createdAt : now,
+        updatedAt: now,
+        active: existing ? existing.active !== false : true
+      };
+      await fuelRepository.saveTank(tank);
+    } catch (error) {
+      fuelmgrNotSavedToast();
+      return;
+    } finally {
+      saveButton.disabled = false;
+    }
+    fuelmgrCloseEditor('fuelmgrTankEditor', false);
+    toast('success', existing ? openingText('Fuel tank updated', 'تم تحديث خزان الوقود')
+      : openingText('Fuel tank added', 'تمت إضافة خزان الوقود'));
+    await fuelmgrRefresh(tank.id);
+    $('fuel-tank').focus();
+  }
+
+  async function fuelmgrOpenTransfer() {
+    const data = await fuelmgrLoad();
+    fuelmgrCloseEditor('fuelmgrTankEditor', false);
+    fuelmgrClearErrors('fuelmgrTransferEditor');
+    fuelmgrFillSelect($('fuelmgr-from'), data.tanks, '');
+    fuelmgrFillSelect($('fuelmgr-to'), data.tanks, '');
+    $('fuelmgr-qty').value = '';
+    $('fuelmgr-notes').value = '';
+    const form = $('fuelmgrTransferEditor');
+    form.hidden = false;
+    form.scrollIntoView({ block: 'start' });
+    $('fuelmgr-from').focus({ preventScroll: true });
+  }
+
+  // One tank-to-tank transfer is one movement record: the source loses and the
+  // destination gains the same quantity, under one id and one timestamp.
+  async function fuelmgrSaveTransfer(ev) {
+    ev.preventDefault();
+    const saveButton = $('fuelmgrTransferSaveBtn');
+    if (saveButton.disabled) return;
+    saveButton.disabled = true;
+    let movement;
+    try {
+      const data = await fuelmgrLoad();
+      const fromSelect = $('fuelmgr-from');
+      const toSelect = $('fuelmgr-to');
+      const qtyInput = $('fuelmgr-qty');
+      const from = data.tanks.find((tank) => tank.id === fromSelect.value) || null;
+      const to = data.tanks.find((tank) => tank.id === toSelect.value) || null;
+      const quantity = genmgrNumber('fuelmgr-qty');
+      let ok = true;
+      function fail(input, errorId, en, ar) {
+        fuelmgrError(input, errorId, en, ar);
+        ok = false;
+      }
+      fuelmgrClearErrors('fuelmgrTransferEditor');
+      if (!from) fail(fromSelect, 'err-fuelmgr-from', 'Select the source tank', 'اختر خزان المصدر');
+      if (!to) fail(toSelect, 'err-fuelmgr-to', 'Select the destination tank', 'اختر خزان الوجهة');
+      else if (from && from.id === to.id) {
+        fail(toSelect, 'err-fuelmgr-to', 'The destination must be a different tank', 'يجب أن يكون خزان الوجهة مختلفاً عن خزان المصدر');
+      }
+      if (!genmgrPositive(quantity)) fail(qtyInput, 'err-fuelmgr-qty', 'Enter a quantity greater than 0', 'أدخل كمية أكبر من 0');
+      if (ok) {
+        // Without a reading, a tank's balance is unknown, so neither the
+        // available fuel nor the free capacity can be checked.
+        const source = fuelmgrBalance(from.id, data.readings, data.movements);
+        const target = fuelmgrBalance(to.id, data.readings, data.movements);
+        if (!source.last) fail(fromSelect, 'err-fuelmgr-from', 'Record a reading for the source tank first', 'سجّل قراءة لخزان المصدر أولاً');
+        if (!target.last) fail(toSelect, 'err-fuelmgr-to', 'Record a reading for the destination tank first', 'سجّل قراءة لخزان الوجهة أولاً');
+        if (ok && genmgrRound(quantity - source.litres) > 0) {
+          fail(qtyInput, 'err-fuelmgr-qty',
+            'The quantity exceeds the source tank’s available balance (' + fuelmgrLitres(source.litres) + ' L)',
+            'الكمية أكبر من الرصيد المتاح في خزان المصدر (' + fuelmgrLitres(source.litres) + ' لتر)');
+        } else if (ok && genmgrRound(target.litres + quantity - Number(to.capacityLitres)) > 0) {
+          const free = genmgrRound(Number(to.capacityLitres) - target.litres);
+          fail(qtyInput, 'err-fuelmgr-qty',
+            'The destination tank would exceed its capacity (free space ' + fuelmgrLitres(free) + ' L)',
+            'سيتجاوز خزان الوجهة سعته (المساحة المتاحة ' + fuelmgrLitres(free) + ' لتر)');
+        }
+      }
+      if (!ok) { fuelmgrCheckFormToast(); return; }
+      movement = {
+        id: uid(),
+        movementType: 'tank_transfer',
+        sourceType: 'tank',
+        sourceId: from.id,
+        destinationType: 'tank',
+        destinationId: to.id,
+        quantityLitres: quantity,
+        movementDateTime: fuelmgrNowPrecise(),
+        notes: $('fuelmgr-notes').value.trim(),
+        createdAt: isoTimestamp()
+      };
+      await fuelRepository.addMovement(movement);
+    } catch (error) {
+      fuelmgrNotSavedToast();
+      return;
+    } finally {
+      saveButton.disabled = false;
+    }
+    fuelmgrCloseEditor('fuelmgrTransferEditor', false);
+    toast('success', openingText('Transfer saved', 'تم حفظ المناقلة'),
+      openingText('Saved on this device.', 'تم الحفظ على هذا الجهاز.'));
+    await fuelmgrRefresh();
+    $('fuelmgrTransferBtn').focus();
+  }
+
+  // Edit from a Fuel or Overview card reuses the one tank editor in Ops → Fuel.
+  function fuelmgrEditTank(id) {
+    if (!$('page-generators').classList.contains('active')) goToPage('generators');
+    if (!$('page-generators').classList.contains('active')) return;
+    if ($('secBodyFuel').hidden) $('secHeadFuel').click(); // the existing accordion toggle
+    fuelmgrOpenTankEditor(id);
+  }
+
+  function initFuelForm() {
+    const form = $('formFuel');
+    if (!form) return;
+    form.addEventListener('submit', onSubmitFuel);
+    $('fuel-tank').addEventListener('change', fuelmgrRenderSelection);
+    ['fuel-second-dt', 'fuel-second-reading'].forEach((id) => {
+      $(id).addEventListener('input', fuelmgrPreview);
+      $(id).addEventListener('change', fuelmgrPreview);
+    });
+
+    // #page-home and the generator list exist by now; tank cards follow them.
+    const overview = genmgrEl('div');
+    overview.id = 'fuelOverviewList';
+    $('generatorOverviewList').after(overview);
+    [overview, $('fuelTankList')].forEach((list) => list.addEventListener('click', (ev) => {
+      const button = ev.target.closest('[data-fuelmgr-edit]');
+      if (button) fuelmgrEditTank(button.dataset.fuelmgrEdit);
+    }));
+
+    const tankEditor = $('fuelmgrTankEditor');
+    tankEditor.addEventListener('submit', fuelmgrSaveTank);
+    // A discarded session calls reset() on every form; the editors close with it.
+    tankEditor.addEventListener('reset', () => fuelmgrCloseEditor('fuelmgrTankEditor', false));
+    $('fuelmgrAddTankBtn').addEventListener('click', () => fuelmgrOpenTankEditor(null));
+    $('fuelmgrTankCancelBtn').addEventListener('click', () => fuelmgrCloseEditor('fuelmgrTankEditor', true));
+    const transferEditor = $('fuelmgrTransferEditor');
+    transferEditor.addEventListener('submit', fuelmgrSaveTransfer);
+    transferEditor.addEventListener('reset', () => fuelmgrCloseEditor('fuelmgrTransferEditor', false));
+    $('fuelmgrTransferBtn').addEventListener('click', fuelmgrOpenTransfer);
+    $('fuelmgrTransferCancelBtn').addEventListener('click', () => fuelmgrCloseEditor('fuelmgrTransferEditor', true));
+
+    // A discarded session also resets #formFuel; follow its tank selection.
+    window.addEventListener('genops-auth-changed', () => {
+      if ($('fuel-tank').value !== fuelmgrView.renderedTankId) fuelmgrRenderSelection();
+    });
+    // Today / This Month follow the Baghdad date, so refresh when the app returns.
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) fuelmgrRenderCards();
+    });
+    fuelmgrRefresh();
+  }
 
   /* ============================================================
      10. IMAGE HANDLING
@@ -5396,65 +6112,6 @@ function applyLoggedInIdentityRules() {
   });
 }
 
-   /* ============================================================
-   FUEL CONSUMPTION AUTO CALCULATION
-   First Reading - Second Reading
-   ============================================================ */
-
-function updateFuelConsumption() {
-  const firstInput = document.getElementById('fuel-first-reading');
-  const secondInput = document.getElementById('fuel-second-reading');
-  const consumptionInput = document.getElementById('fuel-consumption');
-
-  if (!firstInput || !secondInput || !consumptionInput) {
-    return;
-  }
-
-  if (firstInput.value === '' || secondInput.value === '') {
-    consumptionInput.value = '0';
-    return;
-  }
-
-  const firstReading = Number(firstInput.value);
-  const secondReading = Number(secondInput.value);
-
-  if (
-    !Number.isFinite(firstReading) ||
-    !Number.isFinite(secondReading)
-  ) {
-    consumptionInput.value = '0';
-    return;
-  }
-
-  const consumption = firstReading - secondReading;
-
-  consumptionInput.value =
-    consumption >= 0
-      ? Number(consumption.toFixed(2))
-      : 0;
-}
-
-function initFuelConsumptionCalculation() {
-  const firstInput = document.getElementById('fuel-first-reading');
-  const secondInput = document.getElementById('fuel-second-reading');
-
-  if (firstInput) {
-    firstInput.addEventListener('input', updateFuelConsumption);
-    firstInput.addEventListener('change', updateFuelConsumption);
-  }
-
-  if (secondInput) {
-    secondInput.addEventListener('input', updateFuelConsumption);
-    secondInput.addEventListener('change', updateFuelConsumption);
-  }
-
-  updateFuelConsumption();
-}
-
-document.addEventListener(
-  'DOMContentLoaded',
-  initFuelConsumptionCalculation
-);
    /* ============================================================
    FUEL CONSUMPTION ARABIC / ENGLISH TRANSLATION
    Exact text matching — icons and submitted values stay unchanged
