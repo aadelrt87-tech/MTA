@@ -1130,42 +1130,78 @@ html[lang="ar"] .card-title{font-size:13px;}
 html[lang="ar"] #page-generators .genmgr-state,
 html[lang="ar"] #page-home .genmgr-state{letter-spacing:0;text-transform:none;}
 
-#page-home .genmgr-ov-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-#page-home .genmgr-ov-id{min-width:0;}
-#page-home .genmgr-ov-name{color:var(--text-primary);font-size:17px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;}
-#page-home .genmgr-ov-size{margin-top:2px;color:var(--text-secondary);font-size:13px;overflow-wrap:anywhere;}
-#page-home .genmgr-ov-edit{flex-shrink:0;min-height:44px;}
-#page-home .genmgr-ring{position:relative;width:108px;height:108px;margin:12px auto 0;}
-#page-home .genmgr-ring svg{display:block;width:100%;height:100%;transform:rotate(-90deg);}
-#page-home .genmgr-ring circle{fill:none;stroke-width:7;}
-#page-home .genmgr-ring-track{stroke:var(--border-subtle);}
-#page-home .genmgr-ring-value{stroke:var(--primary);stroke-linecap:round;filter:drop-shadow(0 0 5px var(--glow-primary));}
-#page-home .genmgr-ring.genmgr-st-due-soon .genmgr-ring-value{stroke:var(--accent);filter:drop-shadow(0 0 5px var(--glow-accent));}
+/* Generator cards: the same rules for the Overview and Ops → Generators lists. */
+#page-home .genmgr-ov-head,
+#generatorOpsList .genmgr-ov-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+#page-home .genmgr-ov-id,
+#generatorOpsList .genmgr-ov-id{min-width:0;}
+#page-home .genmgr-ov-name,
+#generatorOpsList .genmgr-ov-name{color:var(--text-primary);font-size:17px;font-weight:700;line-height:1.3;overflow-wrap:anywhere;}
+#page-home .genmgr-ov-size,
+#generatorOpsList .genmgr-ov-size{margin-top:2px;color:var(--text-secondary);font-size:13px;overflow-wrap:anywhere;}
+#page-home .genmgr-ov-edit,
+#generatorOpsList .genmgr-ov-edit{flex-shrink:0;min-height:44px;}
+#page-home .genmgr-ring,
+#generatorOpsList .genmgr-ring{position:relative;width:108px;height:108px;margin:12px auto 0;}
+#page-home .genmgr-ring svg,
+#generatorOpsList .genmgr-ring svg{display:block;width:100%;height:100%;transform:rotate(-90deg);}
+#page-home .genmgr-ring circle,
+#generatorOpsList .genmgr-ring circle{fill:none;stroke-width:7;}
+#page-home .genmgr-ring-track,
+#generatorOpsList .genmgr-ring-track{stroke:var(--border-subtle);}
+#page-home .genmgr-ring-value,
+#generatorOpsList .genmgr-ring-value{stroke:var(--primary);stroke-linecap:round;filter:drop-shadow(0 0 5px var(--glow-primary));}
+#page-home .genmgr-ring.genmgr-st-due-soon .genmgr-ring-value,
+#generatorOpsList .genmgr-ring.genmgr-st-due-soon .genmgr-ring-value{stroke:var(--accent);filter:drop-shadow(0 0 5px var(--glow-accent));}
 #page-home .genmgr-ring.genmgr-st-critical .genmgr-ring-value,
-#page-home .genmgr-ring.genmgr-st-overdue .genmgr-ring-value{stroke:var(--danger);filter:drop-shadow(0 0 5px var(--glow-danger));}
-#page-home .genmgr-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-#page-home .genmgr-ring-num{
+#page-home .genmgr-ring.genmgr-st-overdue .genmgr-ring-value,
+#generatorOpsList .genmgr-ring.genmgr-st-critical .genmgr-ring-value,
+#generatorOpsList .genmgr-ring.genmgr-st-overdue .genmgr-ring-value{stroke:var(--danger);filter:drop-shadow(0 0 5px var(--glow-danger));}
+#page-home .genmgr-ring-center,
+#generatorOpsList .genmgr-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+#page-home .genmgr-ring-num,
+#generatorOpsList .genmgr-ring-num{
   color:var(--primary);
   font-family:var(--font-num);font-size:21px;font-weight:600;line-height:1.1;font-variant-numeric:tabular-nums;
   text-shadow:0 0 14px rgba(var(--primary-rgb),.55);
 }
-#page-home .genmgr-ring.genmgr-st-due-soon .genmgr-ring-num{color:var(--accent);text-shadow:none;}
+#page-home .genmgr-ring.genmgr-st-due-soon .genmgr-ring-num,
+#generatorOpsList .genmgr-ring.genmgr-st-due-soon .genmgr-ring-num{color:var(--accent);text-shadow:none;}
 #page-home .genmgr-ring.genmgr-st-critical .genmgr-ring-num,
-#page-home .genmgr-ring.genmgr-st-overdue .genmgr-ring-num{color:var(--danger);text-shadow:none;}
-#page-home .genmgr-ring.genmgr-st-unavailable .genmgr-ring-num{color:var(--text-muted);text-shadow:none;}
-#page-home .genmgr-ring-unit{color:var(--text-muted);font-size:11px;font-weight:700;}
-#page-home .genmgr-ring-label{margin-top:6px;text-align:center;color:var(--text-secondary);font-size:12px;font-weight:700;}
-#page-home .genmgr-ring-label .genmgr-state{margin-inline-start:6px;}
-#page-home .genmgr-ov-runtime{
+#page-home .genmgr-ring.genmgr-st-overdue .genmgr-ring-num,
+#generatorOpsList .genmgr-ring.genmgr-st-critical .genmgr-ring-num,
+#generatorOpsList .genmgr-ring.genmgr-st-overdue .genmgr-ring-num{color:var(--danger);text-shadow:none;}
+#page-home .genmgr-ring.genmgr-st-unavailable .genmgr-ring-num,
+#generatorOpsList .genmgr-ring.genmgr-st-unavailable .genmgr-ring-num{color:var(--text-muted);text-shadow:none;}
+#page-home .genmgr-ring-unit,
+#generatorOpsList .genmgr-ring-unit{color:var(--text-muted);font-size:11px;font-weight:700;}
+#page-home .genmgr-ring-label,
+#generatorOpsList .genmgr-ring-label{margin-top:6px;text-align:center;color:var(--text-secondary);font-size:12px;font-weight:700;}
+#page-home .genmgr-ring-label .genmgr-state,
+#generatorOpsList .genmgr-ring-label .genmgr-state{margin-inline-start:6px;}
+#page-home .genmgr-ov-runtime,
+#generatorOpsList .genmgr-ov-runtime{
   display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;
   margin-top:10px;
   color:var(--text-secondary);font-size:13px;
 }
-#page-home .genmgr-ov-runtime .genmgr-num{color:var(--text-primary);font-family:var(--font-num);font-weight:600;}
-#page-home .genmgr-ov-services{margin-top:14px;padding-top:6px;border-top:1px solid rgba(77,220,235,.12);}
-#page-home .genmgr-ov-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6px 0;font-size:13px;}
-#page-home .genmgr-ov-row .genmgr-label{min-width:0;color:var(--text-primary);font-weight:600;}
-#page-home .genmgr-ov-value{flex-shrink:0;display:flex;align-items:baseline;gap:8px;}
+#page-home .genmgr-ov-runtime .genmgr-num,
+#generatorOpsList .genmgr-ov-runtime .genmgr-num{color:var(--text-primary);font-family:var(--font-num);font-weight:600;}
+#page-home .genmgr-ov-services,
+#generatorOpsList .genmgr-ov-services{margin-top:14px;padding-top:6px;border-top:1px solid rgba(77,220,235,.12);}
+#page-home .genmgr-ov-row,
+#generatorOpsList .genmgr-ov-row{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:6px 0;font-size:13px;}
+#page-home .genmgr-ov-row .genmgr-label,
+#generatorOpsList .genmgr-ov-row .genmgr-label{min-width:0;color:var(--text-primary);font-weight:600;}
+#page-home .genmgr-ov-value,
+#generatorOpsList .genmgr-ov-value{flex-shrink:0;display:flex;align-items:baseline;gap:8px;}
+/* The Ops Service Status sizes above are for its list, not for the cards. */
+#generatorOpsList .genmgr-label,
+#generatorOpsList .genmgr-remaining{font-size:inherit;text-align:inherit;}
+#generatorOpsList .genmgr-state{justify-self:auto;}
+/* An Ops card selects its generator; the Run Time Entry then scrolls into view. */
+#generatorOpsList .genmgr-ov{cursor:pointer;}
+#page-generators #formGenerators{scroll-margin-top:84px;}
 /* ---------- 19. FUEL TANK MANAGEMENT ----------
    Scoped to the existing Fuel section (#page-fuel) and Overview (#page-home).
    Built on the existing .card, .btn-now, .photo-btn, .btn-submit and .error-msg
@@ -1258,6 +1294,37 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
 #page-fuel .fuelmgr-move-notes{margin-top:4px;color:var(--text-secondary);font-size:12.5px;overflow-wrap:anywhere;}
 /* Overview: the "No content yet" line also gives way to tank cards. */
 #page-home:has(#fuelOverviewList > .card) #nav-empty-home{display:none;}
+/* ---------- 20. DELETE (ARCHIVE) ACTIONS ----------
+   Delete beside Edit on Generator and Fuel Tank cards, and its inline
+   confirmation. Existing danger tokens only; scoped to Ops and Overview. */
+#page-generators .ops-card-actions,
+#page-home .ops-card-actions{flex-shrink:0;display:flex;gap:8px;}
+#page-generators .ops-delete,
+#page-home .ops-delete{
+  min-height:44px;
+  border-color:rgba(var(--danger-rgb),.45);
+  background:var(--danger-wash);
+  color:var(--danger-soft);
+}
+#page-generators .ops-delete:hover,
+#page-home .ops-delete:hover{background:var(--danger-wash-2);color:var(--danger-soft);box-shadow:0 0 14px var(--glow-danger);}
+#page-generators .ops-panel,
+#page-home .ops-panel{margin-top:12px;}
+#page-generators .ops-confirm,
+#page-home .ops-confirm{
+  padding:12px;
+  border:1px solid rgba(var(--danger-rgb),.32);
+  border-radius:var(--r-md);
+  background:var(--danger-wash);
+}
+#page-generators .ops-confirm-title,
+#page-home .ops-confirm-title{color:var(--text-primary);font-size:14px;font-weight:700;}
+#page-generators .ops-confirm-text,
+#page-home .ops-confirm-text{margin-top:4px;color:var(--text-secondary);font-size:12.5px;line-height:1.45;}
+#page-generators .ops-confirm-actions,
+#page-home .ops-confirm-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+#page-generators .ops-confirm-actions .btn-now,
+#page-home .ops-confirm-actions .btn-now{min-height:44px;}
 </style>
 </head>
 <body>
@@ -1491,6 +1558,9 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
       <button type="button" class="photo-btn genmgr-cancel" id="genmgrCancelBtn"><span data-auth-en="Cancel" data-auth-ar="إلغاء">Cancel</span></button>
     </div>
   </form>
+
+  <!-- Active generator cards; the same renderer fills the Overview (script section 6b). -->
+  <div id="generatorOpsList"></div>
 
   <form id="formGenerators" novalidate>
     <div class="card">
@@ -1783,6 +1853,13 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
         <div class="error-msg" id="err-fuel-second-dt">
           Second reading date and time is required
         </div>
+      </div>
+
+      <!-- Seconds of the reading time: mobile date & time pickers select whole minutes only (script section 9b). -->
+      <div class="field">
+        <label for="fuel-second-sec"><span data-auth-en="Seconds" data-auth-ar="الثواني">Seconds</span><span class="req">*</span><span class="hint" data-auth-en="Seconds of the reading time, 0–59" data-auth-ar="ثواني وقت القراءة، من 0 إلى 59">Seconds of the reading time, 0–59</span></label>
+        <input class="input" type="number" inputmode="numeric" min="0" max="59" step="1" id="fuel-second-sec" autocomplete="off" required>
+        <div class="error-msg" id="err-fuel-second-sec"></div>
       </div>
 
       <div class="field">
@@ -2846,6 +2923,25 @@ function loadEmployeeNames() {
     return qsa('#' + containerId + ' input[type="checkbox"]:checked').map((c) => c.value);
   }
 
+  // Hour-meter runtime cannot exceed the clock time between start and end,
+  // allowing this much for how the meter and the clock are read. The only
+  // place the tolerance is defined.
+  const RUNTIME_TOLERANCE_HOURS = 0.1;
+
+  // Real hours between two Baghdad wall-clock values. Both are read as UTC,
+  // so the device's own time zone plays no part (Baghdad has no daylight saving).
+  function genmgrElapsedHours(startDateTime, endDateTime) {
+    const start = openingLocalDateTime(startDateTime);
+    const end = openingLocalDateTime(endDateTime);
+    if (!start || !end) return NaN;
+    return (Date.parse(end + 'Z') - Date.parse(start + 'Z')) / 3600000;
+  }
+
+  // Compared in hundredths of an hour, the precision hours are kept to.
+  function genmgrRuntimePlausible(meterRuntime, elapsedHours) {
+    return genmgrRound(meterRuntime) <= genmgrRound(elapsedHours + RUNTIME_TOLERANCE_HOURS);
+  }
+
   function validateGenerators() {
     let ok = true;
     const name = $('gen-name');
@@ -2876,11 +2972,20 @@ function loadEmployeeNames() {
     // no longer hides this error until a second submission attempt.
     const startHmValue = parseFloat(startHm.value);
     const endHmValue = parseFloat(endHm.value);
+    const elapsedHours = genmgrElapsedHours(startDt.value, endDt.value);
     if (Number.isFinite(startHmValue) && Number.isFinite(endHmValue) && endHmValue < startHmValue) {
       setFieldError(endHm, $('err-gen-end-hm'), true);
       $('err-gen-end-hm').textContent = openingText(
         'End reading cannot be less than start reading',
         'قراءة النهاية لا يمكن أن تقل عن قراءة البداية');
+      ok = false;
+    } else if (Number.isFinite(startHmValue) && Number.isFinite(endHmValue) && elapsedHours > 0 &&
+        !genmgrRuntimePlausible(endHmValue - startHmValue, elapsedHours)) {
+      // Checked before anything is saved: a rejected run changes nothing.
+      setFieldError(endHm, $('err-gen-end-hm'), true);
+      $('err-gen-end-hm').textContent = openingText(
+        'Operating hours cannot exceed the elapsed time between start and end. Check the hour-meter readings.',
+        'ساعات التشغيل لا يمكن أن تتجاوز المدة بين وقت البداية والنهاية. تحقق من قراءات عداد المولد.');
       ok = false;
     } else {
       $('err-gen-end-hm').textContent = defaultFieldError('err-gen-end-hm');
@@ -2892,6 +2997,13 @@ function loadEmployeeNames() {
       $('err-gen-end-dt').textContent = openingText(
         'End time cannot be before start time',
         'وقت النهاية لا يمكن أن يسبق وقت البداية');
+      ok = false;
+    } else if (elapsedHours <= 0) {
+      // A completed run takes time.
+      setFieldError(endDt, $('err-gen-end-dt'), true);
+      $('err-gen-end-dt').textContent = openingText(
+        'End time must be after start time',
+        'يجب أن يكون وقت النهاية بعد وقت البداية');
       ok = false;
     } else {
       $('err-gen-end-dt').textContent = defaultFieldError('err-gen-end-dt');
@@ -2920,7 +3032,7 @@ function loadEmployeeNames() {
     setButtonLoading(button, true);
     try {
       const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
-      const generator = data[0].find((item) => item.id === generatorId);
+      const generator = data[0].find((item) => item.id === generatorId && genmgrIsActive(item));
       const runs = generator ? genmgrRunsOf(data[1], generatorId) : [];
       const last = runs[runs.length - 1];
       // The start must still be this generator's current meter; another tab
@@ -2964,7 +3076,7 @@ function loadEmployeeNames() {
       setButtonLoading(button, false);
     }
     resetGeneratorsForm();
-    genmgrRenderOverview();
+    genmgrRenderCards();
     toast('success', openingText('Saved', 'تم الحفظ'),
       openingText('Record saved on this device.', 'تم حفظ السجل على هذا الجهاز.'));
   }
@@ -3049,6 +3161,12 @@ function loadEmployeeNames() {
 
   function genmgrRound(value) {
     return Math.round(value * 100) / 100;
+  }
+
+  // Delete archives a generator (active = false) and keeps its history.
+  // Records saved before archiving existed have no `active` and are active.
+  function genmgrIsActive(generator) {
+    return generator.active !== false;
   }
 
   function genmgrRunsOf(runs, generatorId) {
@@ -3294,28 +3412,39 @@ function loadEmployeeNames() {
     genmgrView.renderedId = id;
     const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
     if (select.value !== id) return;
-    const generator = (id && data[0].find((item) => item.id === id)) || null;
+    const generator = (id && data[0].find((item) => item.id === id && genmgrIsActive(item))) || null;
     const runs = generator ? genmgrRunsOf(data[1], id) : [];
     genmgrRenderStart(generator, runs);
     genmgrRenderStatus(generator, runs);
     genmgrRenderChecklist(generator);
   }
 
-  function genmgrOverviewCard(generator, runs) {
+  // The one Generator card, for the Overview and for Ops → Generators
+  // (context 'overview' or 'ops'): same data, same markup, same styles.
+  function renderGeneratorCard(generator, runs, context) {
     const current = genmgrCurrentMeter(generator, runs);
     const services = genmgrActiveServices(generator);
     const card = genmgrEl('div', 'card genmgr-ov');
+    card.dataset.genmgrId = generator.id;
 
     const head = card.appendChild(genmgrEl('div', 'genmgr-ov-head'));
     const identity = head.appendChild(genmgrEl('div', 'genmgr-ov-id'));
     const name = identity.appendChild(genmgrUserText(genmgrEl('div', 'genmgr-ov-name'), generator.name));
-    name.id = 'genmgr-ov-name-' + generator.id;
+    // Overview cards keep their original ids; Ops cards get their own.
+    name.id = 'genmgr-ov-name-' + (context === 'ops' ? 'ops-' : '') + generator.id;
     identity.appendChild(genmgrUserText(genmgrEl('div', 'genmgr-ov-size'), generator.size));
-    const edit = head.appendChild(genmgrEl('button', 'btn-now genmgr-ov-edit'));
+    const actions = head.appendChild(genmgrEl('div', 'ops-card-actions'));
+    const edit = actions.appendChild(genmgrEl('button', 'btn-now genmgr-ov-edit'));
     edit.type = 'button';
     edit.dataset.genmgrEdit = generator.id;
     edit.setAttribute('aria-describedby', name.id);
     edit.appendChild(genmgrText(genmgrEl('span'), 'Edit', 'تعديل'));
+    const remove = actions.appendChild(genmgrEl('button', 'btn-now ops-delete'));
+    remove.type = 'button';
+    remove.dataset.genmgrDelete = generator.id;
+    remove.setAttribute('aria-describedby', name.id);
+    remove.setAttribute('aria-expanded', 'false');
+    remove.appendChild(genmgrText(genmgrEl('span'), 'Delete', 'حذف'));
 
     // Engine Oil remaining hours: the ring is the remaining share of the
     // interval, in the same status as the Engine Oil row, drawn full once overdue.
@@ -3356,13 +3485,17 @@ function loadEmployeeNames() {
     return card;
   }
 
-  async function genmgrRenderOverview() {
+  // Active generators only, in both lists, from the same data.
+  async function genmgrRenderCards() {
     const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
-    const list = $('generatorOverviewList');
-    list.textContent = '';
-    data[0].forEach((generator) => list.appendChild(genmgrOverviewCard(generator, genmgrRunsOf(data[1], generator.id))));
+    const generators = data[0].filter(genmgrIsActive);
+    [['generatorOverviewList', 'overview'], ['generatorOpsList', 'ops']].forEach((target) => {
+      const list = $(target[0]);
+      list.textContent = '';
+      generators.forEach((generator) => list.appendChild(renderGeneratorCard(generator, genmgrRunsOf(data[1], generator.id), target[1])));
+    });
     // With generators present only the "No content yet" line is hidden.
-    $('nav-empty-home').hidden = data[0].length > 0;
+    $('nav-empty-home').hidden = generators.length > 0;
   }
 
   function genmgrFillSelect(generators, selectedId) {
@@ -3379,9 +3512,9 @@ function loadEmployeeNames() {
   }
 
   async function genmgrRefresh(selectedId) {
-    const generators = await generatorRepository.listGenerators();
+    const generators = (await generatorRepository.listGenerators()).filter(genmgrIsActive);
     genmgrFillSelect(generators, selectedId === undefined ? $('gen-name').value : selectedId);
-    await Promise.all([genmgrRenderSelection(), genmgrRenderOverview()]);
+    await Promise.all([genmgrRenderSelection(), genmgrRenderCards()]);
   }
 
   function genmgrClearEditorErrors() {
@@ -3401,7 +3534,7 @@ function loadEmployeeNames() {
   // The single Add / Edit editor. id = null opens it in Add mode.
   async function genmgrOpenEditor(id) {
     const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
-    const generator = id ? data[0].find((item) => item.id === id) : null;
+    const generator = id ? data[0].find((item) => item.id === id && genmgrIsActive(item)) : null;
     if (id && !generator) return;
     const runs = generator ? genmgrRunsOf(data[1], id) : [];
     // Once runs exist the current meter comes from them: shown, not edited.
@@ -3474,7 +3607,8 @@ function loadEmployeeNames() {
     let existing;
     try {
       const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
-      existing = genmgrView.editingId ? data[0].find((item) => item.id === genmgrView.editingId) : null;
+      existing = genmgrView.editingId
+        ? data[0].find((item) => item.id === genmgrView.editingId && genmgrIsActive(item)) : null;
       if (genmgrView.editingId && !existing) {
         genmgrCloseEditor(true);
         genmgrRefresh();
@@ -3514,7 +3648,10 @@ function loadEmployeeNames() {
           };
         }),
         createdAt: existing ? existing.createdAt : now,
-        updatedAt: now
+        updatedAt: now,
+        // Only active generators reach this editor; Delete sets these.
+        active: true,
+        archivedAt: null
       };
       await generatorRepository.saveGenerator(generator);
     } catch (error) {
@@ -3532,14 +3669,114 @@ function loadEmployeeNames() {
     $('gen-name').focus();
   }
 
-  // Overview Edit reuses the one editor: select, go to Ops, open in Edit mode.
-  function genmgrEditFromOverview(id) {
+  // Card Edit (Overview or Ops) reuses the one editor: select, go to Ops,
+  // open in Edit mode.
+  function genmgrEditFromCard(id) {
     $('gen-name').value = id;
     genmgrRenderSelection();
-    goToPage('generators');
+    if (!$('page-generators').classList.contains('active')) goToPage('generators');
     if (!$('page-generators').classList.contains('active')) return;
     if ($('secBodyGen').hidden) $('secHeadGen').click(); // the existing accordion toggle
     genmgrOpenEditor(id);
+  }
+
+  // An Ops card selects its generator exactly as the selector does.
+  function genmgrSelectFromCard(id) {
+    const select = $('gen-name');
+    select.value = id;
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    $('formGenerators').scrollIntoView({ block: 'start' });
+  }
+
+  const GENMGR_DELETE_TEXTS = {
+    title: ['Delete Generator?', 'حذف المولدة؟'],
+    text: ['The Generator will be removed from active use. Previous operating and maintenance records will be kept.',
+      'سيتم إزالة المولدة من الاستخدام الفعلي مع الاحتفاظ بسجلات التشغيل والصيانة السابقة.']
+  };
+
+  // Inline Delete confirmation under a card's head, shared by Generator and
+  // Fuel Tank cards: no browser dialog, no modal. Delete again closes it.
+  // `blocked` ([en, ar]) shows why the item cannot be deleted instead of
+  // asking; onConfirm may resolve to such a reason as well.
+  function genmgrDeletePanel(trigger, texts, onConfirm, blocked) {
+    const head = trigger.closest('.genmgr-ov-head, .fuelmgr-head');
+    const open = head.nextElementSibling;
+    trigger.setAttribute('aria-expanded', 'false');
+    if (open && open.classList.contains('ops-panel')) {
+      open.remove();
+      return;
+    }
+    function build(reason) {
+      if (reason) {
+        const message = genmgrText(genmgrEl('div', 'error-msg show ops-panel'), reason[0], reason[1]);
+        message.setAttribute('role', 'alert');
+        return message;
+      }
+      const panel = genmgrEl('div', 'ops-panel ops-confirm');
+      panel.setAttribute('role', 'group');
+      const title = panel.appendChild(genmgrText(genmgrEl('div', 'ops-confirm-title'), texts.title[0], texts.title[1]));
+      const text = panel.appendChild(genmgrText(genmgrEl('div', 'ops-confirm-text'), texts.text[0], texts.text[1]));
+      title.id = uid();
+      text.id = uid();
+      panel.setAttribute('aria-labelledby', title.id);
+      panel.setAttribute('aria-describedby', text.id);
+      const actions = panel.appendChild(genmgrEl('div', 'ops-confirm-actions'));
+      const confirm = actions.appendChild(genmgrEl('button', 'btn-now ops-delete'));
+      confirm.type = 'button';
+      confirm.appendChild(genmgrText(genmgrEl('span'), 'Delete', 'حذف'));
+      const cancel = actions.appendChild(genmgrEl('button', 'btn-now'));
+      cancel.type = 'button';
+      cancel.dataset.opsCancel = '';
+      cancel.appendChild(genmgrText(genmgrEl('span'), 'Cancel', 'إلغاء'));
+      cancel.addEventListener('click', () => {
+        panel.remove();
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.focus();
+      });
+      confirm.addEventListener('click', async () => {
+        confirm.disabled = true;
+        cancel.disabled = true;
+        const reason = await onConfirm();
+        if (!panel.isConnected) return; // deleted: the cards were rendered again
+        if (reason) panel.replaceWith(build(reason));
+        else {
+          confirm.disabled = false;
+          cancel.disabled = false;
+        }
+      });
+      return panel;
+    }
+    const panel = build(blocked);
+    head.after(panel);
+    trigger.setAttribute('aria-expanded', 'true');
+    const cancel = panel.querySelector('[data-ops-cancel]');
+    if (cancel) cancel.focus({ preventScroll: true });
+  }
+
+  // Delete archives: active = false and archivedAt are set, and nothing else
+  // changes. Runs, service settings and the id stay as they are.
+  async function genmgrArchiveGenerator(id) {
+    let archived = false;
+    try {
+      const generator = (await generatorRepository.listGenerators()).find((item) => item.id === id && genmgrIsActive(item));
+      if (generator) {
+        const now = isoTimestamp();
+        await generatorRepository.saveGenerator(Object.assign({}, generator, { active: false, archivedAt: now, updatedAt: now }));
+        archived = true;
+      }
+    } catch (error) {
+      toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+        openingText('Device storage is full or unavailable.', 'مساحة الجهاز ممتلئة أو غير متاحة.'), 6000);
+      return;
+    }
+    if (genmgrView.editingId === id) genmgrCloseEditor(false);
+    if ($('gen-name').value === id) {
+      // Nothing is selected in its place: start, status and checklist clear.
+      $('gen-name').value = '';
+      resetGeneratorsForm();
+    }
+    await genmgrRefresh();
+    if (archived) toast('success', openingText('Generator deleted', 'تم حذف المولدة'));
   }
 
   function initGeneratorManagement() {
@@ -3547,10 +3784,18 @@ function loadEmployeeNames() {
     const overview = genmgrEl('div');
     overview.id = 'generatorOverviewList';
     qs('#page-home > .page-header').after(overview);
-    overview.addEventListener('click', (ev) => {
-      const button = ev.target.closest('[data-genmgr-edit]');
-      if (button) genmgrEditFromOverview(button.dataset.genmgrEdit);
-    });
+    // Edit and Delete work the same on both lists; an Ops card also selects.
+    [overview, $('generatorOpsList')].forEach((list) => list.addEventListener('click', (ev) => {
+      const edit = ev.target.closest('[data-genmgr-edit]');
+      const remove = ev.target.closest('[data-genmgr-delete]');
+      if (edit) genmgrEditFromCard(edit.dataset.genmgrEdit);
+      else if (remove) {
+        genmgrDeletePanel(remove, GENMGR_DELETE_TEXTS, () => genmgrArchiveGenerator(remove.dataset.genmgrDelete));
+      } else if (list.id === 'generatorOpsList' && !ev.target.closest('button, .ops-panel')) {
+        const card = ev.target.closest('.genmgr-ov');
+        if (card) genmgrSelectFromCard(card.dataset.genmgrId);
+      }
+    }));
 
     const editor = $('genmgrEditor');
     genmgrBindCheckItems(editor, (item) => genmgrSyncOptional(item.dataset.value));
@@ -3567,7 +3812,7 @@ function loadEmployeeNames() {
     });
     // Today / This Month follow the Baghdad date, so refresh when the app returns.
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) genmgrRenderOverview();
+      if (!document.hidden) genmgrRenderCards();
     });
     genmgrRefresh();
   }
@@ -3902,48 +4147,96 @@ function onSubmitTasks(ev) {
     };
   })();
 
+  // `tanks` holds the active tanks every workflow uses; `allTanks` also has
+  // the archived ones, whose names the movement history still shows.
   function fuelmgrLoad() {
     return Promise.all([fuelRepository.listTanks(), fuelRepository.listReadings(), fuelRepository.listMovements()])
-      .then((lists) => ({ tanks: lists[0], readings: lists[1], movements: lists[2] }));
+      .then((lists) => ({ tanks: lists[0].filter(fuelmgrIsActive), allTanks: lists[0], readings: lists[1], movements: lists[2] }));
   }
 
-  // Reading and movement times are Baghdad wall-clock values. Normalised to
-  // YYYY-MM-DDTHH:MM:SS.mmm, plain string order is time order.
-  function fuelmgrTime(value) {
-    return openingLocalDateTime(value);
+  // Delete archives a tank (active = false); tanks without the field are active.
+  function fuelmgrIsActive(tank) {
+    return tank.active !== false;
   }
 
-  // Baghdad now, to the millisecond, for movement timestamps. Readings cannot
-  // be in the future, so a transfer is always later than every saved reading
-  // and falls into exactly one reading interval.
-  function fuelmgrNowPrecise() {
-    const now = new Date();
+  /* Event time. New readings and movements store effectiveAt: the absolute
+     instant (ISO, UTC) the real event happened. It is the accounting key;
+     createdAt only records when the entry was saved. A reading's instant is
+     known to the second (date & time plus the Seconds field), a transfer's to
+     the millisecond (the moment it is saved). Older local records hold a
+     Baghdad wall-clock value instead: transfers to the millisecond, readings
+     to the minute. They are read as they are and never rewritten. `span` is
+     how much later than `at` the real moment may have been. */
+  const FUELMGR_SPAN_MS = { reading: 1000, olderReading: 60000, movement: 1 };
+  const FUELMGR_BAGHDAD = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Baghdad', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+  });
+
+  // Epoch ms -> Asia/Baghdad wall clock, YYYY-MM-DDTHH:MM:SS.mmm (display and dates).
+  function fuelmgrWallClock(ms) {
+    const date = new Date(ms);
     const parts = {};
-    new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Asia/Baghdad', year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
-    }).formatToParts(now).forEach((part) => { parts[part.type] = part.value; });
+    FUELMGR_BAGHDAD.formatToParts(date).forEach((part) => { parts[part.type] = part.value; });
     return parts.year + '-' + parts.month + '-' + parts.day + 'T' + parts.hour + ':' + parts.minute + ':' +
-      parts.second + '.' + String(now.getMilliseconds()).padStart(3, '0');
+      parts.second + '.' + String(date.getUTCMilliseconds()).padStart(3, '0');
   }
 
+  // Asia/Baghdad wall clock (YYYY-MM-DDTHH:MM[:SS[.mmm]]) -> epoch ms, with the
+  // zone's offset at that moment from the same Intl data.
+  function fuelmgrInstant(wallClock) {
+    const local = openingLocalDateTime(wallClock);
+    const guess = local ? Date.parse(local + 'Z') : NaN;
+    if (!Number.isFinite(guess)) return NaN;
+    return guess - (Date.parse(fuelmgrWallClock(guess) + 'Z') - guess);
+  }
+
+  // A reading's or movement's event time: { at: epoch ms, span: ms }.
+  function fuelmgrEvent(record, kind) {
+    if (record.effectiveAt) {
+      return { at: Date.parse(record.effectiveAt), span: kind === 'reading' ? FUELMGR_SPAN_MS.reading : FUELMGR_SPAN_MS.movement };
+    }
+    return kind === 'reading'
+      ? { at: fuelmgrInstant(record.readingDateTime), span: FUELMGR_SPAN_MS.olderReading }
+      : { at: fuelmgrInstant(record.movementDateTime), span: FUELMGR_SPAN_MS.movement };
+  }
+
+  // Baghdad time for display: to the second where the record holds seconds,
+  // to the minute for older readings.
+  function fuelmgrShownTime(event) {
+    if (!Number.isFinite(event.at)) return '—';
+    return fuelmgrWallClock(event.at).slice(0, event.span < FUELMGR_SPAN_MS.olderReading ? 19 : 16);
+  }
+
+  // One tank's readings in event order.
   function fuelmgrReadingsOf(readings, tankId) {
-    return readings.filter((reading) => reading.tankId === tankId && fuelmgrTime(reading.readingDateTime))
-      .sort((a, b) => (fuelmgrTime(a.readingDateTime) < fuelmgrTime(b.readingDateTime) ? -1 : 1));
+    return readings.filter((reading) => reading.tankId === tankId && Number.isFinite(fuelmgrEvent(reading, 'reading').at))
+      .sort((a, b) => fuelmgrEvent(a, 'reading').at - fuelmgrEvent(b, 'reading').at);
   }
 
-  // Transfers into and out of one tank with  after < time <= upTo  (no upTo:
-  // no upper bound). The same boundary everywhere, so no movement is counted
-  // in two intervals.
-  function fuelmgrFlows(movements, tankId, after, upTo) {
+  // Transfers into and out of one tank between two reading events (null: no
+  // bound), by the same rule everywhere, so no movement counts twice:
+  //   previous.at < movement.at <= current.at
+  // A reading's real moment can be up to its span later than its recorded
+  // instant. A transfer inside that span cannot be ordered against the
+  // reading, so the interval is marked ambiguous at that end, never guessed.
+  function fuelmgrFlows(movements, tankId, previous, current) {
     return movements.reduce((flows, movement) => {
-      const time = fuelmgrTime(movement.movementDateTime);
+      const into = movement.destinationType === 'tank' && movement.destinationId === tankId;
+      const out = movement.sourceType === 'tank' && movement.sourceId === tankId;
+      const at = fuelmgrEvent(movement, 'movement').at;
       const quantity = Number(movement.quantityLitres);
-      if (!time || !Number.isFinite(quantity) || (after && time <= after) || (upTo && time > upTo)) return flows;
-      if (movement.destinationType === 'tank' && movement.destinationId === tankId) flows.inflow += quantity;
-      if (movement.sourceType === 'tank' && movement.sourceId === tankId) flows.outflow += quantity;
+      if ((!into && !out) || !Number.isFinite(at) || !Number.isFinite(quantity)) return flows;
+      if (previous && at <= previous.at) return flows;
+      if (current && at > current.at) {
+        if (at < current.at + current.span) flows.ambiguousEnd = true;
+        return flows;
+      }
+      if (previous && at < previous.at + previous.span) flows.ambiguousStart = true;
+      if (into) flows.inflow += quantity;
+      if (out) flows.outflow += quantity;
       return flows;
-    }, { inflow: 0, outflow: 0 });
+    }, { inflow: 0, outflow: 0, ambiguousStart: false, ambiguousEnd: false });
   }
 
   // Measured consumption of one reading interval. It is derived here and is
@@ -3955,12 +4248,14 @@ function onSubmitTasks(ev) {
 
   // Book balance: the latest physical reading plus the transfers since it. It
   // is not a measurement; the next reading reconciles it into consumption.
+  // Unknown (NaN) while a transfer cannot be ordered against that reading.
   function fuelmgrBalance(tankId, readings, movements) {
     const own = fuelmgrReadingsOf(readings, tankId);
     const last = own[own.length - 1] || null;
-    if (!last) return { litres: NaN, last: null, flows: { inflow: 0, outflow: 0 } };
-    const flows = fuelmgrFlows(movements, tankId, fuelmgrTime(last.readingDateTime));
-    return { litres: genmgrRound(Number(last.measuredLitres) + flows.inflow - flows.outflow), last: last, flows: flows };
+    if (!last) return { litres: NaN, last: null, flows: { inflow: 0, outflow: 0, ambiguousStart: false, ambiguousEnd: false } };
+    const flows = fuelmgrFlows(movements, tankId, fuelmgrEvent(last, 'reading'), null);
+    const litres = flows.ambiguousStart ? NaN : genmgrRound(Number(last.measuredLitres) + flows.inflow - flows.outflow);
+    return { litres: litres, last: last, flows: flows };
   }
 
   //   Normal    level > 25% of capacity
@@ -3975,18 +4270,30 @@ function onSubmitTasks(ev) {
     return FUELMGR_LEVEL.critical;
   }
 
-  // Today / This Month: each interval's consumption belongs to the Baghdad
-  // date of its closing reading. First readings carry no consumption.
-  function fuelmgrConsumptionTotals(readings) {
+  // Today / This Month: each interval's stored consumption belongs to the
+  // Baghdad date of its closing reading; first readings carry none. An
+  // interval whose transfers cannot be ordered against its readings (older
+  // minute-precision records) is left out and reported, never guessed.
+  // `own` is one tank's readings in event order (fuelmgrReadingsOf).
+  function fuelmgrConsumptionTotals(own, movements, tankId) {
     const today = openingNow().slice(0, 10);
-    return readings.reduce((totals, reading) => {
+    return own.reduce((totals, reading, index) => {
+      const event = fuelmgrEvent(reading, 'reading');
+      const day = fuelmgrWallClock(event.at).slice(0, 10);
+      if (day.slice(0, 7) !== today.slice(0, 7)) return totals;
+      if (index > 0) {
+        const flows = fuelmgrFlows(movements, tankId, fuelmgrEvent(own[index - 1], 'reading'), event);
+        if (flows.ambiguousStart || flows.ambiguousEnd) {
+          totals.ambiguous = true;
+          return totals;
+        }
+      }
       const value = reading.calculatedConsumption;
       if (typeof value !== 'number' || !Number.isFinite(value)) return totals;
-      const day = String(reading.readingDateTime || '').slice(0, 10);
-      if (day.slice(0, 7) === today.slice(0, 7)) totals.month += value;
+      totals.month += value;
       if (day === today) totals.today += value;
       return totals;
-    }, { today: 0, month: 0 });
+    }, { today: 0, month: 0, ambiguous: false });
   }
 
   function fuelmgrLitres(value) {
@@ -4050,11 +4357,18 @@ function onSubmitTasks(ev) {
     cap.appendChild(genmgrText(genmgrEl('span'), 'Capacity:', 'السعة:'));
     cap.appendChild(document.createTextNode(' '));
     cap.appendChild(fuelmgrQuantity(fuelmgrLitres(capacity)));
-    const edit = head.appendChild(genmgrEl('button', 'btn-now fuelmgr-edit'));
+    const actions = head.appendChild(genmgrEl('div', 'ops-card-actions'));
+    const edit = actions.appendChild(genmgrEl('button', 'btn-now fuelmgr-edit'));
     edit.type = 'button';
     edit.dataset.fuelmgrEdit = tank.id;
     edit.setAttribute('aria-describedby', name.id);
     edit.appendChild(genmgrText(genmgrEl('span'), 'Edit', 'تعديل'));
+    const remove = actions.appendChild(genmgrEl('button', 'btn-now ops-delete'));
+    remove.type = 'button';
+    remove.dataset.fuelmgrDelete = tank.id;
+    remove.setAttribute('aria-describedby', name.id);
+    remove.setAttribute('aria-expanded', 'false');
+    remove.appendChild(genmgrText(genmgrEl('span'), 'Delete', 'حذف'));
 
     // The gauge fill is clamped to 0–100% for drawing only; the figures are not.
     const fill = Number.isFinite(percent) ? Math.max(0, Math.min(100, percent)) : 0;
@@ -4076,6 +4390,7 @@ function onSubmitTasks(ev) {
     // Say what the quantity is: a measurement, or a book figure since one.
     const basis = card.appendChild(genmgrEl('div', 'fuelmgr-basis'));
     if (!balance.last) genmgrText(basis, 'No readings yet', 'لا توجد قراءات بعد');
+    else if (balance.flows.ambiguousStart) genmgrText(basis, 'Ambiguous event order', 'ترتيب الأحداث غير محدد');
     else if (balance.flows.inflow || balance.flows.outflow) {
       genmgrText(basis, 'Calculated: last reading ± transfers since', 'محسوبة: آخر قراءة ± المناقلات بعدها');
     } else genmgrText(basis, 'Measured at the last reading', 'مقاسة عند آخر قراءة');
@@ -4087,7 +4402,7 @@ function onSubmitTasks(ev) {
         'تحقق من البيانات: المستوى خارج حدود سعة الخزان. راجع القراءات والمناقلات.'));
     }
 
-    const totals = fuelmgrConsumptionTotals(fuelmgrReadingsOf(data.readings, tank.id));
+    const totals = fuelmgrConsumptionTotals(fuelmgrReadingsOf(data.readings, tank.id), data.movements, tank.id);
     const stats = card.appendChild(genmgrEl('div', 'fuelmgr-stats'));
     [['Today’s consumption:', 'استهلاك اليوم:', totals.today],
       ['This month’s consumption:', 'استهلاك هذا الشهر:', totals.month]].forEach((entry) => {
@@ -4096,11 +4411,15 @@ function onSubmitTasks(ev) {
       item.appendChild(document.createTextNode(' '));
       item.appendChild(fuelmgrQuantity(fuelmgrLitres(entry[2])));
     });
+    if (totals.ambiguous) {
+      card.appendChild(genmgrText(genmgrEl('div', 'fuelmgr-basis'), 'Ambiguous event order — not counted in consumption.',
+        'ترتيب الأحداث غير محدد — غير محسوب ضمن الاستهلاك.'));
+    }
     const last = card.appendChild(genmgrEl('div', 'fuelmgr-last'));
     last.appendChild(genmgrText(genmgrEl('span'), 'Last reading:', 'آخر قراءة:'));
     last.appendChild(document.createTextNode(' '));
     last.appendChild(genmgrEl('span', null,
-      balance.last ? balance.last.readingDateTime.slice(0, 16).replace('T', ' ') : '—')).dir = 'ltr';
+      balance.last ? fuelmgrShownTime(fuelmgrEvent(balance.last, 'reading')).replace('T', ' ') : '—')).dir = 'ltr';
     return card;
   }
 
@@ -4108,7 +4427,7 @@ function onSubmitTasks(ev) {
     const list = $('fuelmgrMovementList');
     list.textContent = '';
     $('fuelmgrMovementCard').hidden = data.movements.length === 0;
-    const names = new Map(data.tanks.map((tank) => [tank.id, tank.name]));
+    const names = new Map(data.allTanks.map((tank) => [tank.id, tank.name]));
     data.movements.slice().reverse().forEach((movement) => {
       const row = list.appendChild(genmgrEl('div', 'fuelmgr-move'));
       const head = row.appendChild(genmgrEl('div', 'fuelmgr-move-head'));
@@ -4120,7 +4439,7 @@ function onSubmitTasks(ev) {
       route.appendChild(genmgrUserText(genmgrEl('span'), names.get(movement.destinationId) || movement.destinationId));
       head.appendChild(fuelmgrQuantity(fuelmgrLitres(Number(movement.quantityLitres)), 'fuelmgr-move-qty'));
       const meta = row.appendChild(genmgrEl('div', 'fuelmgr-move-meta'));
-      meta.appendChild(genmgrEl('span', null, String(movement.movementDateTime || '').slice(0, 16).replace('T', ' '))).dir = 'ltr';
+      meta.appendChild(genmgrEl('span', null, fuelmgrShownTime(fuelmgrEvent(movement, 'movement')).replace('T', ' '))).dir = 'ltr';
       meta.appendChild(document.createTextNode(' · '));
       meta.appendChild(genmgrEl('span', null, movement.id)).dir = 'ltr';
       if (movement.notes) row.appendChild(genmgrUserText(genmgrEl('div', 'fuelmgr-move-notes'), movement.notes));
@@ -4150,7 +4469,7 @@ function onSubmitTasks(ev) {
     fuelmgrView.data = data;
     fuelmgrView.openingReadingId = last ? last.id : null;
     $('fuel-first-reading').value = last ? String(last.measuredLitres) : '';
-    $('fuel-first-dt').value = last ? last.readingDateTime : '';
+    $('fuel-first-dt').value = last ? fuelmgrShownTime(fuelmgrEvent(last, 'reading')) : '';
     setFieldError($('fuel-first-dt'), $('err-fuel-first-dt'), false);
     setFieldError($('fuel-first-reading'), $('err-fuel-first-reading'), false);
     const status = $('fuel-opening-status');
@@ -4164,6 +4483,21 @@ function onSubmitTasks(ev) {
         'البداية = آخر قراءة لهذا الخزان ووقتها. القراءة والوقت غير قابلين للتعديل.');
     }
     fuelmgrPreview();
+  }
+
+  // The Seconds field as a whole number 0–59, or NaN.
+  function fuelmgrSeconds() {
+    const raw = $('fuel-second-sec').value.trim();
+    return /^\d{1,2}$/.test(raw) && Number(raw) <= 59 ? Number(raw) : NaN;
+  }
+
+  // The reading's Baghdad wall-clock time to the second, from the date & time
+  // field and the Seconds field; '' until both are valid.
+  function fuelmgrEnteredTime() {
+    const minute = $('fuel-second-dt').value.slice(0, 16);
+    const seconds = fuelmgrSeconds();
+    if (minute.length !== 16 || !openingLocalDateTime(minute) || !Number.isFinite(seconds)) return '';
+    return minute + ':' + String(seconds).padStart(2, '0');
   }
 
   // Live consumption for the interval being entered, by the same equation
@@ -4181,9 +4515,17 @@ function onSubmitTasks(ev) {
     if (!data || !tankId) return;
     const own = fuelmgrReadingsOf(data.readings, tankId);
     const last = own[own.length - 1];
-    const time = fuelmgrTime($('fuel-second-dt').value);
-    if (!last || !time || time <= fuelmgrTime(last.readingDateTime)) return;
-    const flows = fuelmgrFlows(data.movements, tankId, fuelmgrTime(last.readingDateTime), time);
+    const entered = fuelmgrEnteredTime();
+    if (!last || !entered) return;
+    const previous = fuelmgrEvent(last, 'reading');
+    const readingEvent = { at: fuelmgrInstant(entered), span: FUELMGR_SPAN_MS.reading };
+    if (!(readingEvent.at >= previous.at + previous.span)) return;
+    const flows = fuelmgrFlows(data.movements, tankId, previous, readingEvent);
+    if (flows.ambiguousStart || flows.ambiguousEnd) {
+      genmgrText(status, 'Ambiguous event order — no consumption is calculated for this interval.',
+        'ترتيب الأحداث غير محدد — لا يُحسب استهلاك لهذه الفترة.');
+      return;
+    }
     genmgrText(status,
       'Transfers in this interval: +' + fuelmgrLitres(flows.inflow) + ' L in, −' + fuelmgrLitres(flows.outflow) + ' L out',
       'المناقلات خلال هذه الفترة: +' + fuelmgrLitres(flows.inflow) + ' لتر داخلة، −' + fuelmgrLitres(flows.outflow) + ' لتر خارجة');
@@ -4219,9 +4561,12 @@ function onSubmitTasks(ev) {
 
     const select = $('fuel-tank');
     const dt = $('fuel-second-dt');
+    const secondsInput = $('fuel-second-sec');
     const readingInput = $('fuel-second-reading');
     const output = $('fuel-consumption');
-    const time = fuelmgrTime(dt.value);
+    const entered = fuelmgrEnteredTime();
+    const readingEvent = { at: entered ? fuelmgrInstant(entered) : NaN, span: FUELMGR_SPAN_MS.reading };
+    const previous = last ? fuelmgrEvent(last, 'reading') : null;
     const current = genmgrNumber('fuel-second-reading');
     const capacity = tank ? Number(tank.capacityLitres) : NaN;
     let ok = true;
@@ -4233,14 +4578,20 @@ function onSubmitTasks(ev) {
     if (!tank) fail(select, 'err-fuel-tank', 'Please select a tank', 'اختر الخزان');
     else setFieldError(select, $('err-fuel-tank'), false);
 
-    if (!time) {
+    // After the previous reading means clear of its span too, so the two
+    // readings can always be ordered.
+    if (!openingLocalDateTime(dt.value)) {
       fail(dt, 'err-fuel-second-dt', 'Second reading date and time is required', 'تاريخ ووقت القراءة الثانية مطلوب');
-    } else if (last && time <= fuelmgrTime(last.readingDateTime)) {
+    } else if (entered && previous && readingEvent.at < previous.at + previous.span) {
       fail(dt, 'err-fuel-second-dt', 'The reading time must be after the previous reading',
         'يجب أن يكون وقت القراءة بعد وقت القراءة السابقة');
-    } else if (time > fuelmgrTime(openingNow())) {
+    } else if (entered && readingEvent.at > Date.now()) {
       fail(dt, 'err-fuel-second-dt', 'The reading time cannot be in the future', 'لا يمكن أن يكون وقت القراءة في المستقبل');
     } else setFieldError(dt, $('err-fuel-second-dt'), false);
+
+    if (!Number.isFinite(fuelmgrSeconds())) {
+      fail(secondsInput, 'err-fuel-second-sec', 'Enter the seconds, from 0 to 59', 'أدخل الثواني من 0 إلى 59');
+    } else setFieldError(secondsInput, $('err-fuel-second-sec'), false);
 
     if (!Number.isFinite(current) || current < 0) {
       fail(readingInput, 'err-fuel-second-reading', 'Enter a valid reading in litres', 'أدخل قراءة صحيحة باللتر');
@@ -4252,27 +4603,39 @@ function onSubmitTasks(ev) {
 
     let consumption = null;
     setFieldError(output, $('err-fuel-consumption'), false);
-    if (ok && last) {
-      const flows = fuelmgrFlows(data.movements, tankId, fuelmgrTime(last.readingDateTime), time);
-      consumption = fuelmgrConsumption(Number(last.measuredLitres), flows, current);
-      // A negative result means a missing transfer, a wrong reading or a wrong
-      // time. It is blocked here; nothing is stored, rewritten or invented.
-      if (consumption < 0) {
-        fail(output, 'err-fuel-consumption',
-          'Consumption would be negative. Check the reading, its time, or a missing transfer.',
-          'سيكون الاستهلاك سالباً. راجع القراءة أو وقتها أو وجود مناقلة غير مسجلة.');
+    if (ok && previous) {
+      const flows = fuelmgrFlows(data.movements, tankId, previous, readingEvent);
+      if (flows.ambiguousEnd) {
+        // A transfer within this reading's own second: only the person who
+        // took the reading knows which came first, so the seconds must say.
+        fail(secondsInput, 'err-fuel-second-sec',
+          'A transfer for this tank was saved within this same second. Set the seconds to show whether the reading was before or after it.',
+          'حُفظت مناقلة لهذا الخزان ضمن الثانية نفسها. عدّل الثواني لتوضيح إن كانت القراءة قبلها أو بعدها.');
+      } else if (!flows.ambiguousStart) {
+        consumption = fuelmgrConsumption(Number(last.measuredLitres), flows, current);
+        // A negative result means a missing transfer, a wrong reading or a wrong
+        // time. It is blocked here; nothing is stored, rewritten or invented.
+        if (consumption < 0) {
+          fail(output, 'err-fuel-consumption',
+            'Consumption would be negative. Check the reading, its time, or a missing transfer.',
+            'سيكون الاستهلاك سالباً. راجع القراءة أو وقتها أو وجود مناقلة غير مسجلة.');
+        }
       }
+      // ambiguousStart: an older minute-precision reading shares its minute
+      // with a transfer. No consumption is derived for that interval; this
+      // reading starts a new, precise one.
     }
     if (!ok) { fuelmgrCheckFormToast(); return; }
 
     const reading = {
       id: uid(),
       tankId: tankId,
-      readingDateTime: dt.value,
+      effectiveAt: new Date(readingEvent.at).toISOString(),
       measuredLitres: current,
       previousReadingId: last ? last.id : null,
-      // A tank's first reading only sets its baseline: no interval, no consumption.
-      calculatedConsumption: last ? consumption : null,
+      // A first reading only sets the baseline, and an ambiguous interval gets
+      // no value: both keep null.
+      calculatedConsumption: consumption,
       notes: $('fuel-note').value.trim(),
       createdAt: isoTimestamp()
     };
@@ -4304,6 +4667,10 @@ function onSubmitTasks(ev) {
   async function fuelmgrRefresh(selectedTankId) {
     const data = await fuelmgrLoad();
     fuelmgrFillSelect($('fuel-tank'), data.tanks, selectedTankId === undefined ? $('fuel-tank').value : selectedTankId);
+    // An open transfer form lists active tanks only and keeps its choices.
+    if (!$('fuelmgrTransferEditor').hidden) {
+      ['fuelmgr-from', 'fuelmgr-to'].forEach((id) => fuelmgrFillSelect($(id), data.tanks, $(id).value));
+    }
     await Promise.all([fuelmgrRenderSelection(), fuelmgrRenderCards()]);
   }
 
@@ -4384,7 +4751,9 @@ function onSubmitTasks(ev) {
         capacityLitres: capacity,
         createdAt: existing ? existing.createdAt : now,
         updatedAt: now,
-        active: existing ? existing.active !== false : true
+        // Only active tanks reach this editor; Delete sets these.
+        active: true,
+        archivedAt: null
       };
       await fuelRepository.saveTank(tank);
     } catch (error) {
@@ -4443,12 +4812,13 @@ function onSubmitTasks(ev) {
       }
       if (!genmgrPositive(quantity)) fail(qtyInput, 'err-fuelmgr-qty', 'Enter a quantity greater than 0', 'أدخل كمية أكبر من 0');
       if (ok) {
-        // Without a reading, a tank's balance is unknown, so neither the
-        // available fuel nor the free capacity can be checked.
+        // Without a reading, or while a transfer cannot be ordered against the
+        // last one, a tank's balance is unknown, so neither the available fuel
+        // nor the free capacity can be checked.
         const source = fuelmgrBalance(from.id, data.readings, data.movements);
         const target = fuelmgrBalance(to.id, data.readings, data.movements);
-        if (!source.last) fail(fromSelect, 'err-fuelmgr-from', 'Record a reading for the source tank first', 'سجّل قراءة لخزان المصدر أولاً');
-        if (!target.last) fail(toSelect, 'err-fuelmgr-to', 'Record a reading for the destination tank first', 'سجّل قراءة لخزان الوجهة أولاً');
+        if (!Number.isFinite(source.litres)) fail(fromSelect, 'err-fuelmgr-from', 'Record a reading for the source tank first', 'سجّل قراءة لخزان المصدر أولاً');
+        if (!Number.isFinite(target.litres)) fail(toSelect, 'err-fuelmgr-to', 'Record a reading for the destination tank first', 'سجّل قراءة لخزان الوجهة أولاً');
         if (ok && genmgrRound(quantity - source.litres) > 0) {
           fail(qtyInput, 'err-fuelmgr-qty',
             'The quantity exceeds the source tank’s available balance (' + fuelmgrLitres(source.litres) + ' L)',
@@ -4469,7 +4839,8 @@ function onSubmitTasks(ev) {
         destinationType: 'tank',
         destinationId: to.id,
         quantityLitres: quantity,
-        movementDateTime: fuelmgrNowPrecise(),
+        // The moment it is saved, to the millisecond, for both tanks.
+        effectiveAt: new Date().toISOString(),
         notes: $('fuelmgr-notes').value.trim(),
         createdAt: isoTimestamp()
       };
@@ -4495,23 +4866,96 @@ function onSubmitTasks(ev) {
     fuelmgrOpenTankEditor(id);
   }
 
+  const FUELMGR_DELETE_TEXTS = {
+    title: ['Delete Fuel Tank?', 'حذف خزان الوقود؟'],
+    text: ['The Tank will be removed from active use. Previous readings and fuel movements will be kept.',
+      'سيتم إزالة الخزان من الاستخدام الفعلي مع الاحتفاظ بالقراءات وحركات الوقود السابقة.']
+  };
+
+  // Why a tank cannot be deleted now, as [en, ar], or null. Fuel is never
+  // discarded: its book balance must be exactly zero (in the hundredths it is
+  // kept to), or it must have no history at all. An unknown quantity is never
+  // taken as zero.
+  function fuelmgrArchiveBlock(tankId, data) {
+    const history = data.readings.some((reading) => reading.tankId === tankId) ||
+      data.movements.some((movement) => movement.sourceId === tankId || movement.destinationId === tankId);
+    if (!history) return null;
+    const balance = fuelmgrBalance(tankId, data.readings, data.movements);
+    if (!Number.isFinite(balance.litres) || balance.litres < 0) {
+      return ['The quantity in this Tank cannot be established. Record a reading before deleting it.',
+        'تعذّر تحديد كمية الوقود في هذا الخزان. سجّل قراءة قبل حذفه.'];
+    }
+    if (balance.litres > 0) {
+      return ['This Tank still contains fuel. Transfer the remaining balance to another Tank before deleting it.',
+        'لا يزال الخزان يحتوي على وقود. انقل الرصيد المتبقي إلى خزان آخر قبل حذفه.'];
+    }
+    return null;
+  }
+
+  // Delete archives: active = false and archivedAt are set, and nothing else
+  // changes; readings and movements stay exactly as they are. The balance rule
+  // is checked again at the moment of deleting; a reason comes back if it fails.
+  async function fuelmgrArchiveTank(id) {
+    let reason = null;
+    let archived = false;
+    try {
+      const data = await fuelmgrLoad();
+      const tank = data.tanks.find((item) => item.id === id);
+      reason = tank ? fuelmgrArchiveBlock(id, data) : null;
+      if (tank && !reason) {
+        const now = isoTimestamp();
+        await fuelRepository.saveTank(Object.assign({}, tank, { active: false, archivedAt: now, updatedAt: now }));
+        archived = true;
+      }
+    } catch (error) {
+      toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+        openingText('Device storage is full or unavailable.', 'مساحة الجهاز ممتلئة أو غير متاحة.'), 6000);
+      return null;
+    }
+    if (reason) return reason;
+    if (fuelmgrView.editingTankId === id) fuelmgrCloseEditor('fuelmgrTankEditor', false);
+    if ($('fuel-tank').value === id) {
+      // Nothing is selected in its place.
+      $('fuel-tank').value = '';
+      resetFuelForm();
+    }
+    await fuelmgrRefresh();
+    if (archived) toast('success', openingText('Fuel tank deleted', 'تم حذف خزان الوقود'));
+    return null;
+  }
+
   function initFuelForm() {
     const form = $('formFuel');
     if (!form) return;
     form.addEventListener('submit', onSubmitFuel);
     $('fuel-tank').addEventListener('change', fuelmgrRenderSelection);
-    ['fuel-second-dt', 'fuel-second-reading'].forEach((id) => {
+    ['fuel-second-dt', 'fuel-second-sec', 'fuel-second-reading'].forEach((id) => {
       $(id).addEventListener('input', fuelmgrPreview);
       $(id).addEventListener('change', fuelmgrPreview);
+    });
+    // NOW fills the date & time and the Seconds field from one instant. It runs
+    // after the shared NOW handler (section 5), which fills whole minutes.
+    qs('.btn-now[data-target="fuel-second-dt"]').addEventListener('click', () => {
+      const now = fuelmgrWallClock(Date.now());
+      $('fuel-second-dt').value = now.slice(0, 16);
+      $('fuel-second-sec').value = String(Number(now.slice(17, 19)));
+      fuelmgrPreview();
     });
 
     // #page-home and the generator list exist by now; tank cards follow them.
     const overview = genmgrEl('div');
     overview.id = 'fuelOverviewList';
     $('generatorOverviewList').after(overview);
-    [overview, $('fuelTankList')].forEach((list) => list.addEventListener('click', (ev) => {
-      const button = ev.target.closest('[data-fuelmgr-edit]');
-      if (button) fuelmgrEditTank(button.dataset.fuelmgrEdit);
+    [overview, $('fuelTankList')].forEach((list) => list.addEventListener('click', async (ev) => {
+      const edit = ev.target.closest('[data-fuelmgr-edit]');
+      const remove = ev.target.closest('[data-fuelmgr-delete]');
+      if (edit) fuelmgrEditTank(edit.dataset.fuelmgrEdit);
+      else if (remove) {
+        // A tank that still holds fuel, or whose quantity is unknown, shows the reason instead.
+        const id = remove.dataset.fuelmgrDelete;
+        const data = await fuelmgrLoad();
+        genmgrDeletePanel(remove, FUELMGR_DELETE_TEXTS, () => fuelmgrArchiveTank(id), fuelmgrArchiveBlock(id, data));
+      }
     }));
 
     const tankEditor = $('fuelmgrTankEditor');
