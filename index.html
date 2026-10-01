@@ -848,23 +848,7 @@ html.navigation-open .side-drawer{transform:translateX(0);visibility:visible;poi
 }
 .drawer-nav-btn.active .nav-icon{filter:drop-shadow(0 0 6px var(--glow-primary));}
 
-/* ---------- 13. MISC: queue banner, cost suffix, counters ---------- */
-.queue-banner{
-  display:none;align-items:center;gap:10px;
-  margin-bottom:14px;
-  padding:11px 14px;
-  border-radius:var(--r-md);
-  background:var(--accent-wash);
-  border:1px solid rgba(255,155,61,.3);
-  box-shadow:0 0 18px rgba(var(--accent-rgb),.10);
-}
-.queue-banner.show{display:flex;}
-.queue-banner svg{
-  width:18px;height:18px;flex-shrink:0;
-  color:var(--accent);
-  filter:drop-shadow(0 0 6px var(--glow-accent));
-}
-.queue-banner .qb-text{color:var(--accent-soft);font-size:12.5px;font-weight:600;line-height:1.4;}
+/* ---------- 13. MISC: cost suffix, counters ---------- */
 
 .field-row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 
@@ -1464,11 +1448,6 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
 
   <div class="sec-body" id="secBodyGen">
 
-  <div class="queue-banner" id="genQueueBanner">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-    <span class="qb-text" id="genQueueText">1 record saved offline — will submit when back online.</span>
-  </div>
-
   <!-- One editor for adding and editing generators (script section 6b). -->
   <form class="card genmgr-editor" id="genmgrEditor" novalidate hidden aria-labelledby="genmgrEditorTitle">
     <div class="card-title">
@@ -1658,20 +1637,6 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   </div>
 
   <div class="sec-body" id="secBodyFuel" hidden>
-
-  <div class="queue-banner" id="fuelQueueBanner">
-    <svg
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      stroke-width="2">
-      <path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-    </svg>
-
-    <span class="qb-text" id="fuelQueueText">
-      1 fuel record saved offline — will submit when back online.
-    </span>
-  </div>
 
   <!-- One editor for adding and editing fuel tanks (script section 9b). -->
   <form class="card fuelmgr-editor" id="fuelmgrTankEditor" novalidate hidden aria-labelledby="fuelmgrTankEditorTitle">
@@ -1964,11 +1929,6 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
     </div>
   </div>
 
-  <div class="queue-banner" id="taskQueueBanner">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-    <span class="qb-text" id="taskQueueText">1 task saved offline — will submit when back online.</span>
-  </div>
-
   <form id="formTasks" novalidate>
     <div class="card">
       <div class="card-title">
@@ -2069,11 +2029,6 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
 
   <div class="sec-body" id="secBodyAttendance" hidden>
 
-  <div class="queue-banner" id="attQueueBanner">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-    <span class="qb-text" id="attQueueText">1 record saved offline — will submit when back online.</span>
-  </div>
-
   <form id="formAttendance" novalidate>
     <div class="card">
       <div class="card-title">
@@ -2167,11 +2122,6 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   </div>
 
   <div class="sec-body" id="secBodyPurchase" hidden>
-
-  <div class="queue-banner" id="poQueueBanner">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-    <span class="qb-text" id="poQueueText">1 request saved offline — will submit when back online.</span>
-  </div>
 
   <form id="formPurchase" novalidate>
     <div class="card">
@@ -2271,15 +2221,18 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
    1. Configuration
    2. Utilities (toast, dom helpers, formatting)
    3. Navigation
-   4. Employee dropdown (shared, dynamic source)
+   4. Employee dropdown (local demo names)
    5. Datetime "NOW" buttons
    6. Generators form
    7. Tasks form
    8. Attendance form
    9. Purchase Orders form
    10. Image handling (compression, preview, multi-select)
-   11. Offline queue + duplicate-submission guard
-   12. Apps Script transport layer
+   11. Prototype submission, connection status
+   ============================================================
+   Frontend workflow prototype: there is no application backend.
+   Supabase (Auth, PostgreSQL, Storage) will replace the prototype
+   login, the local repositories and form submission.
    ============================================================ */
 
 (function () {
@@ -2287,22 +2240,14 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
 
   /* ============================================================
      1. CONFIGURATION
-     ============================================================
-     Replace WEB_APP_URL with your deployed Google Apps Script
-     Web App URL. See DEPLOYMENT_GUIDE.md, Step 5.
-  */
+     ============================================================ */
   window.CONFIG = {
-    WEB_APP_URL: 'https://script.google.com/macros/s/AKfycbwxXcZQxHR_XYkAWFRKPDfJLW5kJWeuLLLAxDE35m6lRbpqONmMqtZLMWTmQOEkN7L4lg/exec',
-    // Employee names used to seed the dropdown lists on first run.
-    // After deployment, names are pulled live from the "Employees" sheet
-    // (see Apps Script doGet handler) so this list only matters offline
-    // or before the first successful sync.
+    // Demo names for the employee dropdowns: display only, never an identity key.
     DEFAULT_EMPLOYEES: ['Mukhtar Mohammed', 'Essam Hamza', 'Mohammed Jameel', 'Ali Yass'],
     MAX_IMAGE_DIMENSION: 1280,   // px, longest edge after compression
     IMAGE_QUALITY: 0.72,         // JPEG compression quality
     MAX_IMAGES_PER_FIELD: 8,
-    LS_PREFIX: 'genops_',
-    REQUEST_TIMEOUT_MS: 90000
+    LS_PREFIX: 'genops_'
   };
 
   /* ============================================================
@@ -2312,9 +2257,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   const qs = (sel, root) => (root || document).querySelector(sel);
   const qsa = (sel, root) => Array.from((root || document).querySelectorAll(sel));
   let sessionEpoch = 0;
-  let dataSessionToken = localStorage.getItem(CONFIG.LS_PREFIX + 'auth_token') || '';
-  let dataSessionUsername = localStorage.getItem(CONFIG.LS_PREFIX + 'auth_username') || '';
-  const pendingSubmissions = new Set();
+  let dataSessionUsername = (prototypeUser() || { username: '' }).username;
 
   function pad2(n) { return String(n).padStart(2, '0'); }
 
@@ -2324,7 +2267,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
     return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}T${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
   }
 
-  /** Human-readable timestamp string for sheet submission */
+  /** ISO timestamp (UTC) for createdAt / updatedAt */
   function isoTimestamp() {
     return new Date().toISOString();
   }
@@ -2584,13 +2527,9 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   }
 
   /* ============================================================
-     4. EMPLOYEE DROPDOWN (shared across Attendance + Purchase Orders)
+     4. EMPLOYEE DROPDOWN (shared across Tasks, Attendance + Purchase Orders)
      ============================================================
-     Employee names live in a Google Sheet ("Employees" tab) so new
-     hires can be added there without touching this file. On load we
-     try to fetch the live list; if that fails (offline, first run,
-     URL not yet configured) we fall back to DEFAULT_EMPLOYEES and
-     keep whatever was last cached in localStorage.
+     Filled from the local demo list CONFIG.DEFAULT_EMPLOYEES.
   */
  function populateEmployeeSelect(selectEl, names) {
   if (!selectEl) return;
@@ -2607,56 +2546,11 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   applyLoggedInIdentityRules();
 }
 
-function fetchJSONP(url) {
-  return fetch(url, {
-    method: 'GET',
-    redirect: 'follow',
-    cache: 'no-store'
-  }).then(function (response) {
-    if (!response.ok) {
-      throw new Error('Employee list request failed: ' + response.status);
-    }
-    return response.json();
-  });
-}
-
 function loadEmployeeNames() {
-  const cacheKey = CONFIG.LS_PREFIX + 'employees';
-  let names = CONFIG.DEFAULT_EMPLOYEES;
-
-  try {
-    const cached = localStorage.getItem(cacheKey);
-    if (cached) {
-      const parsed = JSON.parse(cached);
-      if (Array.isArray(parsed) && parsed.length && parsed.every((name) => typeof name === 'string')) names = parsed;
-    }
-  } catch (e) {
-    /* ignore parse errors, use defaults */
-  }
-
+  const names = CONFIG.DEFAULT_EMPLOYEES;
   populateEmployeeSelect($('att-employee'), names);
   populateEmployeeSelect($('po-requester'), names);
   populateEmployeeSelect($('task-employee'), names);
-
-  // The cached list already fills the dropdowns. Refreshing it from the sheet
-  // waits for a session, so this request is not occupying Apps Script while the
-  // user is about to press Sign In; the auth listener re-runs it after sign-in.
-  if (!authSessionExists()) return;
-
-  fetchJSONP(CONFIG.WEB_APP_URL + '?action=getEmployees')
-    .then((res) => {
-      if (res && res.success && Array.isArray(res.employees) && res.employees.length && res.employees.every((name) => typeof name === 'string')) {
-        names = res.employees;
-        localStorage.setItem(cacheKey, JSON.stringify(names));
-
-        populateEmployeeSelect($('att-employee'), names);
-        populateEmployeeSelect($('po-requester'), names);
-        populateEmployeeSelect($('task-employee'), names);
-      }
-    })
-    .catch(() => {
-      /* offline or backend unavailable — defaults already shown */
-    });
 }
 
   /* ============================================================
@@ -2679,15 +2573,7 @@ function loadEmployeeNames() {
   /* ============================================================
      6. GENERATORS FORM
      ============================================================ */
-  /* Automatic opening readings: fetched from Sheets and never typed.
-     Generators and Fuel no longer use this path: during the UI-development
-     phase their opening values come from the local generator catalog (6b)
-     and the local fuel-tank model (9b). */
-  const openingFields = {};
-  const openingStates = {};
-  const openingAttempts = {};
-  const openingSchemaVersion = 'carry-forward-v2';
-
+  // Text in the current language, and Baghdad wall-clock time, for every form.
   function openingText(en, ar) {
     return localStorage.getItem('genops_language') === 'ar' ? ar : en;
   }
@@ -2702,194 +2588,15 @@ function loadEmployeeNames() {
     return values.year + '-' + values.month + '-' + values.day + 'T' + values.hour + ':' + values.minute;
   }
 
-  function openingSelection(sheet) {
-    const fields = openingFields[sheet];
-    return { sheet: sheet,
-      generatorName: fields.entity ? $(fields.entity).value : '' };
-  }
-
   function openingLocalDateTime(value) {
     const parts = String(value || '').match(/^(\d{4}-\d{2}-\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.(\d{1,3}))?)?$/);
     if (!parts || Number(parts[2]) > 23 || Number(parts[3]) > 59 || Number(parts[4] || 0) > 59) return '';
     return parts[1] + 'T' + parts[2] + ':' + parts[3] + ':' + (parts[4] || '00') + '.' + (parts[5] || '').padEnd(3, '0');
   }
 
-  function openingSelectionKey(sheet) {
-    return JSON.stringify(openingSelection(sheet)) + '|' +
-      (localStorage.getItem(CONFIG.LS_PREFIX + 'auth_token') || '');
-  }
-
-  function renderOpeningStatus(sheet) {
-    const state = openingStates[sheet];
-    if (state) $(openingFields[sheet].status).textContent = openingText(state.en || '', state.ar || '');
-  }
-
-  function setOpeningStatus(sheet, en, ar) {
-    const state = openingStates[sheet];
-    state.en = en; state.ar = ar;
-    renderOpeningStatus(sheet);
-  }
-
-  function notifyOpeningInput(sheet) {
-    $(openingFields[sheet].input).dispatchEvent(new Event('input', { bubbles: true }));
-  }
-
-  function openingFailureText(error) {
-    const messages = {
-      OPENING_SOURCE_MISSING: ['No saved closing reading. Add the actual initial closing record in the sheet first.', 'ماكو قراءة نهاية محفوظة. أضف سجل النهاية الفعلي الأول بالشيت حتى تنجلب البداية تلقائياً.'],
-      OPENING_VERSION_MISMATCH: ['Update the Apps Script deployment to the matching version, then reload this page.', 'حدّث نشر Apps Script بالنسخة المطابقة، ثم أعد تحميل الصفحة.'],
-      OPENING_SOURCE_INVALID: ['The previous closing reading is invalid. Review the sheet.', 'قراءة النهاية السابقة غير صحيحة. راجع الشيت.'],
-      OPENING_SOURCE_CONFLICT: ['Conflicting previous readings have the same time. Review the sheet.', 'توجد قراءات سابقة مختلفة بنفس الوقت. راجع الشيت.'],
-      OPENING_COLUMNS_INVALID: ['The required sheet columns could not be found. Review the sheet headers.', 'تعذّر العثور على أعمدة القراءات المطلوبة. راجع عناوين الشيت.'],
-      OPENING_REFRESH_REQUIRED: ['The latest closing record changed. The start is being reloaded; check your ending reading and time before retrying.', 'تغيّر آخر سجل نهاية. يجري تحديث البداية؛ راجع قراءة النهاية ووقتها قبل إعادة الحفظ.'],
-      OPENING_TIME_INVALID: ['The closing time must not be before the starting time.', 'وقت القراءة الثانية يجب ألا يسبق وقت القراءة الأولى.'],
-      OPENING_END_INVALID: ['Check the closing reading against the opening reading.', 'راجع قراءة النهاية مقارنةً بقراءة البداية.'],
-      OPENING_BUSY: ['Another reading is being saved. Please retry shortly.', 'يجري حفظ قراءة أخرى. أعد المحاولة بعد قليل.']
-    };
-    return messages[error.code] || [
-      'Could not confirm the reading with the sheet. Keep this page open and retry when connected.',
-      'تعذّر تأكيد القراءة مع الشيت. خلّي الصفحة مفتوحة وأعد المحاولة بعد عودة الاتصال.'
-    ];
-  }
-
-  function isOpeningAuthError(error) {
-    return /^(LOGIN_REQUIRED|SESSION_NOT_FOUND|SESSION_EXPIRED|SESSION_INACTIVE)$/.test(error.code || error.message || '');
-  }
-
-  async function refreshOpeningReading(sheet) {
-    const oldState = openingStates[sheet];
-    const attempt = openingAttempts[sheet];
-    // A timed-out save may already exist in Sheets. Keep its original start
-    // until a retry with the same client id confirms the outcome.
-    if (oldState && oldState.ready && attempt && attempt.awaitingConfirmation &&
-        attempt.key === openingSelectionKey(sheet) && oldState.key === attempt.key) {
-      $(openingFields[sheet].input).value = oldState.source.value;
-      $(openingFields[sheet].date).value = oldState.source.sourceDateTime;
-      notifyOpeningInput(sheet);
-      return;
-    }
-    if (oldState && oldState.controller) oldState.controller.abort();
-    const state = { ready: false, key: openingSelectionKey(sheet), controller: null };
-    openingStates[sheet] = state;
-    const fields = openingFields[sheet];
-    const input = $(fields.input);
-    input.readOnly = true;
-    input.value = '';
-    $(fields.date).readOnly = true;
-    $(fields.date).value = '';
-    notifyOpeningInput(sheet);
-    const selection = openingSelection(sheet);
-    if (fields.entity && !selection.generatorName) {
-      setOpeningStatus(sheet, 'Select the generator to load its last closing reading and time.', 'اختر المولدة لجلب آخر قراءة نهاية ووقتها.');
-      return;
-    }
-    if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.includes('YOUR_DEPLOYMENT_ID')) {
-      setOpeningStatus(sheet, 'Configure the Apps Script web app URL first.', 'يجب ضبط رابط Apps Script أولاً.');
-      return;
-    }
-    const token = localStorage.getItem(CONFIG.LS_PREFIX + 'auth_token');
-    if (!token) {
-      setOpeningStatus(sheet, 'Sign in to load the opening reading.', 'سجّل الدخول لجلب قراءة البداية.');
-      return;
-    }
-    if (!navigator.onLine) {
-      setOpeningStatus(sheet, 'Connect to the internet to load the opening reading from the sheet.', 'اتصل بالإنترنت لجلب قراءة البداية من الشيت.');
-      return;
-    }
-    setOpeningStatus(sheet, 'Loading the latest closing reading and time…', 'جاري جلب آخر قراءة نهاية ووقتها…');
-    const controller = new AbortController();
-    state.controller = controller;
-    const timeout = setTimeout(function () { controller.abort(); }, 30000);
-    try {
-      const response = await fetch(CONFIG.WEB_APP_URL, {
-        method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(Object.assign({ action: 'getOpeningReading', token: token }, selection)),
-        redirect: 'follow', signal: controller.signal
-      });
-      const result = await response.json();
-      if (openingStates[sheet] !== state || state.key !== openingSelectionKey(sheet)) return;
-      if (!result || !result.success) {
-        const error = new Error((result && result.error) || 'Opening reading request failed');
-        error.code = result && (result.errorCode || result.error);
-        throw error;
-      }
-      const source = result.opening;
-      if (!source || source.schemaVersion !== openingSchemaVersion) {
-        const error = new Error('Opening reading version mismatch');
-        error.code = 'OPENING_VERSION_MISMATCH';
-        throw error;
-      }
-      if (source.sheet !== sheet || !openingLocalDateTime(source.sourceDateTime) ||
-          source.generatorName !== selection.generatorName || typeof source.value !== 'number' ||
-          !Number.isFinite(source.value) || source.value < 0 || !source.sourceKey) {
-        throw new Error('Invalid opening reading response');
-      }
-      state.ready = true; state.source = source;
-      input.value = source.value;
-      $(fields.date).value = source.sourceDateTime;
-      notifyOpeningInput(sheet);
-      setOpeningStatus(sheet,
-        'Start = last saved closing · ' + source.sourceDateTime.slice(0, 16).replace('T', ' ') + ' (Baghdad). Reading and time are locked.',
-        'البداية = آخر نهاية محفوظة · ' + source.sourceDateTime.slice(0, 16).replace('T', ' ') + ' بتوقيت بغداد. القراءة والوقت غير قابلين للتعديل.');
-    } catch (error) {
-      if (openingStates[sheet] !== state || state.key !== openingSelectionKey(sheet)) return;
-      if (isOpeningAuthError(error)) {
-        clearAuthSession(); showAuthLoginScreen();
-      } else {
-        const message = openingFailureText(error);
-        setOpeningStatus(sheet, message[0], message[1]);
-      }
-    } finally {
-      clearTimeout(timeout);
-      state.controller = null;
-    }
-  }
-
-  function requireOpeningReading(sheet) {
-    const state = openingStates[sheet];
-    if (state && state.ready && state.key === openingSelectionKey(sheet) &&
-        $(openingFields[sheet].input).value !== '' &&
-        Number($(openingFields[sheet].input).value) === state.source.value &&
-        openingLocalDateTime($(openingFields[sheet].date).value) === state.source.sourceDateTime) return true;
-    refreshOpeningReading(sheet);
-    toast('info', openingText('Opening reading required', 'قراءة البداية مطلوبة'),
-      openingText('Wait for the reading from the sheet, then submit again.', 'انتظر جلب القراءة من الشيت، ثم أعد الحفظ.'));
-    return false;
-  }
-
-  function prepareOpeningAttempt(record) {
-    const state = openingStates[record.sheet];
-    record.openingSource = state.source.sourceKey;
-    const values = Object.assign({}, record.data);
-    delete values['Submission Timestamp'];
-    const signature = JSON.stringify([values, record.openingSource, state.key]);
-    const previous = openingAttempts[record.sheet];
-    // Preserve the id after a timeout: the server may already have saved it.
-    if (previous && previous.signature === signature) record.clientId = previous.clientId;
-    else openingAttempts[record.sheet] = {
-      signature: signature, clientId: record.clientId, key: state.key, awaitingConfirmation: false
-    };
-  }
-
-  function initOpeningReadings() {
-    Object.keys(openingFields).forEach(function (sheet) {
-      const fields = openingFields[sheet];
-      $(fields.input).readOnly = true;
-      $(fields.date).readOnly = true;
-      $(fields.date).step = 'any';
-      if (fields.entity) $(fields.entity).addEventListener('change', function () { refreshOpeningReading(sheet); });
-      refreshOpeningReading(sheet);
-    });
-    const refreshAll = function () { Object.keys(openingFields).forEach(refreshOpeningReading); };
-    window.addEventListener('online', refreshAll);
-    window.addEventListener('genops-auth-changed', refreshAll);
-    ['btnLangEn', 'btnLangAr'].forEach(function (id) {
-      $(id).addEventListener('click', function () {
-        setTimeout(function () { Object.keys(openingFields).forEach(renderOpeningStatus); }, 0);
-      });
-    });
-  }
-
+  // Shown by the Generator and Fuel forms when another tab saved first.
+  const OPENING_REFRESH_TEXT = ['The latest closing record changed. The start is being reloaded; check your ending reading and time before retrying.',
+    'تغيّر آخر سجل نهاية. يجري تحديث البداية؛ راجع قراءة النهاية ووقتها قبل إعادة الحفظ.'];
 
   const genState = { images: [] }; // no images on this form, kept for symmetry
 
@@ -3012,8 +2719,7 @@ function loadEmployeeNames() {
     return ok;
   }
 
-  // Saves the run for the selected generator locally (section 6b); this form
-  // does not depend on Apps Script during the UI-development phase.
+  // Saves the run for the selected generator locally (section 6b).
   async function onSubmitGenerators(ev) {
     ev.preventDefault();
     if (!authSessionExists()) { showAuthLoginScreen(); return; }
@@ -3040,7 +2746,7 @@ function loadEmployeeNames() {
       if (!generator || startHm !== genmgrCurrentMeter(generator, runs) ||
           (last && $('gen-start-dt').value !== last.endDateTime)) {
         genmgrRefresh();
-        const message = openingFailureText({ code: 'OPENING_REFRESH_REQUIRED' });
+        const message = OPENING_REFRESH_TEXT;
         toast('error', openingText('Save not confirmed', 'لم يتأكد الحفظ'), openingText(message[0], message[1]), 6000);
         return;
       }
@@ -3068,7 +2774,8 @@ function loadEmployeeNames() {
       }) : null;
       await generatorRepository.addRun(run, updated);
     } catch (error) {
-      toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+      if (error && error.code === 'STORAGE_UNREADABLE') storageUnreadableToast();
+      else toast('error', openingText('Not saved', 'لم يتم الحفظ'),
         openingText('Device storage is full or unavailable. Your inputs are still in the form.',
           'مساحة الجهاز ممتلئة أو غير متاحة. بياناتك باقية في الاستمارة.'), 6000);
       return;
@@ -3113,6 +2820,40 @@ function loadEmployeeNames() {
   const GENMGR_CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>';
   const genmgrView = { editingId: null, renderedId: null };
 
+  /* Stored lists of the temporary local repositories (generators here, fuel
+     in section 9b). A key that was never written is an empty list. Content
+     that cannot be parsed, or is not a list of records with string ids, is
+     unreadable: it is never taken as an empty list and never written over.
+     Every repository write starts from localListForWrite, which stops there;
+     the raw value stays in storage exactly as it is, with no automatic repair. */
+  const STORAGE_UNREADABLE_TEXT = ['Stored data could not be read. No changes were saved.',
+    'تعذر قراءة البيانات المخزنة. لم يتم حفظ أي تغييرات.'];
+
+  function localListRead(key) {
+    try {
+      const raw = localStorage.getItem(key);
+      if (raw === null) return { ok: true, list: [] };
+      const list = JSON.parse(raw);
+      if (Array.isArray(list) && list.every((item) => item !== null && typeof item === 'object' && typeof item.id === 'string')) {
+        return { ok: true, list: list };
+      }
+    } catch (error) { /* unreadable, below */ }
+    return { ok: false, list: null };
+  }
+
+  function localListForWrite(key) {
+    const result = localListRead(key);
+    if (result.ok) return result.list;
+    const error = new Error('Stored data could not be read');
+    error.code = 'STORAGE_UNREADABLE';
+    throw error;
+  }
+
+  function storageUnreadableToast() {
+    toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+      openingText(STORAGE_UNREADABLE_TEXT[0], STORAGE_UNREADABLE_TEXT[1]), 6000);
+  }
+
   /* Temporary test persistence for this phase only. The UI reaches storage
      through these methods alone and treats each one as asynchronous, so a
      Supabase implementation can replace this object without UI changes. */
@@ -3120,6 +2861,8 @@ function loadEmployeeNames() {
     const CATALOG_KEY = CONFIG.LS_PREFIX + 'generator_catalog_v1';
     const RUNS_KEY = CONFIG.LS_PREFIX + 'generator_runs_v1';
 
+    // Lists for display, as before. Writes start from localListForWrite
+    // instead, so content this cannot read is never written over.
     function read(key) {
       try {
         const list = JSON.parse(localStorage.getItem(key));
@@ -3141,15 +2884,18 @@ function loadEmployeeNames() {
       listGenerators: () => Promise.resolve().then(() => read(CATALOG_KEY)),
       listRuns: () => Promise.resolve().then(() => read(RUNS_KEY)),
       saveGenerator: (generator) => Promise.resolve().then(() => {
-        write(CATALOG_KEY, upsert(read(CATALOG_KEY), generator));
+        write(CATALOG_KEY, upsert(localListForWrite(CATALOG_KEY), generator));
       }),
-      // Saves a run together with the generator it updated, or neither.
+      // Saves a run together with the generator it updated, or neither. Both
+      // stored lists are checked before anything is written.
       addRun: (run, generator) => Promise.resolve().then(() => {
+        const runs = localListForWrite(RUNS_KEY);
+        const catalog = generator ? localListForWrite(CATALOG_KEY) : null;
         const previousRuns = localStorage.getItem(RUNS_KEY);
-        write(RUNS_KEY, read(RUNS_KEY).concat([run]));
+        write(RUNS_KEY, runs.concat([run]));
         if (!generator) return;
         try {
-          write(CATALOG_KEY, upsert(read(CATALOG_KEY), generator));
+          write(CATALOG_KEY, upsert(catalog, generator));
         } catch (error) {
           if (previousRuns === null) localStorage.removeItem(RUNS_KEY);
           else localStorage.setItem(RUNS_KEY, previousRuns);
@@ -3655,7 +3401,8 @@ function loadEmployeeNames() {
       };
       await generatorRepository.saveGenerator(generator);
     } catch (error) {
-      toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+      if (error && error.code === 'STORAGE_UNREADABLE') storageUnreadableToast();
+      else toast('error', openingText('Not saved', 'لم يتم الحفظ'),
         openingText('Device storage is full or unavailable. Your inputs are still in the form.',
           'مساحة الجهاز ممتلئة أو غير متاحة. بياناتك باقية في الاستمارة.'), 6000);
       return;
@@ -3765,7 +3512,8 @@ function loadEmployeeNames() {
         archived = true;
       }
     } catch (error) {
-      toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+      if (error && error.code === 'STORAGE_UNREADABLE') storageUnreadableToast();
+      else toast('error', openingText('Not saved', 'لم يتم الحفظ'),
         openingText('Device storage is full or unavailable.', 'مساحة الجهاز ممتلئة أو غير متاحة.'), 6000);
       return;
     }
@@ -3907,21 +3655,7 @@ function onSubmitTasks(ev) {
     return;
   }
 
-  const record = {
-    sheet: 'Tasks',
-    clientId: uid(),
-    data: {
-      'Submission Timestamp': isoTimestamp(),
-      'Task Name': $('task-name').value.trim(),
-      'Submitted By': $('task-employee').value,
-      'Task Start Date Time': $('task-start-dt').value,
-      'Task End Date Time': $('task-end-dt').value,
-      'Task Description': $('task-desc').value.trim()
-    },
-    images: imageStores.tasks
-  };
-
-  submitRecord(record, $('btnSubmitTask'), resetTasksForm, 'task');
+  prototypeSubmit(resetTasksForm);
 }
   function resetTasksForm() {
     $('formTasks').reset();
@@ -3984,19 +3718,7 @@ function onSubmitTasks(ev) {
     ev.preventDefault();
     if (!validateAttendance()) { vibrateError(); toast('error', openingText('Check the form', 'راجع الاستمارة'), openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.')); return; }
 
-    const record = {
-      sheet: 'Attendance',
-      clientId: uid(),
-      data: {
-        'Submission Timestamp': isoTimestamp(),
-        'Employee Name': $('att-employee').value,
-        'Attendance Type': $('att-type').value,
-        'Date Time': $('att-dt').value
-      },
-      images: imageStores.attendance.slice()
-    };
-
-    submitRecord(record, $('btnSubmitAtt'), resetAttendanceForm, 'att');
+    prototypeSubmit(resetAttendanceForm);
   }
 
   function resetAttendanceForm() {
@@ -4060,21 +3782,7 @@ function onSubmitTasks(ev) {
     ev.preventDefault();
     if (!validatePurchase()) { vibrateError(); toast('error', openingText('Check the form', 'راجع الاستمارة'), openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.')); return; }
 
-    const record = {
-      sheet: 'Purchase Orders',
-      clientId: uid(),
-      data: {
-        'Submission Timestamp': isoTimestamp(),
-        'Requester Name': $('po-requester').value,
-        'Purchase Description': $('po-desc').value.trim(),
-        'Purpose of Purchase': $('po-purpose').value.trim(),
-        'Quantity': parseInt($('po-qty').value, 10),
-        'Expected Cost IQD': parseFloat($('po-cost').value)
-      },
-      images: imageStores.purchase.slice()
-    };
-
-    submitRecord(record, $('btnSubmitPO'), resetPurchaseForm, 'po');
+    prototypeSubmit(resetPurchaseForm);
   }
 
   function resetPurchaseForm() {
@@ -4090,9 +3798,9 @@ function onSubmitTasks(ev) {
      ============================================================
      Fuel tanks, physical readings and tank-to-tank transfers for the
      UI-development phase. Every relationship uses tank.id; the tank name
-     is display text only. This form no longer reads from or writes to the
-     Fuel sheet: data stays in this browser through fuelRepository until
-     Supabase replaces it (fuel_tanks, fuel_readings, fuel_movements).
+     is display text only. Data stays in this browser through
+     fuelRepository until Supabase replaces it (fuel_tanks, fuel_readings,
+     fuel_movements).
   */
   // Tank level thresholds, as shares of the tank's own capacity.
   const FUELMGR_LEVEL_RATIO = { low: 0.25, critical: 0.10 };
@@ -4114,26 +3822,25 @@ function onSubmitTasks(ev) {
     const READINGS_KEY = CONFIG.LS_PREFIX + 'fuel_readings_v1';
     const MOVEMENTS_KEY = CONFIG.LS_PREFIX + 'fuel_movements_v1';
 
-    function read(key) {
-      try {
-        const list = JSON.parse(localStorage.getItem(key));
-        return Array.isArray(list) ? list.filter((item) => item && typeof item.id === 'string') : [];
-      } catch (error) { return []; }
-    }
-    // Throws when storage is full or blocked; callers report it.
+    // Throws when storage is full or blocked, or when the stored list is
+    // unreadable (localListForWrite); callers report it.
     function write(key, list) {
       localStorage.setItem(key, JSON.stringify(list));
     }
     function append(key, entry) {
-      write(key, read(key).concat([entry]));
+      write(key, localListForWrite(key).concat([entry]));
     }
 
     return {
-      listTanks: () => Promise.resolve().then(() => read(TANKS_KEY)),
-      listReadings: () => Promise.resolve().then(() => read(READINGS_KEY)),
-      listMovements: () => Promise.resolve().then(() => read(MOVEMENTS_KEY)),
+      // The three stored lists together, or ok: false when any of them is
+      // unreadable: fuel accounting never works from part of its data.
+      load: () => Promise.resolve().then(() => {
+        const lists = [TANKS_KEY, READINGS_KEY, MOVEMENTS_KEY].map(localListRead);
+        if (!lists.every((result) => result.ok)) return { ok: false };
+        return { ok: true, tanks: lists[0].list, readings: lists[1].list, movements: lists[2].list };
+      }),
       saveTank: (tank) => Promise.resolve().then(() => {
-        const list = read(TANKS_KEY);
+        const list = localListForWrite(TANKS_KEY);
         const index = list.findIndex((item) => item.id === tank.id);
         if (index === -1) list.push(tank);
         else list[index] = tank;
@@ -4148,10 +3855,40 @@ function onSubmitTasks(ev) {
   })();
 
   // `tanks` holds the active tanks every workflow uses; `allTanks` also has
-  // the archived ones, whose names the movement history still shows.
+  // the archived ones, whose names the movement history still shows. Stored
+  // fuel data that cannot be read shows as no tanks (unreadable: true), never
+  // as part of the picture; writes read it again in fuelmgrWrite and stop.
   function fuelmgrLoad() {
-    return Promise.all([fuelRepository.listTanks(), fuelRepository.listReadings(), fuelRepository.listMovements()])
-      .then((lists) => ({ tanks: lists[0].filter(fuelmgrIsActive), allTanks: lists[0], readings: lists[1], movements: lists[2] }));
+    return fuelRepository.load().then((store) => (store.ok
+      ? { tanks: store.tanks.filter(fuelmgrIsActive), allTanks: store.tanks, readings: store.readings, movements: store.movements }
+      : { tanks: [], allTanks: [], readings: [], movements: [], unreadable: true }));
+  }
+
+  /* Every fuel write (tank, reading, transfer, delete) runs here, under one
+     exclusive Web Lock shared by all tabs and app windows of this origin:
+     reading the latest stored data, validating against it and saving all
+     happen while the lock is held, so no other tab can change the data in
+     between. `operation(data)` gets the freshly read data and returns its
+     own result; ok: false with reason 'unreadable' or 'invalid' comes back
+     without it running. Without Web Locks nothing is saved.
+     TEMPORARY: this is a same-origin, client-side critical section for the
+     local test storage only, not a database transaction. Supabase will
+     validate and apply these writes server-side, in transactions. */
+  const FUELMGR_WRITE_LOCK = CONFIG.LS_PREFIX + 'fuel_write';
+
+  function fuelmgrWrite(operation) {
+    if (!(navigator.locks && typeof navigator.locks.request === 'function')) {
+      return Promise.resolve({ ok: false, reason: 'invalid' });
+    }
+    return navigator.locks.request(FUELMGR_WRITE_LOCK, { mode: 'exclusive' }, () => fuelmgrLoad()
+      .then((data) => (data.unreadable ? { ok: false, reason: 'unreadable' } : operation(data))));
+  }
+
+  // A write that stopped on the stored data rather than on the form.
+  function fuelmgrWriteRefused(result) {
+    if (result.reason === 'unreadable') storageUnreadableToast();
+    else toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+      openingText(FUELMGR_INVALID_TEXT[0], FUELMGR_INVALID_TEXT[1]), 6000);
   }
 
   // Delete archives a tank (active = false); tanks without the field are active.
@@ -4208,6 +3945,43 @@ function onSubmitTasks(ev) {
     return fuelmgrWallClock(event.at).slice(0, event.span < FUELMGR_SPAN_MS.olderReading ? 19 : 16);
   }
 
+  // Stored fuel data that fails fuelmgrDataInvalid: nothing that depends on
+  // it is saved.
+  const FUELMGR_INVALID_TEXT = ['Fuel data could not be validated. No changes were saved.',
+    'تعذر التحقق من بيانات الوقود. لم يتم حفظ أي تغييرات.'];
+
+  // A stored quantity in litres, or NaN. Only a finite JSON number counts:
+  // these forms have always saved numbers, so null, '', false, text and the
+  // like are not quantities and never become 0. `positive`: more than 0
+  // (capacities, transfers); otherwise 0 or more (readings).
+  function fuelmgrStoredLitres(value, positive) {
+    if (typeof value !== 'number' || !Number.isFinite(value)) return NaN;
+    return (positive ? value > 0 : value >= 0) ? value : NaN;
+  }
+
+  // Whether a stored reading or transfer that may concern this tank lacks what
+  // accounting needs: a tank reference on each tank side, a quantity and an
+  // event time (effectiveAt as toISOString saves it, or the older wall-clock
+  // field). A record whose tank reference is missing or malformed may concern
+  // any tank. Such records are never skipped, repaired or guessed: the tank's
+  // balance is unknown and nothing that depends on it is saved.
+  function fuelmgrDataInvalid(tankId, readings, movements) {
+    const ref = (value) => typeof value === 'string' && value !== '';
+    const timed = (record, kind) => (!record.effectiveAt || (typeof record.effectiveAt === 'string' &&
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{1,3})?(Z|[+-]\d{2}:\d{2})$/.test(record.effectiveAt))) &&
+      Number.isFinite(fuelmgrEvent(record, kind).at);
+    const badReading = (reading) => (reading.tankId === tankId || !ref(reading.tankId)) &&
+      !(ref(reading.tankId) && Number.isFinite(fuelmgrStoredLitres(reading.measuredLitres)) && timed(reading, 'reading'));
+    const badMovement = (movement) => {
+      const sides = [[movement.sourceType, movement.sourceId], [movement.destinationType, movement.destinationId]];
+      if (!sides.every((side) => ref(side[0]) && (side[0] !== 'tank' || ref(side[1])))) return true;
+      if (!sides.some((side) => side[0] === 'tank' && side[1] === tankId)) return false;
+      return (sides[0][0] === sides[1][0] && sides[0][1] === sides[1][1]) ||
+        !Number.isFinite(fuelmgrStoredLitres(movement.quantityLitres, true)) || !timed(movement, 'movement');
+    };
+    return readings.some(badReading) || movements.some(badMovement);
+  }
+
   // One tank's readings in event order.
   function fuelmgrReadingsOf(readings, tankId) {
     return readings.filter((reading) => reading.tankId === tankId && Number.isFinite(fuelmgrEvent(reading, 'reading').at))
@@ -4225,7 +3999,7 @@ function onSubmitTasks(ev) {
       const into = movement.destinationType === 'tank' && movement.destinationId === tankId;
       const out = movement.sourceType === 'tank' && movement.sourceId === tankId;
       const at = fuelmgrEvent(movement, 'movement').at;
-      const quantity = Number(movement.quantityLitres);
+      const quantity = fuelmgrStoredLitres(movement.quantityLitres, true);
       if ((!into && !out) || !Number.isFinite(at) || !Number.isFinite(quantity)) return flows;
       if (previous && at <= previous.at) return flows;
       if (current && at > current.at) {
@@ -4248,14 +4022,18 @@ function onSubmitTasks(ev) {
 
   // Book balance: the latest physical reading plus the transfers since it. It
   // is not a measurement; the next reading reconciles it into consumption.
-  // Unknown (NaN) while a transfer cannot be ordered against that reading.
+  // Known: ok = true. Unknown (ok = false, litres NaN, never 0), by reason:
+  // 'invalid' stored data (fuelmgrDataInvalid), 'no-reading' yet, or
+  // 'ambiguous' while a transfer cannot be ordered against the last reading.
   function fuelmgrBalance(tankId, readings, movements) {
+    const none = { inflow: 0, outflow: 0, ambiguousStart: false, ambiguousEnd: false };
+    if (fuelmgrDataInvalid(tankId, readings, movements)) return { ok: false, reason: 'invalid', litres: NaN, last: null, flows: none };
     const own = fuelmgrReadingsOf(readings, tankId);
     const last = own[own.length - 1] || null;
-    if (!last) return { litres: NaN, last: null, flows: { inflow: 0, outflow: 0, ambiguousStart: false, ambiguousEnd: false } };
+    if (!last) return { ok: false, reason: 'no-reading', litres: NaN, last: null, flows: none };
     const flows = fuelmgrFlows(movements, tankId, fuelmgrEvent(last, 'reading'), null);
-    const litres = flows.ambiguousStart ? NaN : genmgrRound(Number(last.measuredLitres) + flows.inflow - flows.outflow);
-    return { litres: litres, last: last, flows: flows };
+    const litres = flows.ambiguousStart ? NaN : genmgrRound(last.measuredLitres + flows.inflow - flows.outflow);
+    return { ok: !flows.ambiguousStart, reason: flows.ambiguousStart ? 'ambiguous' : null, litres: litres, last: last, flows: flows };
   }
 
   //   Normal    level > 25% of capacity
@@ -4322,7 +4100,8 @@ function onSubmitTasks(ev) {
       openingText('Some required fields need attention.', 'بعض الحقول المطلوبة تحتاج إلى تعبئة.'));
   }
 
-  function fuelmgrNotSavedToast() {
+  function fuelmgrNotSavedToast(error) {
+    if (error && error.code === 'STORAGE_UNREADABLE') { storageUnreadableToast(); return; }
     toast('error', openingText('Not saved', 'لم يتم الحفظ'),
       openingText('Device storage is full or unavailable. Your inputs are still in the form.',
         'مساحة الجهاز ممتلئة أو غير متاحة. بياناتك باقية في الاستمارة.'), 6000);
@@ -4343,7 +4122,7 @@ function onSubmitTasks(ev) {
 
   // One card for both Fuel and Overview, rendered from the same repository data.
   function fuelmgrTankCard(tank, data, where) {
-    const capacity = Number(tank.capacityLitres);
+    const capacity = fuelmgrStoredLitres(tank.capacityLitres, true);
     const balance = fuelmgrBalance(tank.id, data.readings, data.movements);
     const level = getFuelLevelStatus(balance.litres, capacity);
     const percent = Number.isFinite(balance.litres) && capacity > 0 ? balance.litres / capacity * 100 : NaN;
@@ -4389,14 +4168,15 @@ function onSubmitTasks(ev) {
 
     // Say what the quantity is: a measurement, or a book figure since one.
     const basis = card.appendChild(genmgrEl('div', 'fuelmgr-basis'));
-    if (!balance.last) genmgrText(basis, 'No readings yet', 'لا توجد قراءات بعد');
+    if (balance.reason === 'invalid') genmgrText(basis, 'Fuel data could not be validated.', 'تعذر التحقق من بيانات الوقود.');
+    else if (!balance.last) genmgrText(basis, 'No readings yet', 'لا توجد قراءات بعد');
     else if (balance.flows.ambiguousStart) genmgrText(basis, 'Ambiguous event order', 'ترتيب الأحداث غير محدد');
     else if (balance.flows.inflow || balance.flows.outflow) {
       genmgrText(basis, 'Calculated: last reading ± transfers since', 'محسوبة: آخر قراءة ± المناقلات بعدها');
     } else genmgrText(basis, 'Measured at the last reading', 'مقاسة عند آخر قراءة');
 
     // Source data is shown as it is; an impossible level is flagged, not corrected.
-    if (balance.last && (Number(balance.last.measuredLitres) > capacity || balance.litres > capacity || balance.litres < 0)) {
+    if (balance.last && (balance.last.measuredLitres > capacity || balance.litres > capacity || balance.litres < 0)) {
       card.appendChild(genmgrText(genmgrEl('div', 'error-msg show fuelmgr-warning'),
         'Data check: the level is outside the tank capacity. Review the readings and transfers.',
         'تحقق من البيانات: المستوى خارج حدود سعة الخزان. راجع القراءات والمناقلات.'));
@@ -4437,7 +4217,7 @@ function onSubmitTasks(ev) {
       route.appendChild(genmgrText(genmgrEl('span'), '→', '←'));
       route.appendChild(document.createTextNode(' '));
       route.appendChild(genmgrUserText(genmgrEl('span'), names.get(movement.destinationId) || movement.destinationId));
-      head.appendChild(fuelmgrQuantity(fuelmgrLitres(Number(movement.quantityLitres)), 'fuelmgr-move-qty'));
+      head.appendChild(fuelmgrQuantity(fuelmgrLitres(fuelmgrStoredLitres(movement.quantityLitres, true)), 'fuelmgr-move-qty'));
       const meta = row.appendChild(genmgrEl('div', 'fuelmgr-move-meta'));
       meta.appendChild(genmgrEl('span', null, fuelmgrShownTime(fuelmgrEvent(movement, 'movement')).replace('T', ' '))).dir = 'ltr';
       meta.appendChild(document.createTextNode(' · '));
@@ -4468,7 +4248,7 @@ function onSubmitTasks(ev) {
     const last = own[own.length - 1] || null;
     fuelmgrView.data = data;
     fuelmgrView.openingReadingId = last ? last.id : null;
-    $('fuel-first-reading').value = last ? String(last.measuredLitres) : '';
+    $('fuel-first-reading').value = last && Number.isFinite(fuelmgrStoredLitres(last.measuredLitres)) ? String(last.measuredLitres) : '';
     $('fuel-first-dt').value = last ? fuelmgrShownTime(fuelmgrEvent(last, 'reading')) : '';
     setFieldError($('fuel-first-dt'), $('err-fuel-first-dt'), false);
     setFieldError($('fuel-first-reading'), $('err-fuel-first-reading'), false);
@@ -4516,7 +4296,7 @@ function onSubmitTasks(ev) {
     const own = fuelmgrReadingsOf(data.readings, tankId);
     const last = own[own.length - 1];
     const entered = fuelmgrEnteredTime();
-    if (!last || !entered) return;
+    if (!last || !entered || fuelmgrBalance(tankId, data.readings, data.movements).reason === 'invalid') return;
     const previous = fuelmgrEvent(last, 'reading');
     const readingEvent = { at: fuelmgrInstant(entered), span: FUELMGR_SPAN_MS.reading };
     if (!(readingEvent.at >= previous.at + previous.span)) return;
@@ -4531,7 +4311,7 @@ function onSubmitTasks(ev) {
       'المناقلات خلال هذه الفترة: +' + fuelmgrLitres(flows.inflow) + ' لتر داخلة، −' + fuelmgrLitres(flows.outflow) + ' لتر خارجة');
     const current = genmgrNumber('fuel-second-reading');
     if (!Number.isFinite(current)) return;
-    const consumption = fuelmgrConsumption(Number(last.measuredLitres), flows, current);
+    const consumption = fuelmgrConsumption(last.measuredLitres, flows, current);
     if (consumption < 0) {
       fuelmgrError(output, 'err-fuel-consumption',
         'Consumption would be negative. Check the reading, its time, or a missing transfer.',
@@ -4546,108 +4326,125 @@ function onSubmitTasks(ev) {
     if (!authSessionExists()) { showAuthLoginScreen(); return; }
     const button = $('btnSubmitFuel');
     if (button.disabled) return;
-    const data = await fuelmgrLoad();
-    const tankId = $('fuel-tank').value;
-    const tank = data.tanks.find((item) => item.id === tankId) || null;
-    const own = tank ? fuelmgrReadingsOf(data.readings, tankId) : [];
-    const last = own[own.length - 1] || null;
-    // Another tab may have saved a reading for this tank after the form was filled.
-    if (tank && (last ? last.id : null) !== fuelmgrView.openingReadingId) {
-      fuelmgrRefresh();
-      const message = openingFailureText({ code: 'OPENING_REFRESH_REQUIRED' });
-      toast('error', openingText('Save not confirmed', 'لم يتأكد الحفظ'), openingText(message[0], message[1]), 6000);
-      return;
-    }
-
+    // Disabled at once, so a second press cannot start a second save.
+    button.disabled = true;
     const select = $('fuel-tank');
     const dt = $('fuel-second-dt');
     const secondsInput = $('fuel-second-sec');
     const readingInput = $('fuel-second-reading');
     const output = $('fuel-consumption');
+    // The form as submitted. The tank's readings and transfers are read again
+    // under the fuel lock, and the whole check and the consumption use them.
+    const tankId = select.value;
+    const openingReadingId = fuelmgrView.openingReadingId;
+    const dtValue = dt.value;
+    const secondsValid = Number.isFinite(fuelmgrSeconds());
     const entered = fuelmgrEnteredTime();
-    const readingEvent = { at: entered ? fuelmgrInstant(entered) : NaN, span: FUELMGR_SPAN_MS.reading };
-    const previous = last ? fuelmgrEvent(last, 'reading') : null;
     const current = genmgrNumber('fuel-second-reading');
-    const capacity = tank ? Number(tank.capacityLitres) : NaN;
-    let ok = true;
-    function fail(input, errorId, en, ar) {
-      fuelmgrError(input, errorId, en, ar);
-      ok = false;
-    }
-
-    if (!tank) fail(select, 'err-fuel-tank', 'Please select a tank', 'اختر الخزان');
-    else setFieldError(select, $('err-fuel-tank'), false);
-
-    // After the previous reading means clear of its span too, so the two
-    // readings can always be ordered.
-    if (!openingLocalDateTime(dt.value)) {
-      fail(dt, 'err-fuel-second-dt', 'Second reading date and time is required', 'تاريخ ووقت القراءة الثانية مطلوب');
-    } else if (entered && previous && readingEvent.at < previous.at + previous.span) {
-      fail(dt, 'err-fuel-second-dt', 'The reading time must be after the previous reading',
-        'يجب أن يكون وقت القراءة بعد وقت القراءة السابقة');
-    } else if (entered && readingEvent.at > Date.now()) {
-      fail(dt, 'err-fuel-second-dt', 'The reading time cannot be in the future', 'لا يمكن أن يكون وقت القراءة في المستقبل');
-    } else setFieldError(dt, $('err-fuel-second-dt'), false);
-
-    if (!Number.isFinite(fuelmgrSeconds())) {
-      fail(secondsInput, 'err-fuel-second-sec', 'Enter the seconds, from 0 to 59', 'أدخل الثواني من 0 إلى 59');
-    } else setFieldError(secondsInput, $('err-fuel-second-sec'), false);
-
-    if (!Number.isFinite(current) || current < 0) {
-      fail(readingInput, 'err-fuel-second-reading', 'Enter a valid reading in litres', 'أدخل قراءة صحيحة باللتر');
-    } else if (tank && current > capacity) {
-      fail(readingInput, 'err-fuel-second-reading',
-        'The reading cannot exceed the tank capacity (' + fuelmgrLitres(capacity) + ' L)',
-        'لا يمكن أن تتجاوز القراءة سعة الخزان (' + fuelmgrLitres(capacity) + ' لتر)');
-    } else setFieldError(readingInput, $('err-fuel-second-reading'), false);
-
-    let consumption = null;
-    setFieldError(output, $('err-fuel-consumption'), false);
-    if (ok && previous) {
-      const flows = fuelmgrFlows(data.movements, tankId, previous, readingEvent);
-      if (flows.ambiguousEnd) {
-        // A transfer within this reading's own second: only the person who
-        // took the reading knows which came first, so the seconds must say.
-        fail(secondsInput, 'err-fuel-second-sec',
-          'A transfer for this tank was saved within this same second. Set the seconds to show whether the reading was before or after it.',
-          'حُفظت مناقلة لهذا الخزان ضمن الثانية نفسها. عدّل الثواني لتوضيح إن كانت القراءة قبلها أو بعدها.');
-      } else if (!flows.ambiguousStart) {
-        consumption = fuelmgrConsumption(Number(last.measuredLitres), flows, current);
-        // A negative result means a missing transfer, a wrong reading or a wrong
-        // time. It is blocked here; nothing is stored, rewritten or invented.
-        if (consumption < 0) {
-          fail(output, 'err-fuel-consumption',
-            'Consumption would be negative. Check the reading, its time, or a missing transfer.',
-            'سيكون الاستهلاك سالباً. راجع القراءة أو وقتها أو وجود مناقلة غير مسجلة.');
-        }
-      }
-      // ambiguousStart: an older minute-precision reading shares its minute
-      // with a transfer. No consumption is derived for that interval; this
-      // reading starts a new, precise one.
-    }
-    if (!ok) { fuelmgrCheckFormToast(); return; }
-
-    const reading = {
-      id: uid(),
-      tankId: tankId,
-      effectiveAt: new Date(readingEvent.at).toISOString(),
-      measuredLitres: current,
-      previousReadingId: last ? last.id : null,
-      // A first reading only sets the baseline, and an ambiguous interval gets
-      // no value: both keep null.
-      calculatedConsumption: consumption,
-      notes: $('fuel-note').value.trim(),
-      createdAt: isoTimestamp()
-    };
-    setButtonLoading(button, true);
+    const notes = $('fuel-note').value.trim();
+    let result;
     try {
-      await fuelRepository.addReading(reading);
+      result = await fuelmgrWrite(async (data) => {
+        const tank = data.tanks.find((item) => item.id === tankId) || null;
+        const capacity = tank ? fuelmgrStoredLitres(tank.capacityLitres, true) : NaN;
+        if (tank && (!Number.isFinite(capacity) || fuelmgrBalance(tankId, data.readings, data.movements).reason === 'invalid')) {
+          return { ok: false, reason: 'invalid' };
+        }
+        const own = tank ? fuelmgrReadingsOf(data.readings, tankId) : [];
+        const last = own[own.length - 1] || null;
+        // Another tab may have saved a reading for this tank after the form was filled.
+        if (tank && (last ? last.id : null) !== openingReadingId) return { ok: false, refresh: true };
+
+        const readingEvent = { at: entered ? fuelmgrInstant(entered) : NaN, span: FUELMGR_SPAN_MS.reading };
+        const previous = last ? fuelmgrEvent(last, 'reading') : null;
+        let ok = true;
+        function fail(input, errorId, en, ar) {
+          fuelmgrError(input, errorId, en, ar);
+          ok = false;
+        }
+
+        if (!tank) fail(select, 'err-fuel-tank', 'Please select a tank', 'اختر الخزان');
+        else setFieldError(select, $('err-fuel-tank'), false);
+
+        // After the previous reading means clear of its span too, so the two
+        // readings can always be ordered.
+        if (!openingLocalDateTime(dtValue)) {
+          fail(dt, 'err-fuel-second-dt', 'Second reading date and time is required', 'تاريخ ووقت القراءة الثانية مطلوب');
+        } else if (entered && previous && readingEvent.at < previous.at + previous.span) {
+          fail(dt, 'err-fuel-second-dt', 'The reading time must be after the previous reading',
+            'يجب أن يكون وقت القراءة بعد وقت القراءة السابقة');
+        } else if (entered && readingEvent.at > Date.now()) {
+          fail(dt, 'err-fuel-second-dt', 'The reading time cannot be in the future', 'لا يمكن أن يكون وقت القراءة في المستقبل');
+        } else setFieldError(dt, $('err-fuel-second-dt'), false);
+
+        if (!secondsValid) {
+          fail(secondsInput, 'err-fuel-second-sec', 'Enter the seconds, from 0 to 59', 'أدخل الثواني من 0 إلى 59');
+        } else setFieldError(secondsInput, $('err-fuel-second-sec'), false);
+
+        if (!Number.isFinite(current) || current < 0) {
+          fail(readingInput, 'err-fuel-second-reading', 'Enter a valid reading in litres', 'أدخل قراءة صحيحة باللتر');
+        } else if (tank && current > capacity) {
+          fail(readingInput, 'err-fuel-second-reading',
+            'The reading cannot exceed the tank capacity (' + fuelmgrLitres(capacity) + ' L)',
+            'لا يمكن أن تتجاوز القراءة سعة الخزان (' + fuelmgrLitres(capacity) + ' لتر)');
+        } else setFieldError(readingInput, $('err-fuel-second-reading'), false);
+
+        let consumption = null;
+        setFieldError(output, $('err-fuel-consumption'), false);
+        if (ok && previous) {
+          const flows = fuelmgrFlows(data.movements, tankId, previous, readingEvent);
+          if (flows.ambiguousEnd) {
+            // A transfer within this reading's own second: only the person who
+            // took the reading knows which came first, so the seconds must say.
+            fail(secondsInput, 'err-fuel-second-sec',
+              'A transfer for this tank was saved within this same second. Set the seconds to show whether the reading was before or after it.',
+              'حُفظت مناقلة لهذا الخزان ضمن الثانية نفسها. عدّل الثواني لتوضيح إن كانت القراءة قبلها أو بعدها.');
+          } else if (!flows.ambiguousStart) {
+            consumption = fuelmgrConsumption(last.measuredLitres, flows, current);
+            // A negative result means a missing transfer, a wrong reading or a wrong
+            // time. It is blocked here; nothing is stored, rewritten or invented.
+            if (consumption < 0) {
+              fail(output, 'err-fuel-consumption',
+                'Consumption would be negative. Check the reading, its time, or a missing transfer.',
+                'سيكون الاستهلاك سالباً. راجع القراءة أو وقتها أو وجود مناقلة غير مسجلة.');
+            }
+          }
+          // ambiguousStart: an older minute-precision reading shares its minute
+          // with a transfer. No consumption is derived for that interval; this
+          // reading starts a new, precise one.
+        }
+        if (!ok) return { ok: false };
+
+        const reading = {
+          id: uid(),
+          tankId: tankId,
+          effectiveAt: new Date(readingEvent.at).toISOString(),
+          measuredLitres: current,
+          previousReadingId: last ? last.id : null,
+          // A first reading only sets the baseline, and an ambiguous interval gets
+          // no value: both keep null.
+          calculatedConsumption: consumption,
+          notes: notes,
+          createdAt: isoTimestamp()
+        };
+        setButtonLoading(button, true);
+        await fuelRepository.addReading(reading);
+        return { ok: true };
+      });
     } catch (error) {
-      fuelmgrNotSavedToast();
+      fuelmgrNotSavedToast(error);
       return;
     } finally {
       setButtonLoading(button, false);
     }
+    if (result.refresh) {
+      fuelmgrRefresh();
+      const message = OPENING_REFRESH_TEXT;
+      toast('error', openingText('Save not confirmed', 'لم يتأكد الحفظ'), openingText(message[0], message[1]), 6000);
+      return;
+    }
+    if (result.reason) { fuelmgrWriteRefused(result); return; }
+    if (!result.ok) { fuelmgrCheckFormToast(); return; }
     resetFuelForm();
     fuelmgrRenderCards();
     toast('success', openingText('Saved', 'تم الحفظ'),
@@ -4697,7 +4494,7 @@ function onSubmitTasks(ev) {
     genmgrText($('fuelmgrTankEditorTitle'), tank ? 'Edit Fuel Tank' : 'Add Fuel Tank',
       tank ? 'تعديل خزان الوقود' : 'إضافة خزان وقود');
     $('fuelmgr-tank-name').value = tank ? tank.name : '';
-    $('fuelmgr-tank-capacity').value = tank && Number.isFinite(Number(tank.capacityLitres)) ? String(tank.capacityLitres) : '';
+    $('fuelmgr-tank-capacity').value = tank && Number.isFinite(fuelmgrStoredLitres(tank.capacityLitres, true)) ? String(tank.capacityLitres) : '';
     const form = $('fuelmgrTankEditor');
     form.hidden = false;
     form.scrollIntoView({ block: 'start' });
@@ -4724,48 +4521,54 @@ function onSubmitTasks(ev) {
     if (!ok) { fuelmgrCheckFormToast(); return; }
 
     saveButton.disabled = true;
-    let tank;
-    let existing;
+    const editingId = fuelmgrView.editingTankId;
+    let result;
     try {
-      const data = await fuelmgrLoad();
-      existing = fuelmgrView.editingTankId ? data.tanks.find((item) => item.id === fuelmgrView.editingTankId) : null;
-      if (fuelmgrView.editingTankId && !existing) {
-        fuelmgrCloseEditor('fuelmgrTankEditor', true);
-        fuelmgrRefresh();
-        return;
-      }
-      if (existing) {
-        const balance = fuelmgrBalance(existing.id, data.readings, data.movements);
-        if (Number.isFinite(balance.litres) && genmgrRound(capacity - balance.litres) < 0) {
-          fuelmgrError(capacityInput, 'err-fuelmgr-tank-capacity',
-            'Capacity cannot be less than the current quantity (' + fuelmgrLitres(balance.litres) + ' L)',
-            'لا يمكن أن تقل السعة عن الكمية الحالية (' + fuelmgrLitres(balance.litres) + ' لتر)');
-          fuelmgrCheckFormToast();
-          return;
+      // The tank and its current quantity are read again under the fuel lock.
+      result = await fuelmgrWrite(async (data) => {
+        const existing = editingId ? data.tanks.find((item) => item.id === editingId) : null;
+        if (editingId && !existing) return { ok: false, gone: true };
+        if (existing) {
+          const balance = fuelmgrBalance(existing.id, data.readings, data.movements);
+          if (balance.reason === 'invalid') return { ok: false, reason: 'invalid' };
+          if (Number.isFinite(balance.litres) && genmgrRound(capacity - balance.litres) < 0) {
+            fuelmgrError(capacityInput, 'err-fuelmgr-tank-capacity',
+              'Capacity cannot be less than the current quantity (' + fuelmgrLitres(balance.litres) + ' L)',
+              'لا يمكن أن تقل السعة عن الكمية الحالية (' + fuelmgrLitres(balance.litres) + ' لتر)');
+            return { ok: false };
+          }
         }
-      }
-      const now = isoTimestamp();
-      tank = {
-        id: existing ? existing.id : uid(),
-        name: name,
-        capacityLitres: capacity,
-        createdAt: existing ? existing.createdAt : now,
-        updatedAt: now,
-        // Only active tanks reach this editor; Delete sets these.
-        active: true,
-        archivedAt: null
-      };
-      await fuelRepository.saveTank(tank);
+        const now = isoTimestamp();
+        const tank = {
+          id: existing ? existing.id : uid(),
+          name: name,
+          capacityLitres: capacity,
+          createdAt: existing ? existing.createdAt : now,
+          updatedAt: now,
+          // Only active tanks reach this editor; Delete sets these.
+          active: true,
+          archivedAt: null
+        };
+        await fuelRepository.saveTank(tank);
+        return { ok: true, tank: tank, updated: !!existing };
+      });
     } catch (error) {
-      fuelmgrNotSavedToast();
+      fuelmgrNotSavedToast(error);
       return;
     } finally {
       saveButton.disabled = false;
     }
+    if (result.gone) {
+      fuelmgrCloseEditor('fuelmgrTankEditor', true);
+      fuelmgrRefresh();
+      return;
+    }
+    if (result.reason) { fuelmgrWriteRefused(result); return; }
+    if (!result.ok) { fuelmgrCheckFormToast(); return; }
     fuelmgrCloseEditor('fuelmgrTankEditor', false);
-    toast('success', existing ? openingText('Fuel tank updated', 'تم تحديث خزان الوقود')
+    toast('success', result.updated ? openingText('Fuel tank updated', 'تم تحديث خزان الوقود')
       : openingText('Fuel tank added', 'تمت إضافة خزان الوقود'));
-    await fuelmgrRefresh(tank.id);
+    await fuelmgrRefresh(result.tank.id);
     $('fuel-tank').focus();
   }
 
@@ -4790,67 +4593,79 @@ function onSubmitTasks(ev) {
     const saveButton = $('fuelmgrTransferSaveBtn');
     if (saveButton.disabled) return;
     saveButton.disabled = true;
-    let movement;
+    const fromSelect = $('fuelmgr-from');
+    const toSelect = $('fuelmgr-to');
+    const qtyInput = $('fuelmgr-qty');
+    // The form as submitted. Both tanks, their balances and the free capacity
+    // are read again under the fuel lock and checked there, just before saving.
+    const fromId = fromSelect.value;
+    const toId = toSelect.value;
+    const quantity = genmgrNumber('fuelmgr-qty');
+    const notes = $('fuelmgr-notes').value.trim();
+    let result;
     try {
-      const data = await fuelmgrLoad();
-      const fromSelect = $('fuelmgr-from');
-      const toSelect = $('fuelmgr-to');
-      const qtyInput = $('fuelmgr-qty');
-      const from = data.tanks.find((tank) => tank.id === fromSelect.value) || null;
-      const to = data.tanks.find((tank) => tank.id === toSelect.value) || null;
-      const quantity = genmgrNumber('fuelmgr-qty');
-      let ok = true;
-      function fail(input, errorId, en, ar) {
-        fuelmgrError(input, errorId, en, ar);
-        ok = false;
-      }
-      fuelmgrClearErrors('fuelmgrTransferEditor');
-      if (!from) fail(fromSelect, 'err-fuelmgr-from', 'Select the source tank', 'اختر خزان المصدر');
-      if (!to) fail(toSelect, 'err-fuelmgr-to', 'Select the destination tank', 'اختر خزان الوجهة');
-      else if (from && from.id === to.id) {
-        fail(toSelect, 'err-fuelmgr-to', 'The destination must be a different tank', 'يجب أن يكون خزان الوجهة مختلفاً عن خزان المصدر');
-      }
-      if (!genmgrPositive(quantity)) fail(qtyInput, 'err-fuelmgr-qty', 'Enter a quantity greater than 0', 'أدخل كمية أكبر من 0');
-      if (ok) {
-        // Without a reading, or while a transfer cannot be ordered against the
-        // last one, a tank's balance is unknown, so neither the available fuel
-        // nor the free capacity can be checked.
-        const source = fuelmgrBalance(from.id, data.readings, data.movements);
-        const target = fuelmgrBalance(to.id, data.readings, data.movements);
-        if (!Number.isFinite(source.litres)) fail(fromSelect, 'err-fuelmgr-from', 'Record a reading for the source tank first', 'سجّل قراءة لخزان المصدر أولاً');
-        if (!Number.isFinite(target.litres)) fail(toSelect, 'err-fuelmgr-to', 'Record a reading for the destination tank first', 'سجّل قراءة لخزان الوجهة أولاً');
-        if (ok && genmgrRound(quantity - source.litres) > 0) {
-          fail(qtyInput, 'err-fuelmgr-qty',
-            'The quantity exceeds the source tank’s available balance (' + fuelmgrLitres(source.litres) + ' L)',
-            'الكمية أكبر من الرصيد المتاح في خزان المصدر (' + fuelmgrLitres(source.litres) + ' لتر)');
-        } else if (ok && genmgrRound(target.litres + quantity - Number(to.capacityLitres)) > 0) {
-          const free = genmgrRound(Number(to.capacityLitres) - target.litres);
-          fail(qtyInput, 'err-fuelmgr-qty',
-            'The destination tank would exceed its capacity (free space ' + fuelmgrLitres(free) + ' L)',
-            'سيتجاوز خزان الوجهة سعته (المساحة المتاحة ' + fuelmgrLitres(free) + ' لتر)');
+      result = await fuelmgrWrite(async (data) => {
+        const from = data.tanks.find((tank) => tank.id === fromId) || null;
+        const to = data.tanks.find((tank) => tank.id === toId) || null;
+        let ok = true;
+        function fail(input, errorId, en, ar) {
+          fuelmgrError(input, errorId, en, ar);
+          ok = false;
         }
-      }
-      if (!ok) { fuelmgrCheckFormToast(); return; }
-      movement = {
-        id: uid(),
-        movementType: 'tank_transfer',
-        sourceType: 'tank',
-        sourceId: from.id,
-        destinationType: 'tank',
-        destinationId: to.id,
-        quantityLitres: quantity,
-        // The moment it is saved, to the millisecond, for both tanks.
-        effectiveAt: new Date().toISOString(),
-        notes: $('fuelmgr-notes').value.trim(),
-        createdAt: isoTimestamp()
-      };
-      await fuelRepository.addMovement(movement);
+        fuelmgrClearErrors('fuelmgrTransferEditor');
+        if (!from) fail(fromSelect, 'err-fuelmgr-from', 'Select the source tank', 'اختر خزان المصدر');
+        if (!to) fail(toSelect, 'err-fuelmgr-to', 'Select the destination tank', 'اختر خزان الوجهة');
+        else if (from && from.id === to.id) {
+          fail(toSelect, 'err-fuelmgr-to', 'The destination must be a different tank', 'يجب أن يكون خزان الوجهة مختلفاً عن خزان المصدر');
+        }
+        if (!genmgrPositive(quantity)) fail(qtyInput, 'err-fuelmgr-qty', 'Enter a quantity greater than 0', 'أدخل كمية أكبر من 0');
+        if (ok) {
+          // Without a reading, or while a transfer cannot be ordered against the
+          // last one, a tank's balance is unknown, so neither the available fuel
+          // nor the free capacity can be checked.
+          const source = fuelmgrBalance(from.id, data.readings, data.movements);
+          const target = fuelmgrBalance(to.id, data.readings, data.movements);
+          const capacity = fuelmgrStoredLitres(to.capacityLitres, true);
+          if (source.reason === 'invalid' || target.reason === 'invalid' || !Number.isFinite(capacity)) {
+            return { ok: false, reason: 'invalid' };
+          }
+          if (!Number.isFinite(source.litres)) fail(fromSelect, 'err-fuelmgr-from', 'Record a reading for the source tank first', 'سجّل قراءة لخزان المصدر أولاً');
+          if (!Number.isFinite(target.litres)) fail(toSelect, 'err-fuelmgr-to', 'Record a reading for the destination tank first', 'سجّل قراءة لخزان الوجهة أولاً');
+          if (ok && genmgrRound(quantity - source.litres) > 0) {
+            fail(qtyInput, 'err-fuelmgr-qty',
+              'The quantity exceeds the source tank’s available balance (' + fuelmgrLitres(source.litres) + ' L)',
+              'الكمية أكبر من الرصيد المتاح في خزان المصدر (' + fuelmgrLitres(source.litres) + ' لتر)');
+          } else if (ok && genmgrRound(target.litres + quantity - capacity) > 0) {
+            const free = genmgrRound(capacity - target.litres);
+            fail(qtyInput, 'err-fuelmgr-qty',
+              'The destination tank would exceed its capacity (free space ' + fuelmgrLitres(free) + ' L)',
+              'سيتجاوز خزان الوجهة سعته (المساحة المتاحة ' + fuelmgrLitres(free) + ' لتر)');
+          }
+        }
+        if (!ok) return { ok: false };
+        await fuelRepository.addMovement({
+          id: uid(),
+          movementType: 'tank_transfer',
+          sourceType: 'tank',
+          sourceId: from.id,
+          destinationType: 'tank',
+          destinationId: to.id,
+          quantityLitres: quantity,
+          // The moment it is saved, to the millisecond, for both tanks.
+          effectiveAt: new Date().toISOString(),
+          notes: notes,
+          createdAt: isoTimestamp()
+        });
+        return { ok: true };
+      });
     } catch (error) {
-      fuelmgrNotSavedToast();
+      fuelmgrNotSavedToast(error);
       return;
     } finally {
       saveButton.disabled = false;
     }
+    if (result.reason) { fuelmgrWriteRefused(result); return; }
+    if (!result.ok) { fuelmgrCheckFormToast(); return; }
     fuelmgrCloseEditor('fuelmgrTransferEditor', false);
     toast('success', openingText('Transfer saved', 'تم حفظ المناقلة'),
       openingText('Saved on this device.', 'تم الحفظ على هذا الجهاز.'));
@@ -4875,12 +4690,13 @@ function onSubmitTasks(ev) {
   // Why a tank cannot be deleted now, as [en, ar], or null. Fuel is never
   // discarded: its book balance must be exactly zero (in the hundredths it is
   // kept to), or it must have no history at all. An unknown quantity is never
-  // taken as zero.
+  // taken as zero, and stored data that fails validation blocks it too.
   function fuelmgrArchiveBlock(tankId, data) {
+    const balance = fuelmgrBalance(tankId, data.readings, data.movements);
+    if (balance.reason === 'invalid') return FUELMGR_INVALID_TEXT;
     const history = data.readings.some((reading) => reading.tankId === tankId) ||
       data.movements.some((movement) => movement.sourceId === tankId || movement.destinationId === tankId);
     if (!history) return null;
-    const balance = fuelmgrBalance(tankId, data.readings, data.movements);
     if (!Number.isFinite(balance.litres) || balance.litres < 0) {
       return ['The quantity in this Tank cannot be established. Record a reading before deleting it.',
         'تعذّر تحديد كمية الوقود في هذا الخزان. سجّل قراءة قبل حذفه.'];
@@ -4893,26 +4709,30 @@ function onSubmitTasks(ev) {
   }
 
   // Delete archives: active = false and archivedAt are set, and nothing else
-  // changes; readings and movements stay exactly as they are. The balance rule
-  // is checked again at the moment of deleting; a reason comes back if it fails.
+  // changes; readings and movements stay exactly as they are. The tank and the
+  // balance rule are checked again under the fuel lock at the moment of
+  // deleting; a reason comes back if it fails.
   async function fuelmgrArchiveTank(id) {
-    let reason = null;
-    let archived = false;
+    let result;
     try {
-      const data = await fuelmgrLoad();
-      const tank = data.tanks.find((item) => item.id === id);
-      reason = tank ? fuelmgrArchiveBlock(id, data) : null;
-      if (tank && !reason) {
+      result = await fuelmgrWrite(async (data) => {
+        const tank = data.tanks.find((item) => item.id === id);
+        if (!tank) return { ok: true, archived: false }; // already deleted
+        const reason = fuelmgrArchiveBlock(id, data);
+        if (reason) return { ok: false, blocked: reason };
         const now = isoTimestamp();
         await fuelRepository.saveTank(Object.assign({}, tank, { active: false, archivedAt: now, updatedAt: now }));
-        archived = true;
-      }
+        return { ok: true, archived: true };
+      });
     } catch (error) {
-      toast('error', openingText('Not saved', 'لم يتم الحفظ'),
+      if (error && error.code === 'STORAGE_UNREADABLE') storageUnreadableToast();
+      else toast('error', openingText('Not saved', 'لم يتم الحفظ'),
         openingText('Device storage is full or unavailable.', 'مساحة الجهاز ممتلئة أو غير متاحة.'), 6000);
       return null;
     }
-    if (reason) return reason;
+    if (result.reason) return result.reason === 'unreadable' ? STORAGE_UNREADABLE_TEXT : FUELMGR_INVALID_TEXT;
+    if (result.blocked) return result.blocked;
+    const archived = result.archived;
     if (fuelmgrView.editingTankId === id) fuelmgrCloseEditor('fuelmgrTankEditor', false);
     if ($('fuel-tank').value === id) {
       // Nothing is selected in its place.
@@ -4954,7 +4774,8 @@ function onSubmitTasks(ev) {
         // A tank that still holds fuel, or whose quantity is unknown, shows the reason instead.
         const id = remove.dataset.fuelmgrDelete;
         const data = await fuelmgrLoad();
-        genmgrDeletePanel(remove, FUELMGR_DELETE_TEXTS, () => fuelmgrArchiveTank(id), fuelmgrArchiveBlock(id, data));
+        genmgrDeletePanel(remove, FUELMGR_DELETE_TEXTS, () => fuelmgrArchiveTank(id),
+          data.unreadable ? STORAGE_UNREADABLE_TEXT : fuelmgrArchiveBlock(id, data));
       }
     }));
 
@@ -4985,9 +4806,9 @@ function onSubmitTasks(ev) {
      10. IMAGE HANDLING
      ============================================================
      Each form that accepts photos gets its own array in imageStores.
-     Images are compressed client-side to JPEG before being held in
-     memory as base64 strings, ready to send to Apps Script (which
-     writes them to Google Drive and returns share URLs).
+     Images are compressed client-side to JPEG and held in this page as
+     base64 strings for the preview until the form clears. Nothing is
+     uploaded; Supabase Storage will hold attachments later.
   */
   const imageStores = {
     tasks: [],
@@ -5111,80 +4932,16 @@ function onSubmitTasks(ev) {
   }
 
   /* ============================================================
-     11. OFFLINE QUEUE + DUPLICATE-SUBMISSION GUARD
+     11. PROTOTYPE SUBMISSION, CONNECTION STATUS
      ============================================================
-     submitRecord() is the single entry point used by all four forms.
-     - Disables the submit button immediately (duplicate guard).
-     - Tries the network request.
-     - On success: clears the form, shows a success toast.
-     - On failure (offline / timeout / server error): the record is
-       saved to localStorage and retried automatically once the
-       browser reports it's back online, or when the page reloads.
+     Tasks, Attendance and Purchase Requests are workflow prototypes:
+     a valid form is acknowledged and cleared. Nothing is sent or
+     stored; Supabase will persist these records later.
   */
-  const QUEUE_KEY = CONFIG.LS_PREFIX + 'pending_queue';
-  let isSubmitting = false;
-  let queueFlushPromise = null;
-
-  function readQueue() {
-    try {
-      const queue = JSON.parse(localStorage.getItem(QUEUE_KEY));
-      return Array.isArray(queue) ? queue : [];
-    }
-    catch (e) { return []; }
-  }
-  function writeQueue(arr) {
-    try {
-      localStorage.setItem(QUEUE_KEY, JSON.stringify(arr));
-      return true;
-    } catch (e) { return false; }
-  }
-  function pushToQueue(record) {
-    const q = readQueue();
-    q.push(record);
-    if (!writeQueue(q)) return false;
-    updateQueueBanners();
-    return true;
-  }
-  function removeFromQueue(clientId) {
-    const q = readQueue().filter((r) => r.clientId !== clientId);
-    if (!writeQueue(q)) return false;
-    updateQueueBanners();
-    return true;
-  }
-
-  // arOne / arMany are whole phrases rather than a noun plus a suffix, because
-  // Arabic agreement differs per noun and cannot be built by concatenation.
-  const AR_RECORD_ONE = 'سجل واحد محفوظ دون اتصال — سيُرسل عند عودة الإنترنت.';
-  const AR_RECORD_MANY = 'سجلات محفوظة دون اتصال — سترسل عند عودة الإنترنت.';
-  const SHEET_TO_BANNER = {
-    'Generators': { banner: 'genQueueBanner', text: 'genQueueText', noun: 'record',
-      arOne: AR_RECORD_ONE, arMany: AR_RECORD_MANY },
-    'Tasks': { banner: 'taskQueueBanner', text: 'taskQueueText', noun: 'task',
-      arOne: 'مهمة واحدة محفوظة دون اتصال — سترسل عند عودة الإنترنت.', arMany: 'مهام محفوظة دون اتصال — سترسل عند عودة الإنترنت.' },
-    'Attendance': { banner: 'attQueueBanner', text: 'attQueueText', noun: 'record',
-      arOne: AR_RECORD_ONE, arMany: AR_RECORD_MANY },
-    'Purchase Orders': { banner: 'poQueueBanner', text: 'poQueueText', noun: 'request',
-      arOne: 'طلب واحد محفوظ دون اتصال — سيُرسل عند عودة الإنترنت.', arMany: 'طلبات محفوظة دون اتصال — سترسل عند عودة الإنترنت.' },
-     'Fuel Consumption': { banner: 'fuelQueueBanner', text: 'fuelQueueText', noun: 'record',
-      arOne: AR_RECORD_ONE, arMany: AR_RECORD_MANY }
-  };
-
-  function updateQueueBanners() {
-    const q = readQueue();
-    Object.keys(SHEET_TO_BANNER).forEach((sheet) => {
-      const cfg = SHEET_TO_BANNER[sheet];
-      const count = q.filter((r) => r.sheet === sheet).length;
-      const bannerEl = $(cfg.banner);
-      if (!bannerEl) return;
-      if (count > 0) {
-        $(cfg.text).textContent = openingText(
-          count + ' ' + cfg.noun + (count > 1 ? 's' : '') + ' saved offline — will submit when back online.',
-          count === 1 ? cfg.arOne : count + ' ' + cfg.arMany);
-        bannerEl.classList.add('show');
-      } else {
-        bannerEl.classList.remove('show');
-      }
-    });
+  function prototypeSubmit(onSuccessReset) {
+    if (!authSessionExists()) { showAuthLoginScreen(); return; }
+    onSuccessReset();
+    toast('success', openingText('Recorded for this prototype.', 'تم تسجيل العملية في النسخة التجريبية.'));
   }
 
   function setConnStatus(online) {
@@ -5206,206 +4963,22 @@ function onSubmitTasks(ev) {
     btn.classList.toggle('loading', loading);
   }
 
-  /**
-   * Sends one record to the backend, with offline fallback.
-   * @param {Object} record  { sheet, clientId, data, images? }
-   * @param {HTMLElement} btn  the submit button to disable/spin
-   * @param {Function} onSuccessReset  form-specific reset function
-   * @param {string} keyPrefix  short prefix for duplicate-guard key
-   */
-  function submitRecord(record, btn, onSuccessReset, keyPrefix) {
-    if (!authSessionExists()) { showAuthLoginScreen(); return; }
-    const epoch = sessionEpoch;
-    if (isSubmitting) {
-      toast('info', openingText('Please wait', 'انتظر قليلاً'),
-        openingText('A submission is already in progress.', 'هناك إرسال قيد التنفيذ.'));
-      return;
-    }
-    // Duplicate-submission guard: ignore an identical resubmission
-    // (same form data) fired within 8 seconds, e.g. from a double-tap.
-    // "Submission Timestamp" is excluded from the comparison since it's
-    // generated fresh on every call and would never match, even for a
-    // true duplicate fired a fraction of a second later.
-    const dupKey = CONFIG.LS_PREFIX + 'lastsig_' + keyPrefix;
-    const sigPayload = Object.assign({}, record.data);
-    delete sigPayload['Submission Timestamp'];
-    const sig = JSON.stringify(sigPayload);
-    const last = sessionStorage.getItem(dupKey);
-    if (last) {
-      try {
-        const parsed = JSON.parse(last);
-        if (parsed && parsed.sig === sig && (Date.now() - parsed.t) < 8000) {
-          toast('info', openingText('Already submitted', 'تم الإرسال مسبقاً'),
-            openingText('This record was just submitted.', 'تم إرسال هذا السجل للتو.'));
-          return;
-        }
-      } catch (error) { sessionStorage.removeItem(dupKey); }
-    }
-    sessionStorage.setItem(dupKey, JSON.stringify({ sig: sig, t: Date.now() }));
-
-    isSubmitting = true;
-    setButtonLoading(btn, true);
-
-    if (openingFields[record.sheet] && openingAttempts[record.sheet]) {
-      openingAttempts[record.sheet].awaitingConfirmation = true;
-    }
-    sendToAppsScript(record)
-      .then(() => {
-        if (epoch !== sessionEpoch) return;
-        setButtonLoading(btn, false);
-        isSubmitting = false;
-        removeFromQueue(record.clientId);
-        onSuccessReset();
-        toast('success', openingText('Submitted', 'تم الإرسال'), record.sheet === 'Purchase Orders'
-          ? openingText('Purchase request sent for approval.', 'أُرسل طلب الشراء للموافقة.')
-          : openingText('Record saved to Google Sheets.', 'تم حفظ السجل في Google Sheets.'));
-      })
-      .catch((error) => {
-        if (epoch !== sessionEpoch) return;
-        setButtonLoading(btn, false);
-        isSubmitting = false;
-        if (openingFields[record.sheet]) {
-          // These two forms retain their inputs until the sheet confirms the
-          // save. Retry uses the same client id if the content is unchanged.
-          sessionStorage.removeItem(dupKey);
-          if (error.serverRejected && openingAttempts[record.sheet]) {
-            openingAttempts[record.sheet].awaitingConfirmation = false;
-          }
-          if (isOpeningAuthError(error)) {
-            clearAuthSession(); showAuthLoginScreen();
-            toast('error', openingText('Sign in again', 'سجّل الدخول مجدداً'),
-              openingText('Your inputs are still in the form.', 'بياناتك باقية بالاستمارة.'));
-          } else {
-            if (error.code === 'OPENING_REFRESH_REQUIRED') refreshOpeningReading(record.sheet);
-            const message = openingFailureText(error);
-            toast('error', openingText('Save not confirmed', 'لم يتأكد الحفظ'), openingText(message[0], message[1]), 6000);
-          }
-          return;
-        }
-        if (!pushToQueue(record)) {
-          sessionStorage.removeItem(dupKey);
-          toast('error', openingText('Not saved', 'لم يتم الحفظ'),
-            openingText('Device storage is full or unavailable. Your inputs are still in the form.',
-              'مساحة الجهاز ممتلئة أو غير متاحة. بياناتك باقية في الاستمارة.'), 6000);
-          return;
-        }
-        onSuccessReset();
-        toast('info', openingText('Saved offline', 'حُفظ دون اتصال'),
-          openingText('No connection — this will sync automatically once you\u2019re back online.',
-            'لا يوجد اتصال — ستتم المزامنة تلقائياً عند عودة الإنترنت.'));
-      });
-  }
-
-  function flushQueue() {
-    if (queueFlushPromise) return queueFlushPromise;
-    const q = readQueue();
-    if (!q.length || !navigator.onLine || !authSessionExists()) return Promise.resolve();
-    const epoch = sessionEpoch;
-    // Process sequentially to avoid overwhelming Apps Script's quota.
-    let chain = Promise.resolve();
-    q.forEach((record) => {
-      chain = chain.then(() => {
-        if (epoch !== sessionEpoch) return;
-        return sendToAppsScript(record)
-          .then(() => { if (epoch === sessionEpoch) removeFromQueue(record.clientId); })
-          .catch(() => { /* still offline or server error — leave queued */ })
-      });
-    });
-    queueFlushPromise = chain.then(() => {
-      if (epoch !== sessionEpoch) return;
-      const remaining = readQueue().length;
-      if (remaining === 0 && q.length > 0) {
-        toast('success', openingText('Synced', 'تمت المزامنة'),
-          openingText('All offline records have been submitted.', 'تم إرسال جميع السجلات المحفوظة دون اتصال.'));
-      }
-    }).finally(() => {
-      queueFlushPromise = null;
-    });
-    return queueFlushPromise;
-  }
-
-  window.addEventListener('online', () => { setConnStatus(true); flushQueue(); });
+  window.addEventListener('online', () => { setConnStatus(true); });
   window.addEventListener('offline', () => { setConnStatus(false); });
-
-  /* ============================================================
-     12. APPS SCRIPT TRANSPORT LAYER
-     ============================================================
-     Google Apps Script Web Apps don't reliably support CORS for
-     reading the response when called from a foreign origin with
-     custom headers, so we POST as 'text/plain' (simple request,
-     no preflight) with a JSON string body. The Apps Script doPost
-     handler parses e.postData.contents as JSON.
-  */
-  function sendToAppsScript(record) {
-    return new Promise((resolve, reject) => {
-      if (!authSessionExists()) {
-        reject(new Error('LOGIN_REQUIRED'));
-        return;
-      }
-      if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.indexOf('YOUR_DEPLOYMENT_ID') !== -1) {
-        reject(new Error('Web App URL not configured'));
-        return;
-      }
-      if (!navigator.onLine) {
-        reject(new Error('offline'));
-        return;
-      }
-
-      const controller = new AbortController();
-      pendingSubmissions.add(controller);
-      const timeoutId = setTimeout(() => controller.abort(), CONFIG.REQUEST_TIMEOUT_MS);
-
-      fetch(CONFIG.WEB_APP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-        action: 'submit',
-        token: localStorage.getItem(CONFIG.LS_PREFIX + 'auth_token') || '',
-         record: record
-          }),
-        redirect: 'follow',
-        signal: controller.signal
-      })
-        .then((resp) => resp.json())
-        .then((json) => {
-          clearTimeout(timeoutId);
-          pendingSubmissions.delete(controller);
-          if (json && json.success) resolve(json);
-          else {
-            const error = new Error((json && json.error) || 'Server rejected submission');
-            error.code = json && (json.errorCode || json.error);
-            error.serverRejected = true;
-            reject(error);
-          }
-        })
-        .catch((err) => {
-          clearTimeout(timeoutId);
-          pendingSubmissions.delete(controller);
-          reject(err);
-        });
-    });
-  }
 
   /* ============================================================
      INIT
      ============================================================ */
+  // Logout, or a different prototype user, discards the page's unsaved work.
   function resetSessionContent(event) {
-    const token = localStorage.getItem(CONFIG.LS_PREFIX + 'auth_token') || '';
-    const username = localStorage.getItem(CONFIG.LS_PREFIX + 'auth_username') || '';
-    const discard = !!(event.detail && event.detail.discardContent) ||
-      (!!token && username !== dataSessionUsername);
-    if (token === dataSessionToken && !discard) return;
-    resetNavigationToDefault();
-    dataSessionToken = token;
-    if (token || discard) dataSessionUsername = username;
-    sessionEpoch++;
-    pendingSubmissions.forEach((controller) => controller.abort());
-    pendingSubmissions.clear();
-    isSubmitting = false;
-    qsa('.btn-submit').forEach((button) => setButtonLoading(button, false));
-    // Expiry locks the app but keeps this user's unsaved draft for sign-in.
-    // Explicit logout or a different account discards it.
+    const user = prototypeUser();
+    const username = user ? user.username : '';
+    const discard = !!(event.detail && event.detail.discardContent) || username !== dataSessionUsername;
     if (!discard) return;
+    resetNavigationToDefault();
+    dataSessionUsername = username;
+    sessionEpoch++;
+    qsa('.btn-submit').forEach((button) => setButtonLoading(button, false));
     qsa('form').forEach((form) => form.reset());
     qsa('.invalid, .error-msg.show, .check-item.checked').forEach((element) => {
       element.classList.remove('invalid', 'show', 'checked');
@@ -5423,8 +4996,6 @@ function onSubmitTasks(ev) {
     $('opHoursValue').classList.add('zero');
     $('fuel-consumption').value = '0';
     $('toastStack').textContent = '';
-    Object.keys(openingAttempts).forEach((key) => { delete openingAttempts[key]; });
-    ['gen', 'task', 'att', 'po', 'fuel'].forEach((key) => sessionStorage.removeItem(CONFIG.LS_PREFIX + 'lastsig_' + key));
     ['task-start-dt', 'att-dt'].forEach((id) => { $(id).value = nowForInput(); });
     applyLoggedInIdentityRules();
   }
@@ -5441,15 +5012,10 @@ function onSubmitTasks(ev) {
      initFuelForm();
     loadEmployeeNames();
     setConnStatus(navigator.onLine);
-    updateQueueBanners();
     // Persistent runtime text is written by JS, so it has to be re-rendered
     // when the language changes; the DOM-walking layers never reach it.
     document.addEventListener('genops-language-changed', function () {
       setConnStatus(navigator.onLine);
-      updateQueueBanners();
-    });
-    window.addEventListener('genops-auth-changed', function () {
-      if (authSessionExists()) loadEmployeeNames();
     });
 
     // Pre-fill "now" for all datetime fields so the field worker
@@ -5458,11 +5024,6 @@ function onSubmitTasks(ev) {
       const el = $(id);
       if (el && !el.value) el.value = nowForInput();
     });
-
-    initOpeningReadings();
-
-    // Attempt to flush any queued offline records from a previous session.
-    if (navigator.onLine) flushQueue();
   });
 
 })();
@@ -6160,53 +5721,30 @@ function initPurchaseButtonFinalFix() {
 document.addEventListener('DOMContentLoaded', initPurchaseButtonFinalFix);
 
    /* ============================================================
-   LOGIN / LOGOUT AND SAVED SESSION LIFECYCLE
+   PROTOTYPE LOGIN / LOGOUT
+   Prototype-only login state: a UI simulation, not authentication.
+   Nothing is verified and nothing leaves the page.
+   Replace with Supabase Auth during the backend migration.
    ============================================================ */
 
-const AUTH_KEYS = {
-  token: CONFIG.LS_PREFIX + 'auth_token',
-  username: CONFIG.LS_PREFIX + 'auth_username',
-  employeeName: CONFIG.LS_PREFIX + 'auth_employee_name',
-  role: CONFIG.LS_PREFIX + 'auth_role',
-  expiresAt: CONFIG.LS_PREFIX + 'auth_expires_at'
-};
-const AUTH_REQUEST_TIMEOUT_MS = 30000;
-let authLoginAttempt = null;
-let authExpiryTimer = null;
 let authStorageTimer = null;
 let authInitialized = false;
 
-function renderAuthLoginState() {
-  const button = document.getElementById('authLoginButton');
-  if (!button) return;
-  const loading = !!authLoginAttempt;
-  button.disabled = loading;
-  button.setAttribute('aria-busy', String(loading));
-  button.querySelector('span').textContent = loading
-    ? authMessage('Signing in…', 'جارٍ تسجيل الدخول…')
-    : authMessage('Sign In', 'تسجيل الدخول');
-}
-
-function cancelAuthLogin() {
-  if (authLoginAttempt) authLoginAttempt.controller.abort();
-  authLoginAttempt = null;
-  renderAuthLoginState();
-}
-
-async function requestAuth(payload, controller = new AbortController()) {
-  const timeout = setTimeout(function () { controller.abort(); }, AUTH_REQUEST_TIMEOUT_MS);
+// The signed-in prototype user { username, employeeName, role }, or null.
+function prototypeUser() {
   try {
-    const response = await fetch(CONFIG.WEB_APP_URL, {
-      method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(payload), redirect: 'follow', signal: controller.signal
-    });
-    if (!response.ok) throw new Error('AUTH_NETWORK');
-    const result = await response.json();
-    if (!result || !result.success) throw new Error('AUTH_REJECTED');
-    return result;
-  } finally {
-    clearTimeout(timeout);
-  }
+    const user = JSON.parse(localStorage.getItem(CONFIG.LS_PREFIX + 'prototype_user'));
+    return user && typeof user.username === 'string' && user.username ? user : null;
+  } catch (error) { return null; }
+}
+
+// Any non-empty username and passcode sign in (submitAuthLogin checks both
+// fields); the passcode is not checked, kept or sent anywhere. A username
+// matching a demo employee shows that name. Every prototype user has the
+// Admin UI role, so each existing screen can be reached.
+function prototypeLogin(username) {
+  const employee = CONFIG.DEFAULT_EMPLOYEES.find((name) => name.toLowerCase() === username.toLowerCase());
+  return { username: username, employeeName: employee || username, role: 'Admin' };
 }
 
 function authCurrentLanguage() {
@@ -6240,7 +5778,6 @@ function applyAuthLanguage() {
   }
 
   updateAuthUserBar();
-  renderAuthLoginState();
 }
 
 function showAuthError(message) {
@@ -6261,63 +5798,35 @@ function clearAuthError() {
   errorBox.hidden = true;
 }
 
-function saveAuthSession(result) {
-  if (typeof result.token !== 'string' || !result.token.trim() ||
-      !Number.isFinite(Date.parse(result.expiresAt)) || Date.parse(result.expiresAt) <= Date.now()) {
-    throw new Error('AUTH_INVALID_SESSION');
-  }
+function saveAuthSession(user) {
   try {
-    localStorage.setItem(AUTH_KEYS.username, result.username || '');
-    localStorage.setItem(AUTH_KEYS.employeeName, result.employeeName || '');
-    localStorage.setItem(AUTH_KEYS.role, result.role || 'User');
-    localStorage.setItem(AUTH_KEYS.expiresAt, result.expiresAt);
-    // Publish the token after the session metadata is complete.
-    localStorage.setItem(AUTH_KEYS.token, result.token);
+    localStorage.setItem(CONFIG.LS_PREFIX + 'prototype_user', JSON.stringify(user));
   } catch (error) {
-    Object.values(AUTH_KEYS).forEach(function (key) { localStorage.removeItem(key); });
     throw new Error('AUTH_STORAGE');
   }
   window.dispatchEvent(new Event('genops-auth-changed'));
 }
 
 function clearAuthSession(discardContent = false) {
-  cancelAuthLogin();
-  clearTimeout(authExpiryTimer);
-  Object.keys(AUTH_KEYS).forEach(function (key) {
-    localStorage.removeItem(AUTH_KEYS[key]);
-  });
+  localStorage.removeItem(CONFIG.LS_PREFIX + 'prototype_user');
   window.dispatchEvent(new CustomEvent('genops-auth-changed', { detail:{ discardContent:discardContent } }));
 }
 
 function authSessionExists() {
-  const token = localStorage.getItem(AUTH_KEYS.token);
-  const expiresAt = localStorage.getItem(AUTH_KEYS.expiresAt);
-
-  if (!token || !expiresAt) return false;
-
-  const expiryTime = new Date(expiresAt).getTime();
-
-  if (!expiryTime || expiryTime <= Date.now()) {
-    clearAuthSession();
-    return false;
-  }
-
-  return true;
+  return !!prototypeUser();
 }
 
 function updateAuthUserBar() {
   const employeeElement = document.getElementById('authLoggedEmployee');
   const roleElement = document.getElementById('authLoggedRole');
+  const user = prototypeUser() || {};
 
   if (employeeElement) {
-    employeeElement.textContent =
-      localStorage.getItem(AUTH_KEYS.employeeName) ||
-      localStorage.getItem(AUTH_KEYS.username) ||
-      '';
+    employeeElement.textContent = user.employeeName || user.username || '';
   }
 
   if (roleElement) {
-    const role = localStorage.getItem(AUTH_KEYS.role) || '';
+    const role = user.role || '';
     const roleNamesAr = { User: 'مستخدم', Admin: 'مدير' };
 
     roleElement.textContent =
@@ -6356,13 +5865,8 @@ function hideAuthLoginScreen() {
   document.getElementById('authLogoutButton').disabled = false;
 }
 
-async function submitAuthLogin() {
-  if (authLoginAttempt) return;
+function submitAuthLogin() {
   clearAuthError();
-  if (!CONFIG.WEB_APP_URL || CONFIG.WEB_APP_URL.includes('YOUR_DEPLOYMENT_ID')) {
-    showAuthError(authMessage('Configure the Apps Script web app URL first.', 'يجب ضبط رابط Apps Script أولاً.'));
-    return;
-  }
 
   const usernameInput = document.getElementById('authUsername');
   const passcodeInput = document.getElementById('authPasscode');
@@ -6380,71 +5884,32 @@ async function submitAuthLogin() {
     return;
   }
 
-  const attempt = { controller: new AbortController() };
-  authLoginAttempt = attempt;
-  renderAuthLoginState();
-
   try {
-    const result = await requestAuth({ action:'login', username:username, passcode:passcode }, attempt.controller);
-    if (authLoginAttempt !== attempt) return;
-    saveAuthSession(result);
-    if (passcodeInput) passcodeInput.value = '';
-
+    saveAuthSession(prototypeLogin(username));
   } catch (error) {
-    if (authLoginAttempt !== attempt) return;
-    const messages = {
-      AUTH_REJECTED: ['Login failed. Check your username and passcode.', 'فشل تسجيل الدخول. تحقق من اسم المستخدم ورمز الدخول.'],
-      AUTH_STORAGE: ['Could not save your session. Allow browser storage and try again.', 'تعذّر حفظ الجلسة. اسمح بالتخزين في المتصفح ثم أعد المحاولة.'],
-      AUTH_INVALID_SESSION: ['The server returned an invalid session. Please try again.', 'أعاد الخادم جلسة غير صالحة. أعد المحاولة.']
-    };
-    const message = error.name === 'AbortError'
-      ? ['Sign-in timed out. Check your connection and try again.', 'انتهت مهلة تسجيل الدخول. تحقق من الاتصال وأعد المحاولة.']
-      : messages[error.message] || ['Could not reach the sign-in service. Please try again.', 'تعذّر الاتصال بخدمة تسجيل الدخول. أعد المحاولة.'];
-    showAuthError(authMessage(message[0], message[1]));
-  } finally {
-    if (authLoginAttempt === attempt) {
-      authLoginAttempt = null;
-      renderAuthLoginState();
-    }
+    showAuthError(authMessage('Could not save your session. Allow browser storage and try again.',
+      'تعذّر حفظ الجلسة. اسمح بالتخزين في المتصفح ثم أعد المحاولة.'));
+    return;
   }
+  if (passcodeInput) passcodeInput.value = '';
 }
 
 function syncAuthSession() {
-  clearTimeout(authExpiryTimer);
   if (authSessionExists()) {
     applyLoggedInIdentityRules();
     if (!document.getElementById('authLoginScreen').hidden) hideAuthLoginScreen();
     else updateAuthUserBar();
-    const remaining = Date.parse(localStorage.getItem(AUTH_KEYS.expiresAt)) - Date.now();
-    authExpiryTimer = setTimeout(syncAuthSession, Math.min(remaining + 1, 2147483647));
   } else {
     showAuthLoginScreen();
   }
 }
 
-async function submitAuthLogout() {
-  const token = localStorage.getItem(AUTH_KEYS.token) || '';
-  if (!token) return;
-  const button = document.getElementById('authLogoutButton');
-  button.disabled = true;
+function submitAuthLogout() {
+  if (!authSessionExists()) return;
   clearAuthSession(true);
   document.getElementById('authUsername').value = '';
   document.getElementById('authPasscode').value = '';
   clearAuthError();
-  // The local screen is locked before waiting for revocation of this token.
-  // Completion must never clear a session created by a subsequent login.
-  try {
-    await requestAuth({ action:'logout', token:token });
-  } catch (error) {
-    if (!localStorage.getItem(AUTH_KEYS.token) && !authLoginAttempt) {
-      showAuthError(authMessage(
-        'Signed out on this device. Server sign-out could not be confirmed.',
-        'تم تسجيل الخروج من هذا الجهاز. تعذّر تأكيد إنهاء الجلسة على الخادم.'
-      ));
-    }
-  } finally {
-    button.disabled = false;
-  }
 }
 
 function initAuth() {
@@ -6476,13 +5941,13 @@ function initAuth() {
 
   document.addEventListener('genops-language-changed', applyAuthLanguage);
   window.addEventListener('genops-auth-changed', syncAuthSession);
+  // Login and logout in another tab of this browser follow here.
   window.addEventListener('storage', function (event) {
-    if (event.key !== null && !Object.values(AUTH_KEYS).includes(event.key)) return;
+    if (event.key !== null && event.key !== CONFIG.LS_PREFIX + 'prototype_user') return;
     clearTimeout(authStorageTimer);
     authStorageTimer = setTimeout(function () {
-      cancelAuthLogin();
       window.dispatchEvent(new CustomEvent('genops-auth-changed', {
-        detail:{ discardContent:!localStorage.getItem(AUTH_KEYS.token) }
+        detail:{ discardContent:!authSessionExists() }
       }));
     }, 0);
   });
@@ -6500,14 +5965,11 @@ document.addEventListener('DOMContentLoaded', initAuth);
    ============================================================ */
 
 function applyLoggedInIdentityRules() {
-  const token = localStorage.getItem(AUTH_KEYS.token);
-  const employeeName =
-    localStorage.getItem(AUTH_KEYS.employeeName) || '';
+  const user = prototypeUser();
+  if (!user) return;
 
-  const role =
-    localStorage.getItem(AUTH_KEYS.role) || 'User';
-
-  if (!token) return;
+  const employeeName = user.employeeName || '';
+  const role = user.role || 'User';
 
   const isAdmin =
     String(role).trim().toLowerCase() === 'admin';
@@ -6586,7 +6048,6 @@ function applyFuelLanguage(lang) {
     ['Add an optional note...', 'أضف ملاحظة اختيارية…'],
 
     ['Submit Fuel Consumption', 'اعتماد استهلاك الوقود'],
-    ['1 fuel record saved offline — will submit when back online.', 'تم حفظ سجل وقود دون اتصال — سيُرسل عند عودة الإنترنت.'],
 
     ['e.g. 5000', 'مثال: 5000'],
     ['e.g. 4700', 'مثال: 4700'],
