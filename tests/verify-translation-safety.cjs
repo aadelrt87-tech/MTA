@@ -10,6 +10,13 @@
    converted T-DISPLAY-01..04, T-ERROR-01 and T-SESSION-01 into REQUIRED
    invariants. They stay listed in RESOLVED_DEBT and are tested on every run.
 
+   Phase 2 (static UI with explicit bilingual ownership: data-auth-en / -ar,
+   data-auth-text-*, data-auth-placeholder-* / -alt-* / -label-*, rendered by
+   applyAuthLanguage(); the legacy passes skip it) converted T-PH-01, T-OPT-01
+   and T-ALT-01, and with them T-RT-01..03 and T-TIME-01: every element those
+   debts observed is now explicitly owned. KNOWN_DEBT is empty; the allowlist
+   is removed together with the legacy translators (phase 3).
+
    Two kinds of checks:
    REQUIRED    behaviour that is already correct and must stay correct. Any
                failure fails the run.
@@ -71,26 +78,28 @@ const SETTLE_MS = 1500;
    Confirmed in the current build before consolidation. Each entry is
    evaluated exactly once, by the scenario named in `where`. */
 const KNOWN_DEBT = {
-  'T-PH-01': { where: 'P1', title: 'End hour meter example placeholder stays English under Arabic ("e.g. 1251.2")',
-    desired: 'An Arabic example placeholder under Arabic, and "e.g. 1251.2" again under English.' },
-  'T-OPT-01': { where: 'O1', title: 'Attendance type option labels stay English under Arabic (IN, OUT, BREAK OUT, BREAK IN)',
-    desired: 'Arabic labels under Arabic; option values stay IN, OUT, BREAK OUT, BREAK IN.' },
-  'T-ALT-01': { where: 'I1', title: 'Image preview alt text stays English under Arabic ("Selected photo 1")',
-    desired: 'The preview alt text follows the UI language.' },
-  'T-RT-01': { where: 'RT', title: 'EN -> AR -> EN turns the NOW buttons into "Now"',
-    desired: 'The NOW buttons read "NOW" again after a round trip.' },
-  'T-RT-02': { where: 'RT', title: 'EN -> AR -> EN turns title-case card titles into upper-case text (e.g. "Task Details" -> "TASK DETAILS")',
-    desired: 'Card title text returns to its original source text (CSS keeps doing the upper-casing).' },
-  'T-RT-03': { where: 'RT', title: 'EN -> AR -> EN turns the ellipsis "…" into "..." in select placeholders and the fuel note placeholder',
-    desired: 'Placeholders return to their exact original text.' },
-  'T-TIME-01': { where: 'TM', title: 'Legacy-translated UI text is correct only after the delayed translation passes, not at the moment of the switch',
-    desired: 'Every UI string is in the selected language as soon as the switch (or page load) completes.' }
 };
 
 /* ======================= RESOLVED_DEBT (now REQUIRED) =======================
-   Former KNOWN_DEBT, corrected in translation consolidation phase 1. Each is
-   a REQUIRED invariant, evaluated exactly once by the scenario in `where`. */
+   Former KNOWN_DEBT, corrected in translation consolidation phases 1 and 2.
+   Each is a REQUIRED invariant, evaluated exactly once by the scenario in `where`. */
 const RESOLVED_DEBT = {
+  // Phase 2
+  'T-PH-01': { where: 'P1', invariant: 'the end hour meter placeholder is "e.g. 1251.2" in English and "مثال: 1251.2" in Arabic, through a round trip',
+    was: 'stayed "e.g. 1251.2" under Arabic' },
+  'T-OPT-01': { where: 'O1', invariant: 'Attendance type options display Arabic labels under Arabic and English ones again under English; values stay IN, OUT, BREAK OUT, BREAK IN',
+    was: 'displayed IN, OUT, BREAK OUT, BREAK IN under Arabic' },
+  'T-ALT-01': { where: 'I1', invariant: 'image preview alt text follows the language, for previews made before and after a switch, with the right number',
+    was: 'stayed "Selected photo 1" under Arabic' },
+  'T-RT-01': { where: 'RT', invariant: 'the NOW buttons read "NOW" again after EN -> AR -> EN',
+    was: 'came back as "Now"' },
+  'T-RT-02': { where: 'RT', invariant: 'card titles return to their source text after EN -> AR -> EN',
+    was: 'came back as upper-case text ("TASK DETAILS")' },
+  'T-RT-03': { where: 'RT', invariant: 'placeholders keep their ellipsis "…" after EN -> AR -> EN',
+    was: 'came back with "..."' },
+  'T-TIME-01': { where: 'TM', invariant: 'no UI string changes after the moment of a switch or a page load: nothing waits for a delayed legacy pass',
+    was: '98 strings each way became correct only through the delayed passes; the Purchase button read "إرسال Purchase Request" until its pass' },
+  // Phase 1
   'T-DISPLAY-01': { where: 'U1', invariant: 'the user bar shows the username exactly as stored, in both languages, through repeated switching',
     was: 'username "Operating Hours" was shown as "ساعات التشغيل" under Arabic' },
   'T-DISPLAY-02': { where: 'U1', invariant: 'employee option "Now" shows "Now" in both languages, through repeated switching',
@@ -196,7 +205,8 @@ const SEED_BUSINESS = {
 };
 // The prototype username of the data scenarios: once rewritten under Arabic.
 const SESSION_NAME = 'Operating Hours';
-const VOCAB_EMPLOYEES = ['Now', 'Now Generator', 'Operating Hours', 'Select employee', 'Save', 'English', 'الآن', 'العربية', 'Mukhtar Mohammed'];
+const VOCAB_EMPLOYEES = ['Now', 'NOW', 'Now Generator', 'Operating Hours', 'Employee & Time', 'IN', 'Selected photo 1', 'Select employee',
+  'Save', 'English', 'الآن', 'العربية', 'Mukhtar Mohammed'];
 const VOCAB_FORM = { 'task-name': 'Now Generator', 'task-desc': 'Operating Hours\nساعات التشغيل', 'po-desc': 'Save Project',
   'po-purpose': 'Select employee / اختر الموظف', 'po-qty': '4', 'po-cost': '250', 'fuel-note': 'Note ملاحظة', 'gen-end-hm': '103' };
 const VOCAB_SELECT = { 'gen-name': 'id_g1', 'fuel-tank': 'id_t1', 'task-employee': 'Now', 'att-employee': 'Now Generator',
@@ -208,7 +218,8 @@ const SEED_NAMES = {
   genops_generator_runs_v1: [],
   genops_fuel_tanks_v1: [tank('id_t1', 'Operating Hours', 1000), tank('id_t2', 'ساعات التشغيل', 1000)],
   genops_fuel_readings_v1: [reading('id_rd1', 'id_t1', '2026-09-24T06:00:00Z', 500, ''), reading('id_rd2', 'id_t2', '2026-09-24T06:00:00Z', 200, '')],
-  genops_fuel_movements_v1: [move('id_m1', 'id_t1', 'id_t2', 10, '2026-09-24T07:00:00Z', 'Now')]
+  // The movement id is system data shown in the Fuel log; "Fuel" is also a Fuel-section UI word.
+  genops_fuel_movements_v1: [move('Fuel', 'id_t1', 'id_t2', 10, '2026-09-24T07:00:00Z', 'Now')]
 };
 
 /* ======================= static server ======================= */
@@ -261,19 +272,50 @@ function pageInit(a) {
         if (!parent || parent.closest('script, style, #toastStack') || !node.nodeValue.trim()) continue;
         out[keyOf(parent) + '/t' + Array.prototype.indexOf.call(parent.childNodes, node)] = node.nodeValue;
       }
-      document.querySelectorAll('[placeholder], [aria-label], [alt], [title]').forEach((el) => {
+      document.querySelectorAll('[placeholder], [aria-label], [alt], [title], option[label]').forEach((el) => {
         if (el.closest('#toastStack')) return;
-        ['placeholder', 'aria-label', 'alt', 'title'].forEach((attr) => {
+        ['placeholder', 'aria-label', 'alt', 'title', 'label'].forEach((attr) => {
           if (el.hasAttribute(attr)) out[keyOf(el) + '@' + attr] = el.getAttribute(attr);
         });
       });
       return out;
     },
-    // Explicitly translated elements whose text is not their data-auth-<lang>.
+    // Explicitly owned UI copy not showing its data-auth-*-<lang> wording:
+    // whole-element text, an element's own text beside its children, and
+    // placeholder / alt / option label attributes.
     explicitMismatches(lang) {
-      return Array.from(document.querySelectorAll('[data-auth-en][data-auth-ar]'))
+      const out = Array.from(document.querySelectorAll('[data-auth-en][data-auth-ar]'))
         .filter((el) => el.textContent !== el.getAttribute('data-auth-' + lang))
         .map((el) => keyOf(el) + ' = ' + JSON.stringify(el.textContent));
+      document.querySelectorAll('[data-auth-text-en][data-auth-text-ar]').forEach((el) => {
+        const own = Array.from(el.childNodes).find((n) => n.nodeType === Node.TEXT_NODE && n.nodeValue.trim());
+        if (!own || own.nodeValue.trim() !== el.getAttribute('data-auth-text-' + lang)) out.push(keyOf(el) + ' own text = ' + JSON.stringify(own && own.nodeValue));
+      });
+      ['placeholder', 'alt', 'label'].forEach((attr) => document.querySelectorAll(`[data-auth-${attr}-en][data-auth-${attr}-ar]`).forEach((el) => {
+        if (el.getAttribute(attr) !== el.getAttribute(`data-auth-${attr}-${lang}`)) out.push(keyOf(el) + '@' + attr + ' = ' + JSON.stringify(el.getAttribute(attr)));
+      }));
+      return out;
+    },
+    explicitTotal: () => ['[data-auth-en][data-auth-ar]', '[data-auth-text-en][data-auth-text-ar]', '[data-auth-placeholder-en]', '[data-auth-alt-en]', '[data-auth-label-en]']
+      .reduce((n, sel) => n + document.querySelectorAll(sel).length, 0),
+    // UI copy in these roots that only the legacy passes could translate:
+    // text with letters, or a placeholder with letters, outside explicit
+    // ownership, raw data (translate="no") and shadow roots.
+    legacyOwned(selectors) {
+      const out = [];
+      const letters = /[A-Za-z؀-ۿ]/;
+      const owned = '[data-auth-en], [data-auth-text-en], [data-auth-label-en], [translate="no"]';
+      document.querySelectorAll(selectors).forEach((root) => {
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        let node;
+        while ((node = walker.nextNode())) {
+          if (letters.test(node.nodeValue) && !node.parentElement.closest(owned)) out.push(keyOf(node.parentElement) + ' = ' + JSON.stringify(node.nodeValue.trim()));
+        }
+        root.querySelectorAll('[placeholder]').forEach((el) => {
+          if (letters.test(el.getAttribute('placeholder')) && !el.hasAttribute('data-auth-placeholder-en')) out.push(keyOf(el) + '@placeholder = ' + JSON.stringify(el.getAttribute('placeholder')));
+        });
+      });
+      return out;
     },
     explicitCount: (root) => (root || document).querySelectorAll('[data-auth-en][data-auth-ar]').length,
     explicitMismatchesIn(selector, lang) {
@@ -310,6 +352,8 @@ function pageInit(a) {
         tankCards: all('#fuelTankList .fuelmgr-name, #fuelOverviewList .fuelmgr-name').map(shadowText),
         movementRoutes: all('.fuelmgr-move-route').map((r) => Array.from(r.children).filter((c) => c.shadowRoot).map(shadowText)),
         movementNotes: all('.fuelmgr-move-notes').map(shadowText),
+        // The movement id (last span of the meta line) and its raw-data marker.
+        movementIds: all('.fuelmgr-move-meta > span:last-of-type').map((s) => [s.textContent, s.getAttribute('translate')]),
         generatorOptions: all('#gen-name option').filter((o) => o.value).map((o) => o.label),
         tankOptions: all('#fuel-tank option').filter((o) => o.value).map((o) => o.label)
       };
@@ -577,7 +621,9 @@ async function run(browser) {
   /* ---------- U1. displayed person / employee data (sections 10 and 19) ---------- */
   await scenario('U1', async () => {
     // Employee names that read like UI words, in both languages.
-    const NAMES = ['Now', 'Now Generator', 'Operating Hours', 'Fuel', 'Save', 'الآن', 'ساعات التشغيل'];
+    // Including words that are explicitly translated UI copy elsewhere (phase 2).
+    const NAMES = ['Now', 'NOW', 'Now Generator', 'Operating Hours', 'Fuel', 'Save', 'Employee & Time', 'IN', 'Selected photo 1',
+      'الآن', 'ساعات التشغيل'];
     const SELECTED = { 'task-employee': 'Now', 'att-employee': 'ساعات التشغيل', 'po-requester': 'Fuel' };
     const h = await open(browser, { lang: 'en', session: user('Operating Hours'), employees: NAMES });
     for (const [id, value] of Object.entries(SELECTED)) await h.set(id, value);
@@ -788,7 +834,7 @@ async function run(browser) {
     const expected = {
       generatorCards: ['Now Generator', 'Fuel', 'Now Generator', 'Fuel'], generatorSizes: ['250 kVA', 'Operating Hours', '250 kVA', 'Operating Hours'],
       tankCards: ['Operating Hours', 'ساعات التشغيل', 'Operating Hours', 'ساعات التشغيل'],
-      movementRoutes: [['Operating Hours', 'ساعات التشغيل']], movementNotes: ['Now'],
+      movementRoutes: [['Operating Hours', 'ساعات التشغيل']], movementNotes: ['Now'], movementIds: [['Fuel', 'no']],
       generatorOptions: ['Now Generator', 'Fuel'], tankOptions: ['Operating Hours', 'ساعات التشغيل']
     };
     const stages = { 'EN load': await h.tr('names') };
@@ -810,7 +856,8 @@ async function run(browser) {
       !document.querySelector('[data-tr-old]'), null, 'cards re-rendered');
     stages['EN card re-render'] = await h.tr('names');
     for (const [stage, names] of Object.entries(stages)) {
-      req(`N1 ${stage}: Generator / Tank names, sizes, movement route and notes shown exactly as stored`, () => assert.deepEqual(names, expected));
+      req(`N1 ${stage}: Generator / Tank names, sizes, movement route, notes and movement id ("Fuel", translate="no") shown exactly as stored`, () =>
+        assert.deepEqual(names, expected));
     }
     req('N1 the editor opens with the exact stored name ("Now Generator")', () => assert.equal(editorValue, 'Now Generator'));
     cleanRun('N1', h);
@@ -842,21 +889,19 @@ async function run(browser) {
     for (const [id, [en, arText]] of Object.entries(STABLE)) {
       req(`P1 #${id} placeholder: EN "${en}", AR "${arText}", EN again "${en}"`, () => assert.deepEqual([en0.ph[id], ar.ph[id], en1.ph[id]], [en, arText, en]));
     }
-    // Translated correctly into Arabic; the way back is T-RT-03 (RT).
+    // Explicit since phase 2: exact both ways, ellipsis included (formerly T-RT-03).
     const TO_AR = { 'fuel-note': ['Add an optional note…', 'أضف ملاحظة اختيارية…'] };
     const SEL_TO_AR = { 'task-employee': ['Select employee…', 'اختر الموظف...'], 'att-employee': ['Select employee…', 'اختر الموظف...'],
-      'po-requester': ['Select employee…', 'اختر الموظف...'], 'att-type': ['Select type…', 'اختر النوع...'], 'gen-name': ['Select generator…', 'اختر المولد...'] };
+      'po-requester': ['Select employee…', 'اختر الموظف...'], 'att-type': ['Select type…', 'اختر النوع...'], 'gen-name': ['Select generator…', 'اختر المولد...'],
+      'fuel-tank': ['Select tank…', 'اختر الخزان…'], 'fuelmgr-from': ['Select tank…', 'اختر الخزان…'], 'fuelmgr-to': ['Select tank…', 'اختر الخزان…'] };
     for (const [id, [en, arText]] of Object.entries(TO_AR)) {
-      req(`P1 #${id} placeholder: EN "${en}", AR "${arText}" (round trip: T-RT-03)`, () => assert.deepEqual([en0.ph[id], ar.ph[id]], [en, arText]));
+      req(`P1 #${id} placeholder: EN "${en}", AR "${arText}", EN again "${en}"`, () => assert.deepEqual([en0.ph[id], ar.ph[id], en1.ph[id]], [en, arText, en]));
     }
     for (const [id, [en, arText]] of Object.entries(SEL_TO_AR)) {
-      req(`P1 #${id} placeholder option: EN "${en}", AR "${arText}" (round trip: T-RT-03)`, () => assert.deepEqual([en0.sel[id], ar.sel[id]], [en, arText]));
+      req(`P1 #${id} placeholder option: EN "${en}", AR "${arText}", EN again "${en}"`, () =>
+        assert.deepEqual([en0.sel[id], ar.sel[id], en1.sel[id]], [en, arText, en]));
     }
-    for (const id of ['fuel-tank', 'fuelmgr-from', 'fuelmgr-to']) {
-      req(`P1 #${id} placeholder option: "Select tank…" / "اختر الخزان…" / "Select tank…"`, () =>
-        assert.deepEqual([en0.sel[id], ar.sel[id], en1.sel[id]], ['Select tank…', 'اختر الخزان…', 'Select tank…']));
-    }
-    debt('T-PH-01', ar.ph['gen-end-hm'] === en0.ph['gen-end-hm'],
+    resolved('T-PH-01', JSON.stringify([en0.ph['gen-end-hm'], ar.ph['gen-end-hm'], en1.ph['gen-end-hm']]) === JSON.stringify(['e.g. 1251.2', 'مثال: 1251.2', 'e.g. 1251.2']),
       `#gen-end-hm placeholder: EN "${en0.ph['gen-end-hm']}", AR "${ar.ph['gen-end-hm']}", EN again "${en1.ph['gen-end-hm']}"`);
     cleanRun('P1', h);
     await h.context.close();
@@ -865,9 +910,11 @@ async function run(browser) {
   /* ---------- O1. select option values and labels (section 15) ---------- */
   await scenario('O1', async () => {
     const h = await open(browser, { lang: 'en', session: user('tester'), seed: SEED_NAMES });
-    const en0 = await h.tr('options');
-    await h.switchTo('ar'); const ar = await h.tr('options');
-    await h.switchTo('en'); const en1 = await h.tr('options');
+    await h.set('att-type', 'BREAK IN');
+    const selected = () => h.ev(() => document.getElementById('att-type').value);
+    const en0 = await h.tr('options'); const selEn0 = await selected();
+    await h.switchTo('ar'); const ar = await h.tr('options'); const selAr = await selected();
+    await h.switchTo('en'); const en1 = await h.tr('options'); const selEn1 = await selected();
     const values = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, v.map((x) => x.value)]));
     req('O1 option.value of every select identical in EN, AR and EN again', () => {
       assert.deepEqual(values(ar), values(en0));
@@ -886,8 +933,17 @@ async function run(browser) {
       assert.deepEqual([names(ar), names(en1)], [names(en0), names(en0)]);
       assert.deepEqual(names(en0), ['Mukhtar Mohammed', 'Essam Hamza', 'Mohammed Jameel', 'Ali Yass']);
     });
-    const arLabels = ar['att-type'].filter((o) => o.value).map((o) => o.text);
-    debt('T-OPT-01', arLabels.join('|') === 'IN|OUT|BREAK OUT|BREAK IN', `Attendance type option text under Arabic: ${JSON.stringify(arLabels)}`);
+    req('O1 the selected Attendance type (BREAK IN) stays selected through EN -> AR -> EN', () =>
+      assert.deepEqual([selEn0, selAr, selEn1], ['BREAK IN', 'BREAK IN', 'BREAK IN']));
+    req('O1 Attendance type option text stays the stable value text in every language', () => {
+      for (const s of [en0, ar, en1]) assert.deepEqual(s['att-type'].filter((o) => o.value).map((o) => o.text), ['IN', 'OUT', 'BREAK OUT', 'BREAK IN']);
+    });
+    // The displayed text of an option is its label (HTML: the label attribute
+    // when present, otherwise the text).
+    const shown = (s) => s['att-type'].filter((o) => o.value).map((o) => o.label);
+    resolved('T-OPT-01', JSON.stringify([shown(en0), shown(ar), shown(en1)]) === JSON.stringify([['IN', 'OUT', 'BREAK OUT', 'BREAK IN'],
+      ['حضور', 'انصراف', 'خروج للاستراحة', 'عودة من الاستراحة'], ['IN', 'OUT', 'BREAK OUT', 'BREAK IN']]),
+      `displayed labels: EN ${JSON.stringify(shown(en0))}, AR ${JSON.stringify(shown(ar))}, EN again ${JSON.stringify(shown(en1))}`);
     cleanRun('O1', h);
     await h.context.close();
   });
@@ -974,7 +1030,10 @@ async function run(browser) {
     await h.page.setInputFiles('#task-photo-gallery', fixture(2));
     await h.until(() => document.querySelectorAll('#task-preview-grid img').length === 2, null, 'second preview');
     const arAdded = await previews();
-    await h.click('#task-preview-grid .rm[data-idx="1"]');
+    await h.switchTo('en'); const enBack = await previews();
+    await h.switchTo('ar');
+    // Removing the first photo renumbers the remaining one.
+    await h.click('#task-preview-grid .rm[data-idx="0"]');
     const afterRemove = await previews();
     await h.set('task-name', 'Photo task'); await h.set('task-employee', 'Ali Yass'); await h.set('task-end-dt', '2026-09-25T12:30');
     await h.set('task-start-dt', '2026-09-25T12:00'); await h.set('task-desc', 'x');
@@ -988,8 +1047,11 @@ async function run(browser) {
     });
     req('I1 a recorded prototype submission clears the attachments and confirms in Arabic', () =>
       assert.deepEqual(afterSubmit, { previews: 0, toast: ['تم تسجيل العملية في النسخة التجريبية.'] }));
-    debt('T-ALT-01', arAfterSwitch.concat(arAdded).some(([alt]) => /^Selected photo \d+$/.test(alt)),
-      `preview alt under Arabic: after switching ${JSON.stringify(arAfterSwitch.map((p) => p[0]))}, added in Arabic ${JSON.stringify(arAdded.map((p) => p[0]))}`);
+    const alts = (list) => list.map((p) => p[0]);
+    resolved('T-ALT-01', JSON.stringify([alts(arAfterSwitch), alts(arAdded), alts(enBack), alts(afterRemove)]) === JSON.stringify([
+      ['الصورة المختارة 1'], ['الصورة المختارة 1', 'الصورة المختارة 2'], ['Selected photo 1', 'Selected photo 2'], ['الصورة المختارة 1']]),
+      `preview alt: after EN->AR ${JSON.stringify(alts(arAfterSwitch))}, added in Arabic ${JSON.stringify(alts(arAdded))}, ` +
+      `back in English ${JSON.stringify(alts(enBack))}, Arabic after removing the first ${JSON.stringify(alts(afterRemove))}`);
     cleanRun('I1', h);
     await h.context.close();
   });
@@ -1019,10 +1081,26 @@ async function run(browser) {
       req(`B1 ${selector}: "${en}" / "${arText}" / "${en}" (no case change, no mixed text)`, () =>
         assert.deepEqual([en0.buttons[i], ar.buttons[i], en1.buttons[i]], [en, arText, en]));
     });
-    req(`B1 the ${en0.now.length} NOW buttons read "NOW" in English and "الآن" in Arabic (the way back: T-RT-01)`, () => {
+    req(`B1 the ${en0.now.length} NOW buttons read "NOW" in English, "الآن" in Arabic and "NOW" again`, () => {
       assert.ok(en0.now.length >= 7);
-      assert.deepEqual([new Set(en0.now), new Set(ar.now)], [new Set(['NOW']), new Set(['الآن'])]);
+      assert.deepEqual([new Set(en0.now), new Set(ar.now), new Set(en1.now)], [new Set(['NOW']), new Set(['الآن']), new Set(['NOW'])]);
     });
+    // The Purchase button is explicitly owned: at the moment of the switch,
+    // before any delayed pass, it is already right and its legacy fix has
+    // nothing left to change.
+    const purchaseFix = [];
+    for (const lang of ['ar', 'en']) {
+      await h.switchTo(lang, false);
+      purchaseFix.push(await h.ev(() => {
+        const button = document.getElementById('btnSubmitPO');
+        const before = button.innerHTML;
+        if (typeof fixPurchaseButtonLanguage === 'function') fixPurchaseButtonLanguage();
+        return [button.innerHTML === before, button.textContent.replace(/\s+/g, ' ').trim()];
+      }));
+      await h.settle();
+    }
+    req('B1 running fixPurchaseButtonLanguage() after the switch leaves the explicitly rendered Purchase button unchanged, in both languages', () =>
+      assert.deepEqual(purchaseFix, [[true, 'إرسال طلب الشراء'], [true, 'Submit Purchase Request']]));
     cleanRun('B1', h);
     await h.context.close();
   });
@@ -1045,8 +1123,10 @@ async function run(browser) {
     }
     info(`RT ${Object.keys(before).length} UI strings captured; ${real.length} changed by EN -> AR -> EN; ${whitespaceOnly.length} whitespace-only`);
     whitespaceOnly.forEach((d) => info(`RT whitespace-only: ${d.key}: ${JSON.stringify(d.before)} -> ${JSON.stringify(d.after)}`));
-    req('RT every UI string that EN -> AR -> EN changes is a registered KNOWN_DEBT (no unregistered drift)', () => assert.deepEqual(unregistered, []));
-    for (const [id] of RT_DEBT) debt(id, byDebt[id].length > 0, byDebt[id].length ? byDebt[id].join('\n      ') : 'no such change');
+    req(`RT EN -> AR -> EN returns every one of the ${Object.keys(before).length} UI strings and attributes to its exact source text`, () =>
+      assert.deepEqual(diffs.map((d) => `${d.key}: ${JSON.stringify(d.before)} -> ${JSON.stringify(d.after)}`), []));
+    req('RT no round-trip change outside the formerly registered classes', () => assert.deepEqual(unregistered, []));
+    for (const [id] of RT_DEBT) resolved(id, byDebt[id].length === 0, byDebt[id].length ? byDebt[id].join('\n      ') : 'no such change');
     cleanRun('RT', h);
     await h.context.close();
   });
@@ -1065,7 +1145,8 @@ async function run(browser) {
     const navEn = await navState(h);
     await h.settle();
     const enSettled = await h.tr('snap');
-    req('TM explicitly translated text (data-auth-*) is complete at the moment of the switch, both ways', () => assert.deepEqual(explicit, { ar: [], en: [] }));
+    req('TM explicitly owned UI copy (text, own text, placeholder / alt / label attributes) is complete at the moment of the switch, both ways', () =>
+      assert.deepEqual(explicit, { ar: [], en: [] }));
     req('TM navigation labels and ARIA labels are complete at the moment of the switch, both ways', () => {
       const e = [expectedNav('ar'), expectedNav('en')];
       assert.deepEqual([navAr.drawer, navAr.quick, navAr.aria], [e[0].drawer, e[0].quick, e[0].aria]);
@@ -1078,13 +1159,57 @@ async function run(browser) {
     const atLoad = await h.tr('snap');
     await h.settle();
     const loadLate = diffSnap(atLoad, await h.tr('snap'));
+    await h.switchTo('en');
+    await h.reload();
+    const atEnLoad = await h.tr('snap');
+    await h.settle();
+    const enLoadLate = diffSnap(atEnLoad, await h.tr('snap'));
     const sample = (list) => list.slice(0, 4).map((d) => `${d.key}: ${JSON.stringify(norm(d.before))} -> ${JSON.stringify(norm(d.after))}`).join('; ');
-    debt('T-TIME-01', late.ar.length > 0 || late.en.length > 0,
-      `${late.ar.length} UI strings become Arabic only through delayed passes (e.g. ${sample(late.ar)}); ${late.en.length} become English only through delayed passes; ` +
-      `after an Arabic page load the delayed passes still change ${loadLate.length}: ${sample(loadLate)}`);
+    resolved('T-TIME-01', late.ar.length + late.en.length + loadLate.length + enLoadLate.length === 0,
+      `changed by delayed passes: after EN->AR ${late.ar.length} (${sample(late.ar)}); after AR->EN ${late.en.length} (${sample(late.en)}); ` +
+      `after an Arabic page load ${loadLate.length} (${sample(loadLate)}); after an English page load ${enLoadLate.length} (${sample(enLoadLate)})`);
     cleanRun('TM', h);
     await h.context.close();
   });
+
+  /* ---------- X1. explicit ownership at creation (phase 2) ----------
+     The converted screens (Generator Run, Fuel Reading, Tasks, Management,
+     Supply), created in a language: correct at once, before any delayed
+     legacy pass runs; nothing changes once the passes have run; no UI copy
+     there is left to the legacy passes; a full legacy sweep changes none of it. */
+  const SCREENS = '#page-generators, #page-tasks, #page-attendance, #page-purchase';
+  const NEUTRAL = ['IQD']; // a currency code, the same in both languages
+  for (const lang of ['en', 'ar']) {
+    await scenario('X1', async () => {
+      const L = lang.toUpperCase();
+      const h = await open(browser, { lang, session: user('tester'), seed: SEED_NAMES, settle: false });
+      // The page-load legacy passes are still pending here.
+      const atLoad = { mismatches: await h.tr('explicitMismatches', lang), total: await h.tr('explicitTotal'), snap: await h.tr('snap'),
+        employee: await h.ev(() => Array.from(document.querySelectorAll('#task-employee, #att-employee, #po-requester'))
+          .map((select) => { const option = select.querySelector('option[value=""]'); return [option.textContent, option.hasAttribute('data-auth-en')]; })) };
+      await h.settle();
+      const settled = await h.tr('snap');
+      const legacy = (await h.tr('legacyOwned', SCREENS)).filter((line) => !NEUTRAL.some((word) => line.endsWith(' = ' + JSON.stringify(word))));
+      const sweep = await h.ev(([names, l, screens]) => {
+        const read = () => Array.from(document.querySelectorAll(screens)).map((root) => root.innerHTML).join('\n');
+        const before = read();
+        const called = names.filter((name) => typeof window[name] === 'function');
+        called.forEach((name) => window[name](l));
+        return { called, same: read() === before };
+      }, [LEGACY_SWEEP, lang, SCREENS]);
+      req(`X1 ${L} load: all ${atLoad.total} explicitly owned UI strings are in ${L} at once, before any delayed pass`, () =>
+        assert.deepEqual(atLoad.mismatches, []));
+      req(`X1 ${L} load: the three employee placeholders are created in ${L} and explicitly owned`, () =>
+        assert.deepEqual(atLoad.employee, Array(3).fill([lang === 'ar' ? 'اختر الموظف...' : 'Select employee…', true])));
+      req(`X1 ${L} load: nothing changes once the page-load legacy passes have run`, () =>
+        assert.deepEqual(diffSnap(atLoad.snap, settled).map((d) => `${d.key}: ${JSON.stringify(d.before)} -> ${JSON.stringify(d.after)}`), []));
+      req(`X1 ${L}: no UI copy in Generator Run, Fuel Reading, Tasks, Management or Supply is left to the legacy passes`, () =>
+        assert.deepEqual(legacy, []));
+      req(`X1 ${L}: a full legacy sweep (${sweep.called.length} passes) changes nothing in those screens`, () => assert.equal(sweep.same, true));
+      cleanRun(`X1 ${L}`, h);
+      await h.context.close();
+    });
+  }
 
   /* ---------- S1. login / session timing (section 22) ---------- */
   await scenario('S1', async () => {

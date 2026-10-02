@@ -1441,8 +1441,8 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   <div class="page-header sec-head" id="secHeadGen" role="button" tabindex="0" aria-expanded="true" aria-controls="secBodyGen">
     <div class="accent-strip"></div>
     <div>
-      <h1>Generators</h1>
-      <div class="sub">Operating hours &amp; service log</div>
+      <h1 data-auth-en="Generators" data-auth-ar="المولدات">Generators</h1>
+      <div class="sub" data-auth-en="Operating hours &amp; service log" data-auth-ar="سجل ساعات التشغيل والخدمة">Operating hours &amp; service log</div>
     </div>
   </div>
 
@@ -1543,16 +1543,16 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
 
   <form id="formGenerators" novalidate>
     <div class="card">
-      <div class="card-title">
+      <div class="card-title" data-auth-text-en="Generator &amp; Run Time" data-auth-text-ar="المولد ووقت التشغيل">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="M7 7V5a2 2 0 012-2h6a2 2 0 012 2v2"/><path d="M12 12v3M9 13.5h6"/></svg>
         Generator &amp; Run Time
       </div>
 
       <div class="field">
-        <label for="gen-name">Generator Name<span class="req">*</span></label>
+        <label for="gen-name" data-auth-text-en="Generator Name" data-auth-text-ar="اسم المولد">Generator Name<span class="req">*</span></label>
         <div class="select-wrap">
           <select class="input" id="gen-name" required>
-            <option value="" disabled selected>Select generator…</option>
+            <option value="" disabled selected data-auth-en="Select generator…" data-auth-ar="اختر المولد...">Select generator…</option>
           </select>
         </div>
         <div class="error-msg" id="err-gen-name" data-auth-en="Please select a generator" data-auth-ar="اختر المولدة">Please select a generator</div>
@@ -1560,41 +1560,41 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
       </div>
 
       <div class="field">
-        <label for="gen-start-dt">Start Date &amp; Time<span class="req">*</span></label>
+        <label for="gen-start-dt" data-auth-text-en="Start Date &amp; Time" data-auth-text-ar="تاريخ ووقت البداية">Start Date &amp; Time<span class="req">*</span></label>
         <div class="dt-row">
           <input class="input" type="datetime-local" id="gen-start-dt" required readonly aria-readonly="true" step="any">
-          <button type="button" class="btn-now" data-target="gen-start-dt" disabled aria-disabled="true">NOW</button>
+          <button type="button" class="btn-now" data-target="gen-start-dt" disabled aria-disabled="true" data-auth-en="NOW" data-auth-ar="الآن">NOW</button>
         </div>
         <div class="error-msg" id="err-gen-start-dt" data-auth-en="Start date &amp; time is required" data-auth-ar="تاريخ ووقت البداية مطلوب">Start date &amp; time is required</div>
       </div>
 
       <div class="field">
-        <label for="gen-start-hm">Start Hour Meter<span class="req">*</span><span class="hint">Reading at run start, in hours</span></label>
+        <label for="gen-start-hm" data-auth-text-en="Start Hour Meter" data-auth-text-ar="عداد البداية">Start Hour Meter<span class="req">*</span><span class="hint" data-auth-en="Reading at run start, in hours" data-auth-ar="قراءة بداية التشغيل بالساعات">Reading at run start, in hours</span></label>
         <input class="input" type="number" inputmode="decimal" step="0.1" min="0" id="gen-start-hm" placeholder="—" readonly aria-readonly="true" autocomplete="off" required>
         <div id="gen-opening-status" role="status" style="font-size:11px;color:var(--steel-light);margin-top:6px;line-height:1.4"></div>
         <div class="error-msg" id="err-gen-start-hm" data-auth-en="Enter a valid start hour meter reading" data-auth-ar="أدخل قراءة عداد بداية صحيحة">Enter a valid start hour meter reading</div>
       </div>
 
       <div class="field">
-        <label for="gen-end-dt">End Date &amp; Time<span class="req">*</span></label>
+        <label for="gen-end-dt" data-auth-text-en="End Date &amp; Time" data-auth-text-ar="تاريخ ووقت النهاية">End Date &amp; Time<span class="req">*</span></label>
         <div class="dt-row">
           <input class="input" type="datetime-local" id="gen-end-dt" required>
-          <button type="button" class="btn-now" data-target="gen-end-dt">NOW</button>
+          <button type="button" class="btn-now" data-target="gen-end-dt" data-auth-en="NOW" data-auth-ar="الآن">NOW</button>
         </div>
         <div class="error-msg" id="err-gen-end-dt" data-auth-en="End date &amp; time is required" data-auth-ar="تاريخ ووقت النهاية مطلوب">End date &amp; time is required</div>
       </div>
 
       <div class="field">
-        <label for="gen-end-hm">End Hour Meter<span class="req">*</span><span class="hint">Reading at run end, in hours</span></label>
-        <input class="input" type="number" inputmode="decimal" step="0.1" min="0" id="gen-end-hm" placeholder="e.g. 1251.2" required>
+        <label for="gen-end-hm" data-auth-text-en="End Hour Meter" data-auth-text-ar="عداد النهاية">End Hour Meter<span class="req">*</span><span class="hint" data-auth-en="Reading at run end, in hours" data-auth-ar="قراءة نهاية التشغيل بالساعات">Reading at run end, in hours</span></label>
+        <input class="input" type="number" inputmode="decimal" step="0.1" min="0" id="gen-end-hm" placeholder="e.g. 1251.2" required data-auth-placeholder-en="e.g. 1251.2" data-auth-placeholder-ar="مثال: 1251.2">
         <div class="error-msg" id="err-gen-end-hm" data-auth-en="Enter a valid end hour meter reading" data-auth-ar="أدخل قراءة عداد نهاية صحيحة">Enter a valid end hour meter reading</div>
       </div>
 
       <div class="field">
-        <label>Operating Hours <span class="hint">Auto-calculated — End minus Start</span></label>
+        <label data-auth-text-en="Operating Hours" data-auth-text-ar="ساعات التشغيل">Operating Hours <span class="hint" data-auth-en="Auto-calculated — End minus Start" data-auth-ar="يحسب تلقائياً — النهاية ناقص البداية">Auto-calculated — End minus Start</span></label>
         <div class="meter-display">
-          <span class="ml-label">RUNTIME</span>
-          <span><span class="ml-value zero" id="opHoursValue">0.0</span><span class="ml-unit">HRS</span></span>
+          <span class="ml-label" data-auth-en="RUNTIME" data-auth-ar="وقت التشغيل">RUNTIME</span>
+          <span><span class="ml-value zero" id="opHoursValue">0.0</span><span class="ml-unit" data-auth-en="HRS" data-auth-ar="ساعة">HRS</span></span>
         </div>
       </div>
     </div>
@@ -1608,7 +1608,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
     </div>
 
     <div class="card" id="genmgrChecklistCard" hidden>
-      <div class="card-title">
+      <div class="card-title" data-auth-text-en="Oils &amp; Filters Changed" data-auth-text-ar="الزيوت والفلاتر المستبدلة">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 005.6 15a1.65 1.65 0 00-1.51-1H4a2 2 0 110-4h.09A1.65 1.65 0 005.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
         Oils &amp; Filters Changed
       </div>
@@ -1619,7 +1619,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
     <div class="submit-bar">
       <button type="submit" class="btn-submit" id="btnSubmitGen">
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
-        <span class="btn-label">Submit Generator Record</span>
+        <span class="btn-label" data-auth-en="Submit Generator Record" data-auth-ar="اعتماد سجل المولد">Submit Generator Record</span>
         <span class="spinner"></span>
       </button>
     </div>
@@ -1631,8 +1631,8 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   <div class="page-header sec-head" id="secHeadFuel" role="button" tabindex="0" aria-expanded="false" aria-controls="secBodyFuel">
     <div class="accent-strip"></div>
     <div>
-      <h1>Fuel Consumption</h1>
-      <div class="sub">Fuel reading and consumption record</div>
+      <h1 data-auth-en="Fuel Consumption" data-auth-ar="استهلاك الوقود">Fuel Consumption</h1>
+      <div class="sub" data-auth-en="Fuel reading and consumption record" data-auth-ar="سجل قراءات واستهلاك الوقود">Fuel reading and consumption record</div>
     </div>
   </div>
 
@@ -1716,7 +1716,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   <form id="formFuel" novalidate>
 
     <div class="card">
-      <div class="card-title">
+      <div class="card-title" data-auth-text-en="Fuel Readings" data-auth-text-ar="قراءات الوقود">
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -1745,7 +1745,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
       </div>
 
       <div class="field">
-        <label for="fuel-first-dt">
+        <label for="fuel-first-dt" data-auth-text-en="Date and Time of First Reading" data-auth-text-ar="تاريخ ووقت القراءة الأولى">
           Date and Time of First Reading
           <span class="req">*</span>
         </label>
@@ -1760,21 +1760,21 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
           <button
             type="button"
             class="btn-now"
-            data-target="fuel-first-dt" disabled aria-disabled="true">
+            data-target="fuel-first-dt" disabled aria-disabled="true" data-auth-en="NOW" data-auth-ar="الآن">
             NOW
           </button>
         </div>
 
-        <div class="error-msg" id="err-fuel-first-dt">
+        <div class="error-msg" id="err-fuel-first-dt" data-auth-en="First reading date and time is required" data-auth-ar="تاريخ ووقت القراءة الأولى مطلوب">
           First reading date and time is required
         </div>
       </div>
 
       <div class="field">
-        <label for="fuel-first-reading">
+        <label for="fuel-first-reading" data-auth-text-en="First Reading" data-auth-text-ar="القراءة الأولى">
           First Reading
           <span class="req">*</span>
-          <span class="hint">Fuel quantity in litres</span>
+          <span class="hint" data-auth-en="Fuel quantity in litres" data-auth-ar="كمية الوقود باللتر">Fuel quantity in litres</span>
         </label>
 
         <input
@@ -1789,13 +1789,13 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
           required>
         <div id="fuel-opening-status" role="status" style="font-size:11px;color:var(--steel-light);margin-top:6px;line-height:1.4"></div>
 
-        <div class="error-msg" id="err-fuel-first-reading">
+        <div class="error-msg" id="err-fuel-first-reading" data-auth-en="Enter a valid first reading" data-auth-ar="أدخل قراءة أولى صحيحة">
           Enter a valid first reading
         </div>
       </div>
 
       <div class="field">
-        <label for="fuel-second-dt">
+        <label for="fuel-second-dt" data-auth-text-en="Date and Time of Second Reading" data-auth-text-ar="تاريخ ووقت القراءة الثانية">
           Date and Time of Second Reading
           <span class="req">*</span>
         </label>
@@ -1810,12 +1810,12 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
           <button
             type="button"
             class="btn-now"
-            data-target="fuel-second-dt">
+            data-target="fuel-second-dt" data-auth-en="NOW" data-auth-ar="الآن">
             NOW
           </button>
         </div>
 
-        <div class="error-msg" id="err-fuel-second-dt">
+        <div class="error-msg" id="err-fuel-second-dt" data-auth-en="Second reading date and time is required" data-auth-ar="تاريخ ووقت القراءة الثانية مطلوب">
           Second reading date and time is required
         </div>
       </div>
@@ -1828,10 +1828,10 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
       </div>
 
       <div class="field">
-        <label for="fuel-second-reading">
+        <label for="fuel-second-reading" data-auth-text-en="Second Reading" data-auth-text-ar="القراءة الثانية">
           Second Reading
           <span class="req">*</span>
-          <span class="hint">Fuel quantity in litres</span>
+          <span class="hint" data-auth-en="Fuel quantity in litres" data-auth-ar="كمية الوقود باللتر">Fuel quantity in litres</span>
         </label>
 
         <input
@@ -1842,15 +1842,15 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
           step="0.01"
           id="fuel-second-reading"
           placeholder="e.g. 4700"
-          required>
+          required data-auth-placeholder-en="e.g. 4700" data-auth-placeholder-ar="مثال: 4700">
 
-        <div class="error-msg" id="err-fuel-second-reading">
+        <div class="error-msg" id="err-fuel-second-reading" data-auth-en="Second reading must not exceed the first reading" data-auth-ar="يجب ألا تتجاوز القراءة الثانية القراءة الأولى">
           Second reading must not exceed the first reading
         </div>
       </div>
 
       <div class="field">
-        <label for="fuel-consumption">
+        <label for="fuel-consumption" data-auth-text-en="Consumption" data-auth-text-ar="الاستهلاك">
           Consumption
           <span class="hint" data-auth-en="Auto-calculated — First Reading + transfers in − transfers out − Second Reading" data-auth-ar="يُحسب تلقائياً — القراءة الأولى + المناقلات الداخلة − المناقلات الخارجة − القراءة الثانية">Auto-calculated — First Reading + transfers in − transfers out − Second Reading</span>
         </label>
@@ -1863,21 +1863,21 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
             value="0"
             readonly>
 
-          <span class="iqd-suffix">L</span>
+          <span class="iqd-suffix" data-auth-en="L" data-auth-ar="لتر">L</span>
         </div>
         <div class="fuelmgr-status" id="fuel-interval-status" role="status"></div>
         <div class="error-msg" id="err-fuel-consumption"></div>
       </div>
 
       <div class="field">
-        <label for="fuel-note">Note</label>
+        <label for="fuel-note" data-auth-en="Note" data-auth-ar="ملاحظة">Note</label>
 
         <textarea
           class="input"
           id="fuel-note"
           rows="4"
           maxlength="1000"
-          placeholder="Add an optional note…"></textarea>
+          placeholder="Add an optional note…" data-auth-placeholder-en="Add an optional note…" data-auth-placeholder-ar="أضف ملاحظة اختيارية…"></textarea>
       </div>
     </div>
 
@@ -1896,7 +1896,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
           <path d="M20 6L9 17l-5-5"/>
         </svg>
 
-        <span class="btn-label">
+        <span class="btn-label" data-auth-en="Submit Fuel Consumption" data-auth-ar="اعتماد استهلاك الوقود">
           Submit Fuel Consumption
         </span>
 
@@ -1924,25 +1924,25 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   <div class="page-header">
     <div class="accent-strip"></div>
     <div>
-      <h1>Tasks</h1>
-      <div class="sub">Maintenance task reporting</div>
+      <h1 data-auth-en="Tasks" data-auth-ar="المهام">Tasks</h1>
+      <div class="sub" data-auth-en="Maintenance task reporting" data-auth-ar="تسجيل مهام الصيانة">Maintenance task reporting</div>
     </div>
   </div>
 
   <form id="formTasks" novalidate>
     <div class="card">
-      <div class="card-title">
+      <div class="card-title" data-auth-text-en="Task Details" data-auth-text-ar="تفاصيل المهمة">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
         Task Details
       </div>
 
       <div class="field">
-        <label for="task-name">Task Name<span class="req">*</span></label>
-        <input class="input" type="text" id="task-name" placeholder="e.g. Replace fuel filter housing seal" required>
+        <label for="task-name" data-auth-text-en="Task Name" data-auth-text-ar="اسم المهمة">Task Name<span class="req">*</span></label>
+        <input class="input" type="text" id="task-name" placeholder="e.g. Replace fuel filter housing seal" required data-auth-placeholder-en="e.g. Replace fuel filter housing seal" data-auth-placeholder-ar="مثال: تبديل سيل قاعدة فلتر الوقود">
         <div class="error-msg" id="err-task-name" data-auth-en="Task name is required" data-auth-ar="اسم المهمة مطلوب">Task name is required</div>
       </div>
 <div class="field">
-  <label for="task-employee">Submitted By<span class="req">*</span></label>
+  <label for="task-employee" data-auth-text-en="Submitted By" data-auth-text-ar="مقدم الطلب">Submitted By<span class="req">*</span></label>
   <div class="select-wrap">
     <select class="input" id="task-employee" required>
       <option value="" disabled selected>Select employee…</option>
@@ -1952,50 +1952,50 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
 </div>
        
       <div class="field">
-        <label for="task-start-dt">Task Start Date &amp; Time<span class="req">*</span></label>
+        <label for="task-start-dt" data-auth-text-en="Task Start Date &amp; Time" data-auth-text-ar="تاريخ ووقت بداية المهمة">Task Start Date &amp; Time<span class="req">*</span></label>
         <div class="dt-row">
           <input class="input" type="datetime-local" id="task-start-dt" required>
-          <button type="button" class="btn-now" data-target="task-start-dt">NOW</button>
+          <button type="button" class="btn-now" data-target="task-start-dt" data-auth-en="NOW" data-auth-ar="الآن">NOW</button>
         </div>
         <div class="error-msg" id="err-task-start-dt" data-auth-en="Start date &amp; time is required" data-auth-ar="تاريخ ووقت البداية مطلوب">Start date &amp; time is required</div>
       </div>
 
       <div class="field">
-        <label for="task-end-dt">Task End Date &amp; Time<span class="req">*</span></label>
+        <label for="task-end-dt" data-auth-text-en="Task End Date &amp; Time" data-auth-text-ar="تاريخ ووقت نهاية المهمة">Task End Date &amp; Time<span class="req">*</span></label>
         <div class="dt-row">
           <input class="input" type="datetime-local" id="task-end-dt" required>
-          <button type="button" class="btn-now" data-target="task-end-dt">NOW</button>
+          <button type="button" class="btn-now" data-target="task-end-dt" data-auth-en="NOW" data-auth-ar="الآن">NOW</button>
         </div>
         <div class="error-msg" id="err-task-end-dt" data-auth-en="End date &amp; time is required" data-auth-ar="تاريخ ووقت النهاية مطلوب">End date &amp; time is required</div>
       </div>
 
       <div class="field">
-        <label for="task-desc">Task Description<span class="req">*</span></label>
-        <textarea class="input" id="task-desc" rows="4" maxlength="1000" placeholder="Describe the work performed, parts used, observations…" required></textarea>
+        <label for="task-desc" data-auth-text-en="Task Description" data-auth-text-ar="وصف المهمة">Task Description<span class="req">*</span></label>
+        <textarea class="input" id="task-desc" rows="4" maxlength="1000" placeholder="Describe the work performed, parts used, observations…" required data-auth-placeholder-en="Describe the work performed, parts used, observations…" data-auth-placeholder-ar="اكتب العمل المنجز والمواد المستخدمة والملاحظات…"></textarea>
         <div class="char-count"><span id="taskDescCount">0</span>/1000</div>
         <div class="error-msg" id="err-task-desc" data-auth-en="Task description is required" data-auth-ar="وصف المهمة مطلوب">Task description is required</div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">
+      <div class="card-title" data-auth-text-en="Task Photos" data-auth-text-ar="صور المهمة">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
         Task Photos
       </div>
       <div class="field" style="margin-bottom:0;">
         <!-- No `for`: the target is a div, not a labelable control. The zone keeps its own click handler. -->
-        <label>Photos<span class="hint">Optional, multiple allowed — compressed automatically</span></label>
+        <label data-auth-text-en="Photos" data-auth-text-ar="الصور">Photos<span class="hint" data-auth-en="Optional, multiple allowed — compressed automatically" data-auth-ar="اختياري، يمكن إضافة أكثر من صورة — يتم ضغطها تلقائياً">Optional, multiple allowed — compressed automatically</span></label>
         <div class="photo-zone" id="task-photo-zone">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-          <div class="pz-title">Tap to add photos</div>
-          <div class="pz-sub">Camera or gallery</div>
+          <div class="pz-title" data-auth-en="Tap to add photos" data-auth-ar="اضغط لإضافة الصور">Tap to add photos</div>
+          <div class="pz-sub" data-auth-en="Camera or gallery" data-auth-ar="الكاميرا أو المعرض">Camera or gallery</div>
         </div>
         <div class="photo-actions">
-          <button type="button" class="photo-btn" id="task-cam-btn">
+          <button type="button" class="photo-btn" id="task-cam-btn" data-auth-text-en="Camera" data-auth-text-ar="الكاميرا">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
             Camera
           </button>
-          <button type="button" class="photo-btn" id="task-gal-btn">
+          <button type="button" class="photo-btn" id="task-gal-btn" data-auth-text-en="Gallery" data-auth-text-ar="المعرض">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
             Gallery
           </button>
@@ -2009,7 +2009,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
     <div class="submit-bar">
       <button type="submit" class="btn-submit" id="btnSubmitTask">
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
-        <span class="btn-label">Submit Task</span>
+        <span class="btn-label" data-auth-en="Submit Task" data-auth-ar="اعتماد المهمة">Submit Task</span>
         <span class="spinner"></span>
       </button>
     </div>
@@ -2022,8 +2022,8 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   <div class="page-header sec-head" id="secHeadAttendance" role="button" tabindex="0" aria-expanded="false" aria-controls="secBodyAttendance">
     <div class="accent-strip"></div>
     <div>
-      <h1>Attendance</h1>
-      <div class="sub">Clock in, out &amp; breaks</div>
+      <h1 data-auth-en="Attendance" data-auth-ar="الحضور">Attendance</h1>
+      <div class="sub" data-auth-en="Clock in, out &amp; breaks" data-auth-ar="تسجيل الحضور والانصراف والاستراحة">Clock in, out &amp; breaks</div>
     </div>
   </div>
 
@@ -2031,13 +2031,13 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
 
   <form id="formAttendance" novalidate>
     <div class="card">
-      <div class="card-title">
+      <div class="card-title" data-auth-text-en="Employee &amp; Time" data-auth-text-ar="الموظف والوقت">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         Employee &amp; Time
       </div>
 
       <div class="field">
-        <label for="att-employee">Employee Name<span class="req">*</span></label>
+        <label for="att-employee" data-auth-text-en="Employee Name" data-auth-text-ar="اسم الموظف">Employee Name<span class="req">*</span></label>
         <div class="select-wrap">
           <select class="input" id="att-employee" required>
             <option value="" disabled selected>Select employee…</option>
@@ -2047,48 +2047,48 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
       </div>
 
       <div class="field">
-        <label for="att-type">Attendance Type<span class="req">*</span></label>
+        <label for="att-type" data-auth-text-en="Attendance Type" data-auth-text-ar="نوع الحضور">Attendance Type<span class="req">*</span></label>
         <div class="select-wrap">
           <select class="input" id="att-type" required>
-            <option value="" disabled selected>Select type…</option>
-            <option value="IN">IN</option>
-            <option value="OUT">OUT</option>
-            <option value="BREAK OUT">BREAK OUT</option>
-            <option value="BREAK IN">BREAK IN</option>
+            <option value="" disabled selected data-auth-en="Select type…" data-auth-ar="اختر النوع...">Select type…</option>
+            <option value="IN" data-auth-label-en="IN" data-auth-label-ar="حضور">IN</option>
+            <option value="OUT" data-auth-label-en="OUT" data-auth-label-ar="انصراف">OUT</option>
+            <option value="BREAK OUT" data-auth-label-en="BREAK OUT" data-auth-label-ar="خروج للاستراحة">BREAK OUT</option>
+            <option value="BREAK IN" data-auth-label-en="BREAK IN" data-auth-label-ar="عودة من الاستراحة">BREAK IN</option>
           </select>
         </div>
         <div class="error-msg" id="err-att-type" data-auth-en="Please select attendance type" data-auth-ar="اختر نوع الحضور">Please select attendance type</div>
       </div>
 
       <div class="field" style="margin-bottom:0;">
-        <label for="att-dt">Date &amp; Time<span class="req">*</span></label>
+        <label for="att-dt" data-auth-text-en="Date &amp; Time" data-auth-text-ar="التاريخ والوقت">Date &amp; Time<span class="req">*</span></label>
         <div class="dt-row">
           <input class="input" type="datetime-local" id="att-dt" required>
-          <button type="button" class="btn-now" data-target="att-dt">NOW</button>
+          <button type="button" class="btn-now" data-target="att-dt" data-auth-en="NOW" data-auth-ar="الآن">NOW</button>
         </div>
         <div class="error-msg" id="err-att-dt" data-auth-en="Date &amp; time is required" data-auth-ar="التاريخ والوقت مطلوب">Date &amp; time is required</div>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-title">
+      <div class="card-title" data-auth-text-en="Photo Verification" data-auth-text-ar="التحقق بالصورة">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
         Photo Verification
       </div>
       <div class="field" style="margin-bottom:0;">
         <!-- No `for`: the target is a div, not a labelable control. The zone keeps its own click handler. -->
-        <label>Photo<span class="req">*</span><span class="hint">Required for verification — compressed automatically</span></label>
+        <label data-auth-text-en="Photo" data-auth-text-ar="الصورة">Photo<span class="req">*</span><span class="hint" data-auth-en="Required for verification — compressed automatically" data-auth-ar="مطلوبة للتحقق — يتم ضغطها تلقائياً">Required for verification — compressed automatically</span></label>
         <div class="photo-zone" id="att-photo-zone">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-          <div class="pz-title">Tap to add photo</div>
-          <div class="pz-sub">Camera or gallery</div>
+          <div class="pz-title" data-auth-en="Tap to add photo" data-auth-ar="اضغط لإضافة الصورة">Tap to add photo</div>
+          <div class="pz-sub" data-auth-en="Camera or gallery" data-auth-ar="الكاميرا أو المعرض">Camera or gallery</div>
         </div>
         <div class="photo-actions">
-          <button type="button" class="photo-btn" id="att-cam-btn">
+          <button type="button" class="photo-btn" id="att-cam-btn" data-auth-text-en="Camera" data-auth-text-ar="الكاميرا">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
             Camera
           </button>
-          <button type="button" class="photo-btn" id="att-gal-btn">
+          <button type="button" class="photo-btn" id="att-gal-btn" data-auth-text-en="Gallery" data-auth-text-ar="المعرض">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
             Gallery
           </button>
@@ -2103,7 +2103,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
     <div class="submit-bar">
       <button type="submit" class="btn-submit" id="btnSubmitAtt">
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
-        <span class="btn-label">Submit Attendance</span>
+        <span class="btn-label" data-auth-en="Submit Attendance" data-auth-ar="اعتماد الحضور">Submit Attendance</span>
         <span class="spinner"></span>
       </button>
     </div>
@@ -2116,8 +2116,8 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   <div class="page-header sec-head" id="secHeadPurchase" role="button" tabindex="0" aria-expanded="false" aria-controls="secBodyPurchase">
     <div class="accent-strip"></div>
     <div>
-      <h1>Purchase Requests</h1>
-      <div class="sub">Purchase requests and procurement records</div>
+      <h1 data-auth-en="Purchase Requests" data-auth-ar="طلبات الشراء">Purchase Requests</h1>
+      <div class="sub" data-auth-en="Purchase requests and procurement records" data-auth-ar="طلبات الشراء وسجلات التوريد">Purchase requests and procurement records</div>
     </div>
   </div>
 
@@ -2125,13 +2125,13 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
 
   <form id="formPurchase" novalidate>
     <div class="card">
-      <div class="card-title">
+      <div class="card-title" data-auth-text-en="Request Details" data-auth-text-ar="تفاصيل الطلب">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><path d="M3 6h18M16 10a4 4 0 01-8 0"/></svg>
         Request Details
       </div>
 
       <div class="field">
-        <label for="po-requester">Requester Name<span class="req">*</span></label>
+        <label for="po-requester" data-auth-text-en="Requester Name" data-auth-text-ar="اسم مقدم الطلب">Requester Name<span class="req">*</span></label>
         <div class="select-wrap">
           <select class="input" id="po-requester" required>
             <option value="" disabled selected>Select requester…</option>
@@ -2141,25 +2141,25 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
       </div>
 
       <div class="field">
-        <label for="po-desc">Purchase Description<span class="req">*</span></label>
-        <textarea class="input" id="po-desc" rows="3" maxlength="500" placeholder="What needs to be purchased?" required></textarea>
+        <label for="po-desc" data-auth-text-en="Purchase Description" data-auth-text-ar="وصف الشراء">Purchase Description<span class="req">*</span></label>
+        <textarea class="input" id="po-desc" rows="3" maxlength="500" placeholder="What needs to be purchased?" required data-auth-placeholder-en="What needs to be purchased?" data-auth-placeholder-ar="ما المطلوب شراؤه؟"></textarea>
         <div class="error-msg" id="err-po-desc" data-auth-en="Purchase description is required" data-auth-ar="وصف الشراء مطلوب">Purchase description is required</div>
       </div>
 
       <div class="field">
-        <label for="po-purpose">Purpose of Purchase<span class="req">*</span></label>
-        <textarea class="input" id="po-purpose" rows="3" maxlength="500" placeholder="Why is this needed?" required></textarea>
+        <label for="po-purpose" data-auth-text-en="Purpose of Purchase" data-auth-text-ar="الغرض من الشراء">Purpose of Purchase<span class="req">*</span></label>
+        <textarea class="input" id="po-purpose" rows="3" maxlength="500" placeholder="Why is this needed?" required data-auth-placeholder-en="Why is this needed?" data-auth-placeholder-ar="لماذا هذا مطلوب؟"></textarea>
         <div class="error-msg" id="err-po-purpose" data-auth-en="Purpose of purchase is required" data-auth-ar="الغرض من الشراء مطلوب">Purpose of purchase is required</div>
       </div>
 
       <div class="field-row-2">
         <div class="field">
-          <label for="po-qty">Quantity<span class="req">*</span></label>
-          <input class="input" type="number" inputmode="numeric" min="1" step="1" id="po-qty" placeholder="e.g. 4" required>
+          <label for="po-qty" data-auth-text-en="Quantity" data-auth-text-ar="الكمية">Quantity<span class="req">*</span></label>
+          <input class="input" type="number" inputmode="numeric" min="1" step="1" id="po-qty" placeholder="e.g. 4" required data-auth-placeholder-en="e.g. 4" data-auth-placeholder-ar="مثال: 4">
           <div class="error-msg" id="err-po-qty" data-auth-en="Enter a valid quantity" data-auth-ar="أدخل كمية صحيحة">Enter a valid quantity</div>
         </div>
         <div class="field">
-          <label for="po-cost">Expected Cost<span class="req">*</span></label>
+          <label for="po-cost" data-auth-text-en="Expected Cost" data-auth-text-ar="الكلفة المتوقعة">Expected Cost<span class="req">*</span></label>
           <div class="iqd-input-wrap">
             <input class="input" type="number" inputmode="decimal" min="0" step="250" id="po-cost" placeholder="0">
             <span class="iqd-suffix">IQD</span>
@@ -2170,24 +2170,24 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
     </div>
 
     <div class="card">
-      <div class="card-title">
+      <div class="card-title" data-auth-text-en="Supporting Photos" data-auth-text-ar="الصور المرفقة">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
         Supporting Photos
       </div>
       <div class="field" style="margin-bottom:0;">
         <!-- No `for`: the target is a div, not a labelable control. The zone keeps its own click handler. -->
-        <label>Photos<span class="hint">Optional, multiple allowed — compressed automatically</span></label>
+        <label data-auth-text-en="Photos" data-auth-text-ar="الصور">Photos<span class="hint" data-auth-en="Optional, multiple allowed — compressed automatically" data-auth-ar="اختياري، يمكن إضافة أكثر من صورة — يتم ضغطها تلقائياً">Optional, multiple allowed — compressed automatically</span></label>
         <div class="photo-zone" id="po-photo-zone">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
-          <div class="pz-title">Tap to add photos</div>
-          <div class="pz-sub">Camera or gallery</div>
+          <div class="pz-title" data-auth-en="Tap to add photos" data-auth-ar="اضغط لإضافة الصور">Tap to add photos</div>
+          <div class="pz-sub" data-auth-en="Camera or gallery" data-auth-ar="الكاميرا أو المعرض">Camera or gallery</div>
         </div>
         <div class="photo-actions">
-          <button type="button" class="photo-btn" id="po-cam-btn">
+          <button type="button" class="photo-btn" id="po-cam-btn" data-auth-text-en="Camera" data-auth-text-ar="الكاميرا">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
             Camera
           </button>
-          <button type="button" class="photo-btn" id="po-gal-btn">
+          <button type="button" class="photo-btn" id="po-gal-btn" data-auth-text-en="Gallery" data-auth-text-ar="المعرض">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
             Gallery
           </button>
@@ -2201,7 +2201,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
     <div class="submit-bar">
       <button type="submit" class="btn-submit" id="btnSubmitPO">
         <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"/></svg>
-        <span class="btn-label">Submit Purchase Request</span>
+        <span class="btn-label" data-auth-en="Submit Purchase Request" data-auth-ar="إرسال طلب الشراء">Submit Purchase Request</span>
         <span class="spinner"></span>
       </button>
     </div>
@@ -2552,7 +2552,12 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
   if (!selectEl) return;
 
   const current = selectEl.value;
-  selectEl.innerHTML = '<option value="" disabled selected>Select employee…</option>';
+  // The placeholder is UI copy, created in the current language; the names are data.
+  selectEl.textContent = '';
+  const placeholder = selectEl.appendChild(genmgrText(document.createElement('option'), 'Select employee…', 'اختر الموظف...'));
+  placeholder.value = '';
+  placeholder.disabled = true;
+  placeholder.defaultSelected = true;
   names.forEach((name) => {
     const opt = document.createElement('option');
     opt.value = name;
@@ -4274,7 +4279,9 @@ function onSubmitTasks(ev) {
       const meta = row.appendChild(genmgrEl('div', 'fuelmgr-move-meta'));
       meta.appendChild(genmgrEl('span', null, fuelmgrShownTime(fuelmgrEvent(movement, 'movement')).replace('T', ' '))).dir = 'ltr';
       meta.appendChild(document.createTextNode(' · '));
-      meta.appendChild(genmgrEl('span', null, movement.id)).dir = 'ltr';
+      const id = meta.appendChild(genmgrEl('span', null, movement.id));
+      id.dir = 'ltr';
+      id.translate = false; // an identifier is data (translation boundary)
       if (movement.notes) row.appendChild(genmgrUserText(genmgrEl('div', 'fuelmgr-move-notes'), movement.notes));
     });
   }
@@ -4969,8 +4976,11 @@ function onSubmitTasks(ev) {
     storeArr.forEach((img, idx) => {
       const thumb = document.createElement('div');
       thumb.className = 'preview-thumb';
+      // UI copy with the photo's position, in the current language and both pairs.
+      const alt = ['Selected photo ' + (idx + 1), 'الصورة المختارة ' + (idx + 1)];
       thumb.innerHTML =
-        '<img src="data:' + img.mimeType + ';base64,' + img.base64 + '" alt="Selected photo ' + (idx + 1) + '">' +
+        '<img src="data:' + img.mimeType + ';base64,' + img.base64 + '" alt="' + openingText(alt[0], alt[1]) +
+        '" data-auth-alt-en="' + alt[0] + '" data-auth-alt-ar="' + alt[1] + '">' +
         '<span class="compress-tag">JPG</span>' +
         '<span class="rm" data-idx="' + idx + '">&times;</span>';
       grid.appendChild(thumb);
@@ -5117,14 +5127,18 @@ document.addEventListener('DOMContentLoaded', initSafeLanguageSwitcher);
    TRANSLATION BOUNDARY
    User and business data (usernames, employee names, notes...) is
    rendered inside an element marked translate="no" and is shown
-   exactly as stored. The legacy passes below translate UI copy by
-   matching its text, so they never change text inside such an
-   element, whatever it says. New UI copy uses data-auth-en /
-   data-auth-ar instead.
+   exactly as stored. UI copy with explicit bilingual ownership
+   (data-auth-en / -ar, data-auth-text-*, data-auth-placeholder-*,
+   data-auth-label-*) is rendered by applyAuthLanguage() alone. The
+   legacy passes below translate by matching text, so they never
+   change either kind, whatever it says. New UI copy uses the
+   explicit attributes.
    ============================================================ */
 
+// A text node, or an element whose placeholder a legacy pass would change.
 function legacyTranslatable(node) {
-  return !node.parentElement.closest('[translate="no"]');
+  const element = node.nodeType === Node.TEXT_NODE ? node.parentElement : node;
+  return !element.closest('[translate="no"], [data-auth-en], [data-auth-text-en], [data-auth-placeholder-en], [data-auth-label-en]');
 }
    /* ============================================================
    LANGUAGE SWITCHER - STEP 4 PAGE TITLES + CARD TITLES ONLY
@@ -5234,7 +5248,7 @@ function applySmallPlaceholderTranslation(lang) {
 
   document.querySelectorAll('input, textarea').forEach(function (el) {
     const current = el.getAttribute('placeholder');
-    if (!current) return;
+    if (!current || !legacyTranslatable(el)) return;
 
     placeholderMap.forEach(function (pair) {
       const en = pair[0];
@@ -5251,6 +5265,7 @@ function applySmallPlaceholderTranslation(lang) {
   });
 
   document.querySelectorAll('select option[value=""]').forEach(function (option) {
+    if (!legacyTranslatable(option)) return;
     let value = option.textContent;
 
     placeholderMap.forEach(function (pair) {
@@ -5541,7 +5556,7 @@ function applyFinalLanguageFix(lang) {
 
   document.querySelectorAll('input, textarea').forEach(function (el) {
     let ph = el.getAttribute('placeholder');
-    if (!ph) return;
+    if (!ph || !legacyTranslatable(el)) return;
 
     pairs.forEach(function (pair) {
       const en = pair[0];
@@ -5667,7 +5682,7 @@ function applyMixedLanguageCleanup(lang) {
 
   document.querySelectorAll('input, textarea').forEach(function (el) {
     let ph = el.getAttribute('placeholder');
-    if (!ph) return;
+    if (!ph || !legacyTranslatable(el)) return;
 
     fixes.forEach(function (pair) {
       ph = ph.split(pair[0]).join(pair[1]);
@@ -5828,6 +5843,26 @@ function applyAuthLanguage() {
     el.textContent = lang === 'ar'
       ? el.getAttribute('data-auth-ar')
       : el.getAttribute('data-auth-en');
+  });
+
+  // The same explicit pairs for an element's own text beside its child
+  // elements (a label's required marker, a card title's icon): only that text
+  // node is rendered, its surrounding white space and the children are kept.
+  document.querySelectorAll('[data-auth-text-en][data-auth-text-ar]').forEach(function (el) {
+    const node = Array.prototype.find.call(el.childNodes, function (child) {
+      return child.nodeType === Node.TEXT_NODE && child.nodeValue.trim();
+    });
+    if (!node) return;
+    const space = node.nodeValue.match(/^(\s*)[\s\S]*?(\s*)$/);
+    node.nodeValue = space[1] + el.getAttribute('data-auth-text-' + lang) + space[2];
+  });
+
+  // And for attributes: placeholders, image alt text, and option labels (an
+  // option's label is its displayed text; its value never changes).
+  ['placeholder', 'alt', 'label'].forEach(function (attribute) {
+    document.querySelectorAll('[data-auth-' + attribute + '-en][data-auth-' + attribute + '-ar]').forEach(function (el) {
+      el.setAttribute(attribute, el.getAttribute('data-auth-' + attribute + '-' + lang));
+    });
   });
 
   const usernameInput = document.getElementById('authUsername');
@@ -6174,7 +6209,7 @@ function applyFuelLanguage(lang) {
       const placeholder = element.getAttribute('placeholder');
 
       if (
-        placeholder &&
+        placeholder && legacyTranslatable(element) &&
         Object.prototype.hasOwnProperty.call(dictionary, placeholder)
       ) {
         element.setAttribute(
