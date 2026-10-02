@@ -1423,7 +1423,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
 <!-- LOGGED-IN USER BAR -->
 <div id="authUserBar" class="auth-user-bar" hidden>
   <div>
-    <strong id="authLoggedEmployee"></strong>
+    <strong id="authLoggedEmployee" translate="no"></strong>
     <span id="authLoggedRole"></span>
   </div>
 
@@ -2310,12 +2310,29 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
     errEl.classList.toggle('show', !!show);
   }
 
-  /* Restores an error element's default message in the current language.
-     Reads the same data-auth-* attributes applyAuthLanguage() already uses,
-     so a runtime message and a language switch cannot disagree. */
-  function defaultFieldError(id) {
+  /* Cross-field validation reasons, by stable key. A field's error element
+     keeps the key of the reason it shows (data-error-reason) and that
+     reason's wording in its data-auth-* attributes, which applyAuthLanguage()
+     renders again on every language switch: a switch changes the wording,
+     never the reason. Without a key the element shows its own message from
+     the HTML (the value is missing or invalid). */
+  const FIELD_ERROR_REASONS = {
+    end_before_start: ['End time cannot be before start time', 'وقت النهاية لا يمكن أن يسبق وقت البداية'],
+    end_not_after_start: ['End time must be after start time', 'يجب أن يكون وقت النهاية بعد وقت البداية'],
+    end_reading_below_start: ['End reading cannot be less than start reading', 'قراءة النهاية لا يمكن أن تقل عن قراءة البداية'],
+    runtime_exceeds_elapsed: ['Operating hours cannot exceed the elapsed time between start and end. Check the hour-meter readings.',
+      'ساعات التشغيل لا يمكن أن تتجاوز المدة بين وقت البداية والنهاية. تحقق من قراءات عداد المولد.']
+  };
+  const fieldErrorOwnText = new Map();
+
+  // reason: a FIELD_ERROR_REASONS key, or null for the field's own message.
+  function setFieldErrorReason(id, reason) {
     const el = $(id);
-    return openingText(el.getAttribute('data-auth-en') || '', el.getAttribute('data-auth-ar') || '');
+    if (!fieldErrorOwnText.has(id)) fieldErrorOwnText.set(id, [el.getAttribute('data-auth-en'), el.getAttribute('data-auth-ar')]);
+    const text = reason ? FIELD_ERROR_REASONS[reason] : fieldErrorOwnText.get(id);
+    if (reason) el.dataset.errorReason = reason;
+    else delete el.dataset.errorReason;
+    genmgrText(el, text[0], text[1]);
   }
 
   function vibrateError() {
@@ -2540,6 +2557,7 @@ html[lang="ar"] #page-home .fuelmgr-state{letter-spacing:0;text-transform:none;}
     const opt = document.createElement('option');
     opt.value = name;
     opt.textContent = name;
+    opt.translate = false; // a name is data: shown exactly as stored (translation boundary)
     selectEl.appendChild(opt);
   });
   if (current && names.includes(current)) selectEl.value = current;
@@ -2682,38 +2700,30 @@ function loadEmployeeNames() {
     const elapsedHours = genmgrElapsedHours(startDt.value, endDt.value);
     if (Number.isFinite(startHmValue) && Number.isFinite(endHmValue) && endHmValue < startHmValue) {
       setFieldError(endHm, $('err-gen-end-hm'), true);
-      $('err-gen-end-hm').textContent = openingText(
-        'End reading cannot be less than start reading',
-        'قراءة النهاية لا يمكن أن تقل عن قراءة البداية');
+      setFieldErrorReason('err-gen-end-hm', 'end_reading_below_start');
       ok = false;
     } else if (Number.isFinite(startHmValue) && Number.isFinite(endHmValue) && elapsedHours > 0 &&
         !genmgrRuntimePlausible(endHmValue - startHmValue, elapsedHours)) {
       // Checked before anything is saved: a rejected run changes nothing.
       setFieldError(endHm, $('err-gen-end-hm'), true);
-      $('err-gen-end-hm').textContent = openingText(
-        'Operating hours cannot exceed the elapsed time between start and end. Check the hour-meter readings.',
-        'ساعات التشغيل لا يمكن أن تتجاوز المدة بين وقت البداية والنهاية. تحقق من قراءات عداد المولد.');
+      setFieldErrorReason('err-gen-end-hm', 'runtime_exceeds_elapsed');
       ok = false;
     } else {
-      $('err-gen-end-hm').textContent = defaultFieldError('err-gen-end-hm');
+      setFieldErrorReason('err-gen-end-hm', null);
     }
 
     // Cross-field: end datetime should not be before start datetime
     if (startDt.value && endDt.value && new Date(endDt.value) < new Date(startDt.value)) {
       setFieldError(endDt, $('err-gen-end-dt'), true);
-      $('err-gen-end-dt').textContent = openingText(
-        'End time cannot be before start time',
-        'وقت النهاية لا يمكن أن يسبق وقت البداية');
+      setFieldErrorReason('err-gen-end-dt', 'end_before_start');
       ok = false;
     } else if (elapsedHours <= 0) {
       // A completed run takes time.
       setFieldError(endDt, $('err-gen-end-dt'), true);
-      $('err-gen-end-dt').textContent = openingText(
-        'End time must be after start time',
-        'يجب أن يكون وقت النهاية بعد وقت البداية');
+      setFieldErrorReason('err-gen-end-dt', 'end_not_after_start');
       ok = false;
     } else {
-      $('err-gen-end-dt').textContent = defaultFieldError('err-gen-end-dt');
+      setFieldErrorReason('err-gen-end-dt', null);
     }
 
     return ok;
@@ -3680,12 +3690,10 @@ function validateTasks() {
   // Evaluated independently of `ok` so it surfaces in the same attempt.
   if (startDt.value && endDt.value && new Date(endDt.value) < new Date(startDt.value)) {
     setFieldError(endDt, $('err-task-end-dt'), true);
-    $('err-task-end-dt').textContent = openingText(
-      'End time cannot be before start time',
-      'وقت النهاية لا يمكن أن يسبق وقت البداية');
+    setFieldErrorReason('err-task-end-dt', 'end_before_start');
     ok = false;
   } else {
-    $('err-task-end-dt').textContent = defaultFieldError('err-task-end-dt');
+    setFieldErrorReason('err-task-end-dt', null);
   }
 
   return ok;
@@ -5106,6 +5114,19 @@ function initSafeLanguageSwitcher() {
 
 document.addEventListener('DOMContentLoaded', initSafeLanguageSwitcher);
    /* ============================================================
+   TRANSLATION BOUNDARY
+   User and business data (usernames, employee names, notes...) is
+   rendered inside an element marked translate="no" and is shown
+   exactly as stored. The legacy passes below translate UI copy by
+   matching its text, so they never change text inside such an
+   element, whatever it says. New UI copy uses data-auth-en /
+   data-auth-ar instead.
+   ============================================================ */
+
+function legacyTranslatable(node) {
+  return !node.parentElement.closest('[translate="no"]');
+}
+   /* ============================================================
    LANGUAGE SWITCHER - STEP 4 PAGE TITLES + CARD TITLES ONLY
    ============================================================ */
 
@@ -5137,7 +5158,7 @@ function applySmallTitleTranslation(lang) {
     let node;
 
     while (node = walker.nextNode()) {
-      if (node.nodeValue && node.nodeValue.trim()) {
+      if (node.nodeValue && node.nodeValue.trim() && legacyTranslatable(node)) {
         textNodes.push(node);
       }
     }
@@ -5316,7 +5337,7 @@ function applySmallButtonTranslation(lang) {
     let node;
 
     while (node = walker.nextNode()) {
-      if (node.nodeValue && node.nodeValue.trim()) {
+      if (node.nodeValue && node.nodeValue.trim() && legacyTranslatable(node)) {
         textNodes.push(node);
       }
     }
@@ -5495,7 +5516,7 @@ function applyFinalLanguageFix(lang) {
     let node;
 
     while (node = walker.nextNode()) {
-      if (node.nodeValue && node.nodeValue.trim()) {
+      if (node.nodeValue && node.nodeValue.trim() && legacyTranslatable(node)) {
         nodes.push(node);
       }
     }
@@ -5629,7 +5650,7 @@ function applyMixedLanguageCleanup(lang) {
   let node;
 
   while (node = walker.nextNode()) {
-    if (node.nodeValue && node.nodeValue.trim()) {
+    if (node.nodeValue && node.nodeValue.trim() && legacyTranslatable(node)) {
       nodes.push(node);
     }
   }
@@ -5712,7 +5733,7 @@ function fixPurchaseButtonLanguage() {
     let node;
 
     while (node = walker.nextNode()) {
-      if (node.nodeValue && node.nodeValue.trim()) {
+      if (node.nodeValue && node.nodeValue.trim() && legacyTranslatable(node)) {
         nodes.push(node);
       }
     }
@@ -6040,12 +6061,10 @@ function applyLoggedInIdentityRules() {
     // Normal user is locked to their own name.
     if (!employeeName) return;
 
+    // Matched by option value only: displayed text is never an identity.
     let employeeOption = Array.from(select.options).find(
       function (option) {
-        return (
-          option.value === employeeName ||
-          option.textContent.trim() === employeeName
-        );
+        return option.value === employeeName;
       }
     );
 
@@ -6053,6 +6072,7 @@ function applyLoggedInIdentityRules() {
       employeeOption = document.createElement('option');
       employeeOption.value = employeeName;
       employeeOption.textContent = employeeName;
+      employeeOption.translate = false;
       employeeOption.setAttribute('data-auth-identity', 'true');
       select.appendChild(employeeOption);
     }
@@ -6128,7 +6148,7 @@ function applyFuelLanguage(lang) {
     let node;
 
     while (node = walker.nextNode()) {
-      if (node.nodeValue && node.nodeValue.trim()) {
+      if (node.nodeValue && node.nodeValue.trim() && legacyTranslatable(node)) {
         textNodes.push(node);
       }
     }

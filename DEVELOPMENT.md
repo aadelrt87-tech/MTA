@@ -11,6 +11,12 @@ Read this before changing the app. The current phase is a frontend-only prototyp
 - Prototype Login must not be treated as security. Neither it nor any other check in the browser controls access.
 - Real authority (identity, roles, permissions and validated writes) will come from Supabase Auth, Row Level Security (RLS) and RPC / transactions.
 
+## Translation rule (mandatory)
+
+- New UI copy must use the explicit bilingual mechanism (`data-auth-en` / `data-auth-ar`). Do not add DOM text-search or text-replacement translation.
+- User and business data must never be translated based on its displayed value. Render it exactly as stored, inside `translate="no"` (or as the Generator and Fuel screens do).
+- Translation and validation identity use stable keys or IDs, never visible text.
+
 ## Approved local prototype persistence
 
 Local persistent prototype state is intentionally limited to:

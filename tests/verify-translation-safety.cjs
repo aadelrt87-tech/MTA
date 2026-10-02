@@ -5,6 +5,11 @@
    convert all KNOWN_DEBT cases into REQUIRED invariants
    and remove the debt allowlist.
 
+   Phase 1 (translation boundary: user and business data is never
+   translated; a validation error keeps its reason across a language switch)
+   converted T-DISPLAY-01..04, T-ERROR-01 and T-SESSION-01 into REQUIRED
+   invariants. They stay listed in RESOLVED_DEBT and are tested on every run.
+
    Two kinds of checks:
    REQUIRED    behaviour that is already correct and must stay correct. Any
                failure fails the run.
@@ -66,16 +71,6 @@ const SETTLE_MS = 1500;
    Confirmed in the current build before consolidation. Each entry is
    evaluated exactly once, by the scenario named in `where`. */
 const KNOWN_DEBT = {
-  'T-DISPLAY-01': { where: 'U1', title: 'Prototype username in the user bar is rewritten by legacy text scanners',
-    desired: 'The user bar shows the username exactly as stored ("Operating Hours") in both languages.' },
-  'T-DISPLAY-02': { where: 'U1', title: 'Employee option "Now" is rewritten (AR "الآن", back in EN as "NOW")',
-    desired: 'Employee option text stays "Now" in both languages and after a round trip.' },
-  'T-DISPLAY-03': { where: 'U1', title: 'Employee option "Now Generator" is rewritten to a mixed form ("الآن Generator", then "NOW Generator")',
-    desired: 'Employee option text stays "Now Generator" in both languages and after a round trip.' },
-  'T-DISPLAY-04': { where: 'U1', title: 'Arabic employee names are rewritten into English on a plain English load ("الآن" -> "NOW", "ساعات التشغيل" -> "Operating Hours")',
-    desired: 'Employee option text is shown exactly as the name, whatever the UI language.' },
-  'T-ERROR-01': { where: 'E1', title: 'A language switch replaces the shown validation reason ("End time cannot be before start time") with a different one (the required-field message)',
-    desired: 'Same validation-error identity after the switch, worded in the new language ("وقت النهاية لا يمكن أن يسبق وقت البداية" / "End time cannot be before start time").' },
   'T-PH-01': { where: 'P1', title: 'End hour meter example placeholder stays English under Arabic ("e.g. 1251.2")',
     desired: 'An Arabic example placeholder under Arabic, and "e.g. 1251.2" again under English.' },
   'T-OPT-01': { where: 'O1', title: 'Attendance type option labels stay English under Arabic (IN, OUT, BREAK OUT, BREAK IN)',
@@ -89,9 +84,25 @@ const KNOWN_DEBT = {
   'T-RT-03': { where: 'RT', title: 'EN -> AR -> EN turns the ellipsis "…" into "..." in select placeholders and the fuel note placeholder',
     desired: 'Placeholders return to their exact original text.' },
   'T-TIME-01': { where: 'TM', title: 'Legacy-translated UI text is correct only after the delayed translation passes, not at the moment of the switch',
-    desired: 'Every UI string is in the selected language as soon as the switch (or page load) completes.' },
-  'T-SESSION-01': { where: 'S1', title: 'The same username renders translated or raw depending on whether a delayed legacy pass runs after login',
-    desired: 'The user bar shows the stored username exactly, however and whenever the session starts.' }
+    desired: 'Every UI string is in the selected language as soon as the switch (or page load) completes.' }
+};
+
+/* ======================= RESOLVED_DEBT (now REQUIRED) =======================
+   Former KNOWN_DEBT, corrected in translation consolidation phase 1. Each is
+   a REQUIRED invariant, evaluated exactly once by the scenario in `where`. */
+const RESOLVED_DEBT = {
+  'T-DISPLAY-01': { where: 'U1', invariant: 'the user bar shows the username exactly as stored, in both languages, through repeated switching',
+    was: 'username "Operating Hours" was shown as "ساعات التشغيل" under Arabic' },
+  'T-DISPLAY-02': { where: 'U1', invariant: 'employee option "Now" shows "Now" in both languages, through repeated switching',
+    was: 'shown as "الآن" under Arabic and "NOW" back in English' },
+  'T-DISPLAY-03': { where: 'U1', invariant: 'employee option "Now Generator" shows "Now Generator" in both languages, through repeated switching',
+    was: 'shown as "الآن Generator" under Arabic and "NOW Generator" back in English' },
+  'T-DISPLAY-04': { where: 'U1', invariant: 'Arabic employee names ("الآن", "ساعات التشغيل") show exactly, on an English load and through repeated switching',
+    was: 'shown as "NOW" and "Operating Hours" on a plain English load' },
+  'T-ERROR-01': { where: 'E1', invariant: 'a shown validation reason (end before start) keeps its identity through a language switch, worded in the new language',
+    was: 'a switch replaced it with the required-field message ("تاريخ ووقت النهاية مطلوب" / "End date & time is required")' },
+  'T-SESSION-01': { where: 'S1', invariant: 'the user bar is identical, with the exact username, whether the session starts before the page-load passes, is restored, or starts after them',
+    was: 'translated ("ساعات التشغيل") in the first two cases, raw only when login came after the passes' }
 };
 
 /* ======================= results ======================= */
@@ -109,6 +120,14 @@ function debt(id, reproduced, actual) {
   evaluatedDebt.add(id);
   const row = { id, title: entry.title, actual, desired: entry.desired };
   (reproduced ? R.debtReproduced : R.debtNotReproduced).push(row);
+}
+// A former debt, now a REQUIRED invariant: a failure is a REQUIRED FAIL.
+function resolved(id, holds, actual) {
+  const entry = RESOLVED_DEBT[id];
+  if (!entry) { R.unexpected.push(`unregistered RESOLVED_DEBT id ${id}`); return; }
+  if (evaluatedDebt.has(id)) { R.unexpected.push(`RESOLVED_DEBT ${id} evaluated twice`); return; }
+  evaluatedDebt.add(id);
+  req(`${id} ${entry.invariant}`, () => assert.ok(holds, `${actual} (formerly: ${entry.was})`));
 }
 const info = (line) => R.info.push(line);
 const want = (tag) => !process.env.ONLY || process.env.ONLY.split(',').includes(tag);
@@ -133,6 +152,14 @@ const RT_DEBT = [
 ];
 const END_BEFORE_START = { en: 'End time cannot be before start time', ar: 'وقت النهاية لا يمكن أن يسبق وقت البداية' };
 const END_REQUIRED = { en: 'End date & time is required', ar: 'تاريخ ووقت النهاية مطلوب' };
+// The Generator form's cross-field reasons, by the app's own reason keys.
+const GEN_REASONS = {
+  runtime_exceeds_elapsed: { en: 'Operating hours cannot exceed the elapsed time between start and end. Check the hour-meter readings.',
+    ar: 'ساعات التشغيل لا يمكن أن تتجاوز المدة بين وقت البداية والنهاية. تحقق من قراءات عداد المولد.' },
+  end_reading_below_start: { en: 'End reading cannot be less than start reading', ar: 'قراءة النهاية لا يمكن أن تقل عن قراءة البداية' },
+  end_before_start: END_BEFORE_START,
+  end_not_after_start: { en: 'End time must be after start time', ar: 'يجب أن يكون وقت النهاية بعد وقت البداية' }
+};
 // Validation-error identity, independent of the wording language.
 function errorIdentity(text) {
   const t = norm(text);
@@ -167,6 +194,8 @@ const SEED_BUSINESS = {
   genops_fuel_movements_v1: [move('id_m1', 'id_t1', 'id_t2', 10, '2026-09-24T07:00:00Z', 'Save Project'),
     move('id_m2', 'id_t2', 'id_t1', 5, '2026-09-24T08:00:00Z', 'حفظ مشروع')]
 };
+// The prototype username of the data scenarios: once rewritten under Arabic.
+const SESSION_NAME = 'Operating Hours';
 const VOCAB_EMPLOYEES = ['Now', 'Now Generator', 'Operating Hours', 'Select employee', 'Save', 'English', 'الآن', 'العربية', 'Mukhtar Mohammed'];
 const VOCAB_FORM = { 'task-name': 'Now Generator', 'task-desc': 'Operating Hours\nساعات التشغيل', 'po-desc': 'Save Project',
   'po-purpose': 'Select employee / اختر الموظف', 'po-qty': '4', 'po-cost': '250', 'fuel-note': 'Note ملاحظة', 'gen-end-hm': '103' };
@@ -468,7 +497,7 @@ async function run(browser) {
     for (const [id, value] of Object.entries(VOCAB_EDITOR)) await h.set(id, value);
   }
   await scenario('D1', async () => {
-    const h = await open(browser, { lang: 'en', session: user('Now'), seed: SEED_BUSINESS, employees: VOCAB_EMPLOYEES });
+    const h = await open(browser, { lang: 'en', session: user(SESSION_NAME), seed: SEED_BUSINESS, employees: VOCAB_EMPLOYEES });
     await fillVocabulary(h);
     const before = { storage: await h.tr('storage'), controls: await h.tr('controls'), options: await h.tr('options') };
     const stages = {};
@@ -488,22 +517,22 @@ async function run(browser) {
         Object.fromEntries(Object.entries(now.options).map(([k, v]) => [k, v.map((o) => o.value)])),
         Object.fromEntries(Object.entries(before.options).map(([k, v]) => [k, v.map((o) => o.value)]))));
     }
-    req('D1 the prototype session record is exactly what was stored ({"username":"Now",...})', () =>
-      assert.equal(stages.EN.storage.genops_prototype_user, JSON.stringify(user('Now'))));
+    req(`D1 the prototype session record is exactly what was stored ({"username":"${SESSION_NAME}",...})`, () =>
+      assert.equal(stages.EN.storage.genops_prototype_user, JSON.stringify(user(SESSION_NAME))));
     cleanRun('D1', h);
     await h.context.close();
   });
 
   /* ---------- D2. ten EN -> AR -> EN cycles (section 8) ---------- */
   await scenario('D2', async () => {
-    const h = await open(browser, { lang: 'en', session: user('Now'), seed: SEED_BUSINESS, employees: VOCAB_EMPLOYEES });
+    const h = await open(browser, { lang: 'en', session: user(SESSION_NAME), seed: SEED_BUSINESS, employees: VOCAB_EMPLOYEES });
     await fillVocabulary(h);
     const base = { storage: await h.tr('storage'), controls: await h.tr('controls'), options: await h.tr('options'), snap: await h.tr('snap') };
     const baseDup = Object.entries(base.snap).filter(([, v]) => duplicatedWord(v)).map(([k]) => k);
     const withoutLang = (s) => Object.fromEntries(Object.entries(s).filter(([k]) => k !== 'genops_language'));
     const values = (o) => Object.fromEntries(Object.entries(o).map(([k, v]) => [k, v.map((x) => x.value)]));
     let first = null;
-    const problems = { storage: [], controls: [], options: [], lang: [], dup: [], drift: [] };
+    const problems = { storage: [], controls: [], options: [], lang: [], dup: [], drift: [], display: [] };
     for (let cycle = 1; cycle <= 10; cycle++) {
       const seen = {};
       for (const lang of ['ar', 'en']) {
@@ -517,6 +546,11 @@ async function run(browser) {
         if (s.lang.lang !== lang || s.lang.dir !== dir || s.lang.stored !== lang || s.lang.activeButton !== lang || s.lang.bodyDirection !== dir) problems.lang.push(tag + ' ' + JSON.stringify(s.lang));
         const dup = Object.entries(s.snap).filter(([k, v]) => duplicatedWord(v) && !baseDup.includes(k)).map(([k, v]) => k + ' = ' + JSON.stringify(v));
         if (dup.length) problems.dup.push(tag + ': ' + dup.join('; '));
+        // Displayed person data: the username and every employee name, exactly as stored.
+        const display = await h.ev(() => ({ bar: document.getElementById('authLoggedEmployee').textContent,
+          wrong: ['task-employee', 'att-employee', 'po-requester'].flatMap((id) => Array.from(document.getElementById(id).options)
+            .filter((o) => o.value && (o.textContent !== o.value || o.label !== o.value)).map((o) => `#${id} ${o.value} shown as ${o.textContent}`)) }));
+        if (display.bar !== SESSION_NAME || display.wrong.length) problems.display.push(tag + ' ' + JSON.stringify(display));
         seen[lang] = s.snap;
       }
       if (!first) first = seen;
@@ -532,78 +566,140 @@ async function run(browser) {
     req('D2 10 cycles: every option.value unchanged after every switch', () => assert.deepEqual(problems.options, []));
     req('D2 10 cycles: html lang/dir, computed direction, genops_language and active button agree after every switch', () => assert.deepEqual(problems.lang, []));
     req('D2 10 cycles: no duplicated words appear in UI text', () => assert.deepEqual(problems.dup, []));
+    req(`D2 10 cycles: the username ("${SESSION_NAME}") and all ${VOCAB_EMPLOYEES.length} employee names display exactly as stored after every switch`, () =>
+      assert.deepEqual(problems.display, []));
     req('D2 10 cycles: no progressive change — cycles 2-10 render exactly as cycle 1 in each language (no growing or drifting text)', () => assert.deepEqual(problems.drift, []));
     info(`D2 round-trip differences after cycle 1 (UI and user data, characterized in RT and U1): ${diffSnap(base.snap, first.en).length}`);
     cleanRun('D2', h);
     await h.context.close();
   });
 
-  /* ---------- U1. displayed person / employee data (section 10) ---------- */
+  /* ---------- U1. displayed person / employee data (sections 10 and 19) ---------- */
   await scenario('U1', async () => {
-    const h = await open(browser, { lang: 'en', session: user('Operating Hours'), employees: ['Now', 'Now Generator', 'Operating Hours', 'الآن', 'ساعات التشغيل'] });
-    const read = () => h.ev(() => ({
+    // Employee names that read like UI words, in both languages.
+    const NAMES = ['Now', 'Now Generator', 'Operating Hours', 'Fuel', 'Save', 'الآن', 'ساعات التشغيل'];
+    const SELECTED = { 'task-employee': 'Now', 'att-employee': 'ساعات التشغيل', 'po-requester': 'Fuel' };
+    const h = await open(browser, { lang: 'en', session: user('Operating Hours'), employees: NAMES });
+    for (const [id, value] of Object.entries(SELECTED)) await h.set(id, value);
+    const read = () => h.ev((ids) => ({
       bar: document.getElementById('authLoggedEmployee').textContent,
       session: localStorage.getItem('genops_prototype_user'),
-      options: ['task-employee', 'att-employee', 'po-requester'].map((id) =>
-        Array.from(document.getElementById(id).options).filter((o) => o.value).map((o) => [o.value, o.textContent]))
-    }));
-    const textOf = (s, value) => s.options[0].find((o) => o[0] === value)[1];
-    const en0 = await read();
-    await h.switchTo('ar'); const ar = await read();
-    await h.switchTo('en'); const en1 = await read();
+      selects: Object.fromEntries(ids.map((id) => {
+        const select = document.getElementById(id);
+        return [id, { value: select.value,
+          options: Array.from(select.options).filter((o) => o.value).map((o) => [o.value, o.textContent, o.label]) }];
+      }))
+    }), Object.keys(SELECTED));
+    const stages = [['EN load', await read()]];
+    for (let cycle = 1; cycle <= 3; cycle++) {
+      await h.switchTo('ar'); stages.push([`AR ${cycle}`, await read()]);
+      await h.switchTo('en'); stages.push([`EN ${cycle}`, await read()]);
+    }
     const stored = JSON.stringify(user('Operating Hours'));
-    req('U1 session record unchanged by switching (username "Operating Hours")', () => assert.deepEqual([en0.session, ar.session, en1.session], [stored, stored, stored]));
-    req('U1 employee option values unchanged in all three selects', () => {
-      const vals = (s) => s.options.map((list) => list.map((o) => o[0]));
-      const expected = Array(3).fill(['Now', 'Now Generator', 'Operating Hours', 'الآن', 'ساعات التشغيل']);
-      assert.deepEqual([vals(en0), vals(ar), vals(en1)], [expected, expected, expected]);
+    const shown = (s, name) => s.selects['task-employee'].options.find((o) => o[0] === name)[1];
+    const trail = (name) => stages.map(([label, s]) => `${label} "${shown(s, name)}"`).join(', ');
+    req('U1 session record unchanged by switching (username "Operating Hours")', () =>
+      assert.deepEqual(stages.map(([, s]) => s.session), stages.map(() => stored)));
+    req(`U1 every employee option (${NAMES.join(', ')}): value, text and label are exactly the name, in all three selects, at all ${stages.length} stages`, () => {
+      const expected = NAMES.map((name) => [name, name, name]);
+      for (const [label, s] of stages) {
+        for (const id of Object.keys(SELECTED)) assert.deepEqual(s.selects[id].options, expected, `${label} #${id}`);
+      }
     });
-    req('U1 the three employee selects render identically', () => {
-      for (const s of [en0, ar, en1]) assert.deepEqual([s.options[1], s.options[2]], [s.options[0], s.options[0]]);
+    req('U1 the selected employee of each select stays selected through every switch', () => {
+      for (const [label, s] of stages) {
+        for (const [id, value] of Object.entries(SELECTED)) assert.equal(s.selects[id].value, value, `${label} #${id}`);
+      }
     });
-    debt('T-DISPLAY-01', ar.bar !== 'Operating Hours', `user bar: EN "${en0.bar}", AR "${ar.bar}", EN again "${en1.bar}"; stored username "Operating Hours"`);
-    debt('T-DISPLAY-02', textOf(ar, 'Now') !== 'Now' || textOf(en1, 'Now') !== 'Now',
-      `option value "Now": EN "${textOf(en0, 'Now')}", AR "${textOf(ar, 'Now')}", EN again "${textOf(en1, 'Now')}"`);
-    debt('T-DISPLAY-03', textOf(ar, 'Now Generator') !== 'Now Generator' || textOf(en1, 'Now Generator') !== 'Now Generator',
-      `option value "Now Generator": EN "${textOf(en0, 'Now Generator')}", AR "${textOf(ar, 'Now Generator')}", EN again "${textOf(en1, 'Now Generator')}"`);
-    debt('T-DISPLAY-04', textOf(en0, 'الآن') !== 'الآن' || textOf(en0, 'ساعات التشغيل') !== 'ساعات التشغيل',
-      `plain English load: option value "الآن" shows "${textOf(en0, 'الآن')}", value "ساعات التشغيل" shows "${textOf(en0, 'ساعات التشغيل')}"`);
+    resolved('T-DISPLAY-01', stages.every(([, s]) => s.bar === 'Operating Hours'),
+      'user bar: ' + stages.map(([label, s]) => `${label} "${s.bar}"`).join(', '));
+    resolved('T-DISPLAY-02', stages.every(([, s]) => shown(s, 'Now') === 'Now'), 'option "Now": ' + trail('Now'));
+    resolved('T-DISPLAY-03', stages.every(([, s]) => shown(s, 'Now Generator') === 'Now Generator'), 'option "Now Generator": ' + trail('Now Generator'));
+    resolved('T-DISPLAY-04', ['الآن', 'ساعات التشغيل'].every((name) => stages.every(([, s]) => shown(s, name) === name)),
+      'option "الآن": ' + trail('الآن') + '; option "ساعات التشغيل": ' + trail('ساعات التشغيل'));
     cleanRun('U1', h);
     await h.context.close();
   });
 
   /* ---------- E1. validation-error identity across a switch (section 11) ----------
-     Future required behavior:
+     Required behavior (T-ERROR-01, resolved in phase 1):
      language switching may change wording,
      but MUST preserve the same validation-error identity. */
   await scenario('E1', async () => {
     const h = await open(browser, { lang: 'en', session: user('tester') });
     await h.click('#nav-tasks');
-    async function submitEndBeforeStart() {
+    async function submitTask(end) {
       await h.set('task-name', 'Inspect'); await h.set('task-employee', 'Mukhtar Mohammed');
-      await h.set('task-start-dt', '2026-09-25T10:00'); await h.set('task-end-dt', '2026-09-25T09:00'); await h.set('task-desc', 'x');
+      await h.set('task-start-dt', '2026-09-25T10:00'); await h.set('task-end-dt', end); await h.set('task-desc', 'x');
       await h.ev(() => document.getElementById('formTasks').requestSubmit());
     }
-    const read = () => h.ev(() => ({ text: document.getElementById('err-task-end-dt').textContent,
-      shown: document.getElementById('err-task-end-dt').classList.contains('show'),
-      invalid: document.getElementById('task-end-dt').classList.contains('invalid') }));
-    await submitEndBeforeStart();
+    const read = () => h.ev(() => {
+      const err = document.getElementById('err-task-end-dt');
+      return { text: err.textContent, shown: err.classList.contains('show'),
+        invalid: document.getElementById('task-end-dt').classList.contains('invalid'), reason: err.dataset.errorReason || null };
+    });
+    await submitTask('2026-09-25T09:00');
     const enShown = await read();
     await h.switchTo('ar'); const afterAr = await read();
     await h.switchTo('en'); const afterEn = await read();
-    await h.switchTo('ar'); await submitEndBeforeStart();
+    await h.switchTo('ar'); await submitTask('2026-09-25T09:00');
     const arShown = await read();
     await h.switchTo('en'); const arToEn = await read();
+    // A corrected end time (the form still fails on an empty description): no stale reason.
+    await h.set('task-end-dt', '2026-09-25T11:00'); await h.set('task-desc', '');
+    await h.ev(() => document.getElementById('formTasks').requestSubmit());
+    const corrected = await read();
     req('E1 EN submit with end before start shows "End time cannot be before start time"', () =>
       assert.deepEqual([enShown.text, enShown.shown, enShown.invalid], [END_BEFORE_START.en, true, true]));
     req('E1 AR submit with end before start shows the Arabic wording of the same reason', () =>
       assert.deepEqual([arShown.text, arShown.shown, arShown.invalid], [END_BEFORE_START.ar, true, true]));
     req('E1 the error stays shown and the field stays invalid through each switch', () =>
       assert.deepEqual([afterAr, afterEn, arToEn].map((s) => [s.shown, s.invalid]), [[true, true], [true, true], [true, true]]));
-    const identities = [afterAr, afterEn, arToEn].map((s) => errorIdentity(s.text));
-    debt('T-ERROR-01', identities.some((id) => id !== 'end-before-start'),
-      `reason end-before-start; after EN->AR: ${identities[0]} ("${afterAr.text}"); back to EN: ${identities[1]} ("${afterEn.text}"); raised in AR then AR->EN: ${identities[2]} ("${arToEn.text}")`);
+    req('E1 the semantic reason (end_before_start) is kept through every switch, with no revalidation', () =>
+      assert.deepEqual([enShown, afterAr, afterEn, arShown, arToEn].map((s) => s.reason), Array(5).fill('end_before_start')));
+    req('E1 once the end time is corrected the reason is cleared and the field shows its own message again', () =>
+      assert.deepEqual([corrected.reason, corrected.shown, errorIdentity(corrected.text)], [null, false, 'end-required']));
+    const wording = [[afterAr, 'ar'], [afterEn, 'en'], [arToEn, 'en']];
+    resolved('T-ERROR-01', wording.every(([s, lang]) => errorIdentity(s.text) === 'end-before-start' && s.text === END_BEFORE_START[lang]),
+      `after EN->AR "${afterAr.text}"; back to EN "${afterEn.text}"; raised in AR then AR->EN "${arToEn.text}"`);
     cleanRun('E1', h);
+    await h.context.close();
+  });
+
+  /* ---------- E2. Generator form: the same reason mechanism (phase 1) ---------- */
+  await scenario('E2', async () => {
+    const h = await open(browser, { lang: 'en', session: user('tester'),
+      seed: { genops_generator_catalog_v1: [gen('id_g1', 'Gen', '100 kVA', 100)], genops_generator_runs_v1: [] } });
+    await h.click('#nav-generators');
+    await h.set('gen-name', 'id_g1');
+    await h.until(() => document.getElementById('gen-start-hm').value === '100', null, 'opening reading');
+    const read = () => h.ev(() => Object.fromEntries(['end-hm', 'end-dt'].map((f) => {
+      const err = document.getElementById('err-gen-' + f);
+      return [f, [err.classList.contains('show'), document.getElementById('gen-' + f).classList.contains('invalid'),
+        err.dataset.errorReason || null, err.textContent]];
+    })));
+    // [label, start, end, end meter, expected reason per field (null: no error)]
+    const CASES = [
+      ['runtime 1 h elapsed, meter +10', '2026-09-25T08:00', '2026-09-25T09:00', '110', { 'end-hm': 'runtime_exceeds_elapsed', 'end-dt': null }],
+      ['end before start, end meter below start', '2026-09-25T10:00', '2026-09-25T09:00', '99', { 'end-hm': 'end_reading_below_start', 'end-dt': 'end_before_start' }],
+      ['end equal to start', '2026-09-25T08:00', '2026-09-25T08:00', '100.5', { 'end-hm': null, 'end-dt': 'end_not_after_start' }]];
+    for (const [label, start, end, meter, reasons] of CASES) {
+      await h.switchTo('en');
+      await h.set('gen-start-dt', start); await h.set('gen-end-dt', end); await h.set('gen-end-hm', meter);
+      await h.ev(() => document.getElementById('formGenerators').requestSubmit());
+      const stages = [['EN', 'en', await read()]];
+      await h.switchTo('ar'); stages.push(['EN->AR', 'ar', await read()]);
+      await h.switchTo('en'); stages.push(['AR->EN', 'en', await read()]);
+      req(`E2 Generator ${label}: each field keeps its reason through EN -> AR -> EN, worded in the current language`, () => {
+        for (const [stage, lang, state] of stages) {
+          for (const [field, reason] of Object.entries(reasons)) {
+            const expected = reason ? [true, true, reason, GEN_REASONS[reason][lang]] : [false, false, null];
+            assert.deepEqual(reason ? state[field] : state[field].slice(0, 3), expected, `${stage} #err-gen-${field}`);
+          }
+        }
+      });
+    }
+    cleanRun('E2', h);
     await h.context.close();
   });
 
@@ -994,23 +1090,29 @@ async function run(browser) {
   await scenario('S1', async () => {
     const NAME = 'Operating Hours';
     const variants = {};
+    // The whole user bar: name, role, logout label.
+    const read = async (h) => ({ h, session: await h.ev(() => localStorage.getItem('genops_prototype_user')),
+      bar: await h.ev(() => [document.getElementById('authLoggedEmployee').textContent, document.getElementById('authLoggedRole').textContent,
+        document.getElementById('authLogoutButton').textContent.trim()]) });
     // a. Arabic already selected; login while the page-load passes are still pending.
     let h = await open(browser, { lang: 'ar', settle: false });
     await h.login(NAME); await h.settle();
-    variants.loginBeforePasses = { bar: await h.tr('text', '#authLoggedEmployee'), session: await h.ev(() => localStorage.getItem('genops_prototype_user')), h };
+    variants.loginBeforePasses = await read(h);
     // b. Arabic restored on page load with an existing session.
     h = await open(browser, { lang: 'ar', session: user(NAME) });
-    variants.restored = { bar: await h.tr('text', '#authLoggedEmployee'), session: await h.ev(() => localStorage.getItem('genops_prototype_user')), h };
+    variants.restored = await read(h);
     // c. Arabic selected; login after every legacy pass has finished.
     h = await open(browser, { lang: 'ar' });
     await h.login(NAME); await h.settle();
-    variants.loginAfterPasses = { bar: await h.tr('text', '#authLoggedEmployee'), session: await h.ev(() => localStorage.getItem('genops_prototype_user')), h };
+    variants.loginAfterPasses = await read(h);
     const stored = JSON.stringify(user(NAME));
     req('S1 the stored session is identical in all three cases ({"username":"Operating Hours",...})', () =>
       assert.deepEqual(Object.values(variants).map((v) => v.session), [stored, stored, stored]));
+    req('S1 login before the page-load passes, restored session and login after the passes all show the exact raw username', () =>
+      assert.deepEqual(Object.values(variants).map((v) => v.bar[0]), [NAME, NAME, NAME]));
     const bars = Object.fromEntries(Object.entries(variants).map(([k, v]) => [k, v.bar]));
-    debt('T-SESSION-01', new Set(Object.values(bars)).size > 1 || Object.values(bars).some((b) => b !== NAME),
-      `user bar under Arabic: login before the page-load passes "${bars.loginBeforePasses}", restored session "${bars.restored}", login after the passes "${bars.loginAfterPasses}"`);
+    resolved('T-SESSION-01', Object.values(bars).every((b) => JSON.stringify(b) === JSON.stringify([NAME, 'مدير', 'تسجيل الخروج'])),
+      `user bar under Arabic: login before the page-load passes ${JSON.stringify(bars.loginBeforePasses)}, restored session ${JSON.stringify(bars.restored)}, login after the passes ${JSON.stringify(bars.loginAfterPasses)}`);
     for (const [k, v] of Object.entries(variants)) { cleanRun(`S1 ${k}`, v.h); await v.h.context.close(); }
   });
 }
@@ -1020,7 +1122,8 @@ async function run(browser) {
   const browser = await chromium.launch({ headless: true });
   try { await run(browser); } finally { await browser.close(); server.close(); }
   if (!process.env.ONLY) {
-    Object.keys(KNOWN_DEBT).filter((id) => !evaluatedDebt.has(id)).forEach((id) => R.unexpected.push(`KNOWN_DEBT ${id} was never evaluated`));
+    Object.keys(KNOWN_DEBT).concat(Object.keys(RESOLVED_DEBT)).filter((id) => !evaluatedDebt.has(id))
+      .forEach((id) => R.unexpected.push(`${KNOWN_DEBT[id] ? 'KNOWN_DEBT' : 'RESOLVED_DEBT'} ${id} was never evaluated`));
   }
   const out = path.join(process.env.RESULTS_DIR ? path.resolve(process.env.RESULTS_DIR) : os.tmpdir(), 'translation-safety-results.json');
   fs.writeFileSync(out, JSON.stringify(R, null, 2));
@@ -1030,6 +1133,7 @@ async function run(browser) {
   console.log(`KNOWN_DEBT REPRODUCED: ${R.debtReproduced.length}`);
   console.log(`KNOWN_DEBT NOT REPRODUCED: ${R.debtNotReproduced.length}`);
   console.log(`UNEXPECTED CHANGE: ${R.unexpected.length}`);
+  console.log(`RESOLVED_DEBT (now REQUIRED): ${Object.keys(RESOLVED_DEBT).join(', ')}`);
   R.requiredFail.forEach((f) => console.log('REQUIRED FAIL ' + f));
   R.debtReproduced.forEach((d) => console.log(`KNOWN_DEBT ${d.id} ${d.title}\n    actual:  ${d.actual}\n    desired: ${d.desired}`));
   R.debtNotReproduced.forEach((d) => console.log(`KNOWN_DEBT CHANGED ${d.id} ${d.title}\n    actual now: ${d.actual}\n    -> convert this debt into a REQUIRED invariant`));
