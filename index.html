@@ -2735,44 +2735,47 @@ function loadEmployeeNames() {
     const generatorId = $('gen-name').value;
     const startHm = parseFloat($('gen-start-hm').value);
     const endHm = parseFloat($('gen-end-hm').value);
+    // The form as submitted. The generator and its runs are read again under
+    // the generator lock, and the run is checked against them there.
+    const startDateTime = $('gen-start-dt').value;
+    const endDateTime = $('gen-end-dt').value;
+    const checked = getCheckedValues('oilsFiltersGrid');
     setButtonLoading(button, true);
+    let saved = false;
     try {
-      const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
-      const generator = data[0].find((item) => item.id === generatorId && genmgrIsActive(item));
-      const runs = generator ? genmgrRunsOf(data[1], generatorId) : [];
-      const last = runs[runs.length - 1];
-      // The start must still be this generator's current meter; another tab
-      // may have saved a run for it after this form was filled.
-      if (!generator || startHm !== genmgrCurrentMeter(generator, runs) ||
-          (last && $('gen-start-dt').value !== last.endDateTime)) {
-        genmgrRefresh();
-        const message = OPENING_REFRESH_TEXT;
-        toast('error', openingText('Save not confirmed', 'لم يتأكد الحفظ'), openingText(message[0], message[1]), 6000);
-        return;
-      }
-      const active = genmgrActiveServices(generator).map((entry) => entry.service.type);
-      const performed = getCheckedValues('oilsFiltersGrid').filter((type) => active.includes(type));
-      const run = {
-        id: uid(),
-        generatorId: generatorId,
-        startDateTime: $('gen-start-dt').value,
-        startHourMeter: startHm,
-        endDateTime: $('gen-end-dt').value,
-        endHourMeter: endHm,
-        operatingHours: genmgrRound(endHm - startHm),
-        servicesPerformed: performed,
-        createdAt: isoTimestamp()
-      };
-      // TEMPORARY (UI-development phase): a checked item counts as a confirmed
-      // service as soon as the run is saved, so its baseline moves to this
-      // run's end meter. Supabase approval will become the authoritative
-      // confirmation of maintenance later.
-      const updated = performed.length ? Object.assign({}, generator, {
-        serviceItems: (generator.serviceItems || []).map((item) => (item && performed.includes(item.type)
-          ? Object.assign({}, item, { lastServiceHourMeter: endHm }) : item)),
-        updatedAt: run.createdAt
-      }) : null;
-      await generatorRepository.addRun(run, updated);
+      saved = await genmgrWrite(async () => {
+        const generator = (await generatorRepository.loadGenerators()).find((item) => item.id === generatorId && genmgrIsActive(item));
+        const runs = genmgrRunsOf(await generatorRepository.loadRuns(), generatorId);
+        const last = runs[runs.length - 1];
+        // The start must still be this generator's current meter; another tab
+        // may have saved a run for it after this form was filled.
+        if (!generator || startHm !== genmgrCurrentMeter(generator, runs) ||
+            (last && startDateTime !== last.endDateTime)) return false;
+        const active = genmgrActiveServices(generator).map((entry) => entry.service.type);
+        const performed = checked.filter((type) => active.includes(type));
+        const run = {
+          id: uid(),
+          generatorId: generatorId,
+          startDateTime: startDateTime,
+          startHourMeter: startHm,
+          endDateTime: endDateTime,
+          endHourMeter: endHm,
+          operatingHours: genmgrRound(endHm - startHm),
+          servicesPerformed: performed,
+          createdAt: isoTimestamp()
+        };
+        // TEMPORARY (UI-development phase): a checked item counts as a confirmed
+        // service as soon as the run is saved, so its baseline moves to this
+        // run's end meter. Supabase approval will become the authoritative
+        // confirmation of maintenance later.
+        const updated = performed.length ? Object.assign({}, generator, {
+          serviceItems: (generator.serviceItems || []).map((item) => (item && performed.includes(item.type)
+            ? Object.assign({}, item, { lastServiceHourMeter: endHm }) : item)),
+          updatedAt: run.createdAt
+        }) : null;
+        await generatorRepository.addRun(run, updated);
+        return true;
+      });
     } catch (error) {
       if (error && error.code === 'STORAGE_UNREADABLE') storageUnreadableToast();
       else toast('error', openingText('Not saved', 'لم يتم الحفظ'),
@@ -2781,6 +2784,12 @@ function loadEmployeeNames() {
       return;
     } finally {
       setButtonLoading(button, false);
+    }
+    if (!saved) {
+      genmgrRefresh();
+      const message = OPENING_REFRESH_TEXT;
+      toast('error', openingText('Save not confirmed', 'لم يتأكد الحفظ'), openingText(message[0], message[1]), 6000);
+      return;
     }
     resetGeneratorsForm();
     genmgrRenderCards();
@@ -2883,6 +2892,11 @@ function loadEmployeeNames() {
     return {
       listGenerators: () => Promise.resolve().then(() => read(CATALOG_KEY)),
       listRuns: () => Promise.resolve().then(() => read(RUNS_KEY)),
+      // For writes (genmgrWrite): the stored list, or a rejection (code
+      // STORAGE_UNREADABLE) when it cannot be read. A missing key or [] is a
+      // readable empty list; unreadable content is never taken as one.
+      loadGenerators: () => Promise.resolve().then(() => localListForWrite(CATALOG_KEY)),
+      loadRuns: () => Promise.resolve().then(() => localListForWrite(RUNS_KEY)),
       saveGenerator: (generator) => Promise.resolve().then(() => {
         write(CATALOG_KEY, upsert(localListForWrite(CATALOG_KEY), generator));
       }),
@@ -2904,6 +2918,24 @@ function loadEmployeeNames() {
       })
     };
   })();
+
+  /* Every generator write (add, edit, run, delete) runs here, under one
+     exclusive Web Lock shared by all tabs and app windows of this origin. The
+     operation reads the catalog and runs again (loadGenerators / loadRuns),
+     checks the write against that state and saves while the lock is held, so
+     no other tab can change the generator in between. Without Web Locks
+     nothing is saved: the returned promise rejects.
+     TEMPORARY: a same-origin, client-side critical section for the local test
+     storage only, not a database transaction. Supabase will validate and
+     apply these writes server-side. */
+  const GENMGR_WRITE_LOCK = CONFIG.LS_PREFIX + 'generator_write';
+
+  function genmgrWrite(operation) {
+    if (!(navigator.locks && typeof navigator.locks.request === 'function')) {
+      return Promise.reject(new Error('Web Locks unavailable'));
+    }
+    return navigator.locks.request(GENMGR_WRITE_LOCK, { mode: 'exclusive' }, operation);
+  }
 
   function genmgrRound(value) {
     return Math.round(value * 100) / 100;
@@ -3349,57 +3381,62 @@ function loadEmployeeNames() {
     }
 
     saveButton.disabled = true;
+    const editingId = genmgrView.editingId;
     let generator;
     let existing;
+    let gone = false;
     try {
-      const data = await Promise.all([generatorRepository.listGenerators(), generatorRepository.listRuns()]);
-      existing = genmgrView.editingId
-        ? data[0].find((item) => item.id === genmgrView.editingId && genmgrIsActive(item)) : null;
-      if (genmgrView.editingId && !existing) {
-        genmgrCloseEditor(true);
-        genmgrRefresh();
-        return;
-      }
-      const runs = existing ? genmgrRunsOf(data[1], existing.id) : [];
-      const hasRuns = runs.length > 0;
-      const initialHourMeter = hasRuns ? existing.initialHourMeter : meter;
-      const currentMeter = hasRuns ? genmgrCurrentMeter(existing, runs) : initialHourMeter;
-      const now = isoTimestamp();
-      generator = {
-        id: existing ? existing.id : uid(),
-        name: name,
-        size: size,
-        initialHourMeter: initialHourMeter,
-        fuelConsumptionPerHour: rate,
-        serviceItems: GENMGR_SERVICES.map((service) => {
-          const previous = (existing && (existing.serviceItems || []).find((item) => item && item.type === service.type)) || {};
-          const enabled = service.optional ? qs('input', $('genmgr-on-' + service.type)).checked : true;
-          const entered = genmgrNumber('genmgr-int-' + service.type);
-          let lastServiceHourMeter = null;
-          if (enabled) {
-            // Before the first run nothing can have been serviced, so every
-            // baseline follows the setup meter. After that a tracked item keeps
-            // its baseline and a newly enabled one starts at the current meter.
-            if (!hasRuns) lastServiceHourMeter = initialHourMeter;
-            else if (previous.enabled === true && Number.isFinite(previous.lastServiceHourMeter)) lastServiceHourMeter = previous.lastServiceHourMeter;
-            else lastServiceHourMeter = currentMeter;
-          }
-          return {
-            type: service.type,
-            enabled: enabled,
-            // A disabled filter keeps its last interval so re-enabling can prefill it.
-            intervalHours: genmgrPositive(entered) ? entered
-              : (Number.isFinite(previous.intervalHours) ? previous.intervalHours : null),
-            lastServiceHourMeter: lastServiceHourMeter
-          };
-        }),
-        createdAt: existing ? existing.createdAt : now,
-        updatedAt: now,
-        // Only active generators reach this editor; Delete sets these.
-        active: true,
-        archivedAt: null
-      };
-      await generatorRepository.saveGenerator(generator);
+      // Read again under the generator lock. An edit keeps the initial meter
+      // and service baselines its runs determine, so it needs runs that can be
+      // read (loadRuns rejects otherwise); a new generator has none.
+      await genmgrWrite(async () => {
+        existing = editingId
+          ? (await generatorRepository.loadGenerators()).find((item) => item.id === editingId && genmgrIsActive(item)) : null;
+        if (editingId && !existing) {
+          gone = true;
+          return;
+        }
+        const runs = existing ? genmgrRunsOf(await generatorRepository.loadRuns(), existing.id) : [];
+        const hasRuns = runs.length > 0;
+        const initialHourMeter = hasRuns ? existing.initialHourMeter : meter;
+        const currentMeter = hasRuns ? genmgrCurrentMeter(existing, runs) : initialHourMeter;
+        const now = isoTimestamp();
+        generator = {
+          id: existing ? existing.id : uid(),
+          name: name,
+          size: size,
+          initialHourMeter: initialHourMeter,
+          fuelConsumptionPerHour: rate,
+          serviceItems: GENMGR_SERVICES.map((service) => {
+            const previous = (existing && (existing.serviceItems || []).find((item) => item && item.type === service.type)) || {};
+            const enabled = service.optional ? qs('input', $('genmgr-on-' + service.type)).checked : true;
+            const entered = genmgrNumber('genmgr-int-' + service.type);
+            let lastServiceHourMeter = null;
+            if (enabled) {
+              // Before the first run nothing can have been serviced, so every
+              // baseline follows the setup meter. After that a tracked item keeps
+              // its baseline and a newly enabled one starts at the current meter.
+              if (!hasRuns) lastServiceHourMeter = initialHourMeter;
+              else if (previous.enabled === true && Number.isFinite(previous.lastServiceHourMeter)) lastServiceHourMeter = previous.lastServiceHourMeter;
+              else lastServiceHourMeter = currentMeter;
+            }
+            return {
+              type: service.type,
+              enabled: enabled,
+              // A disabled filter keeps its last interval so re-enabling can prefill it.
+              intervalHours: genmgrPositive(entered) ? entered
+                : (Number.isFinite(previous.intervalHours) ? previous.intervalHours : null),
+              lastServiceHourMeter: lastServiceHourMeter
+            };
+          }),
+          createdAt: existing ? existing.createdAt : now,
+          updatedAt: now,
+          // Only active generators reach this editor; Delete sets these.
+          active: true,
+          archivedAt: null
+        };
+        await generatorRepository.saveGenerator(generator);
+      });
     } catch (error) {
       if (error && error.code === 'STORAGE_UNREADABLE') storageUnreadableToast();
       else toast('error', openingText('Not saved', 'لم يتم الحفظ'),
@@ -3408,6 +3445,11 @@ function loadEmployeeNames() {
       return;
     } finally {
       saveButton.disabled = false;
+    }
+    if (gone) {
+      genmgrCloseEditor(true);
+      genmgrRefresh();
+      return;
     }
     genmgrCloseEditor(false);
     toast('success', existing ? openingText('Generator updated', 'تم تحديث المولدة')
@@ -3501,16 +3543,19 @@ function loadEmployeeNames() {
   }
 
   // Delete archives: active = false and archivedAt are set, and nothing else
-  // changes. Runs, service settings and the id stay as they are.
+  // changes. Runs, service settings and the id stay as they are. The
+  // generator is read again under the generator lock at the moment of deleting.
   async function genmgrArchiveGenerator(id) {
     let archived = false;
     try {
-      const generator = (await generatorRepository.listGenerators()).find((item) => item.id === id && genmgrIsActive(item));
-      if (generator) {
-        const now = isoTimestamp();
-        await generatorRepository.saveGenerator(Object.assign({}, generator, { active: false, archivedAt: now, updatedAt: now }));
-        archived = true;
-      }
+      await genmgrWrite(async () => {
+        const generator = (await generatorRepository.loadGenerators()).find((item) => item.id === id && genmgrIsActive(item));
+        if (generator) {
+          const now = isoTimestamp();
+          await generatorRepository.saveGenerator(Object.assign({}, generator, { active: false, archivedAt: now, updatedAt: now }));
+          archived = true;
+        }
+      });
     } catch (error) {
       if (error && error.code === 'STORAGE_UNREADABLE') storageUnreadableToast();
       else toast('error', openingText('Not saved', 'لم يتم الحفظ'),
