@@ -1,43 +1,27 @@
-/* Translation safety: characterization of the CURRENT language behaviour,
-   written before the translation code is consolidated.
+/* Translation safety: the language behaviour of the app after translation
+   consolidation. Every check is REQUIRED; any failure fails the run.
 
-   After translation consolidation,
-   convert all KNOWN_DEBT cases into REQUIRED invariants
-   and remove the debt allowlist.
+   The architecture it protects: UI copy has explicit bilingual ownership
+   (data-auth-en / -ar, data-auth-text-*, data-auth-placeholder-* / -alt-* /
+   -label-*, rendered by applyAuthLanguage(); genmgrText() / openingText() for
+   script-built UI); user and business data is shown exactly as stored
+   (translate="no", shadow roots, option labels); a validation error keeps a
+   stable reason key across a language switch. The legacy text-replacement
+   translators were removed in phase 3; the ARCH checks fail if they, or
+   delayed translation passes, come back.
 
-   Phase 1 (translation boundary: user and business data is never
-   translated; a validation error keeps its reason across a language switch)
-   converted T-DISPLAY-01..04, T-ERROR-01 and T-SESSION-01 into REQUIRED
-   invariants. They stay listed in RESOLVED_DEBT and are tested on every run.
-
-   Phase 2 (static UI with explicit bilingual ownership: data-auth-en / -ar,
-   data-auth-text-*, data-auth-placeholder-* / -alt-* / -label-*, rendered by
-   applyAuthLanguage(); the legacy passes skip it) converted T-PH-01, T-OPT-01
-   and T-ALT-01, and with them T-RT-01..03 and T-TIME-01: every element those
-   debts observed is now explicitly owned. KNOWN_DEBT is empty; the allowlist
-   is removed together with the legacy translators (phase 3).
-
-   Two kinds of checks:
-   REQUIRED    behaviour that is already correct and must stay correct. Any
-               failure fails the run.
-   KNOWN_DEBT  a translation defect already confirmed in the current build,
-               listed once in KNOWN_DEBT below. Each is reproduced and reported
-               as KNOWN_DEBT, never as a pass. A reproduced debt does not fail
-               the run (TEMPORARY, for this pre-consolidation phase only). A
-               debt that no longer reproduces is reported as KNOWN_DEBT CHANGED
-               and fails the run: it must be converted into a REQUIRED
-               invariant, never dropped silently.
-   The run also fails on any UNEXPECTED CHANGE: a harness or runtime error, an
-   unregistered debt id, or a registered debt that was never evaluated.
+   RESOLVED_DEBT keeps the defects found before consolidation traceable
+   (phases 1 and 2): each is a REQUIRED invariant, evaluated once per run.
+   The run also fails on any UNEXPECTED CHANGE: a harness or runtime error,
+   an unregistered id, or a registered one that was never evaluated.
 
    Every scenario runs in its own browser context with seeded, deterministic
    data, and closes it afterwards. The app is served as a static site; any
-   other request is counted as a backend request and aborted. The legacy
-   translation passes run on timers (60-900 ms after a language switch or
-   page load), so the page clock is paused (Playwright clock) and advanced by
-   SETTLE_MS after each switch: "immediately" and "after the timers settled"
-   are exact states, not races. No screenshots: text, attributes, values,
-   storage and visibility only.
+   other request is counted as a backend request and aborted. The page clock
+   is paused (Playwright clock) and advanced by SETTLE_MS after each switch,
+   past the 900 ms the removed passes used to wait, so "immediately" and
+   "after any delayed work" are exact states, not races. No screenshots:
+   text, attributes, values, storage and visibility only.
 
    Run from the repository root: node tests/verify-translation-safety.cjs
    PLAYWRIGHT_CORE=<path to playwright-core> loads it from there; otherwise
@@ -71,18 +55,15 @@ const HTML = process.env.TEST_HTML ? path.resolve(process.env.TEST_HTML) : path.
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.webmanifest': 'application/manifest+json',
   '.png': 'image/png', '.woff2': 'font/woff2' };
 const NOW = new Date('2026-09-25T09:00:00Z'); // 12:00 Baghdad
-// The longest legacy translation delay is 900 ms; this is comfortably past it.
+// Past the longest delay the removed legacy passes used (900 ms): anything
+// still scheduled after a switch or a load would show up within it.
 const SETTLE_MS = 1500;
 
-/* ======================= KNOWN_DEBT registry (the only allowlist) =======================
-   Confirmed in the current build before consolidation. Each entry is
-   evaluated exactly once, by the scenario named in `where`. */
-const KNOWN_DEBT = {
-};
-
-/* ======================= RESOLVED_DEBT (now REQUIRED) =======================
-   Former KNOWN_DEBT, corrected in translation consolidation phases 1 and 2.
-   Each is a REQUIRED invariant, evaluated exactly once by the scenario in `where`. */
+/* ======================= RESOLVED_DEBT (REQUIRED) =======================
+   Defects confirmed by the characterization run before consolidation and
+   corrected in translation consolidation phases 1 and 2. Kept for
+   traceability: each is a REQUIRED invariant, evaluated exactly once by the
+   scenario in `where`. */
 const RESOLVED_DEBT = {
   // Phase 2
   'T-PH-01': { where: 'P1', invariant: 'the end hour meter placeholder is "e.g. 1251.2" in English and "مثال: 1251.2" in Arabic, through a round trip',
@@ -97,7 +78,7 @@ const RESOLVED_DEBT = {
     was: 'came back as upper-case text ("TASK DETAILS")' },
   'T-RT-03': { where: 'RT', invariant: 'placeholders keep their ellipsis "…" after EN -> AR -> EN',
     was: 'came back with "..."' },
-  'T-TIME-01': { where: 'TM', invariant: 'no UI string changes after the moment of a switch or a page load: nothing waits for a delayed legacy pass',
+  'T-TIME-01': { where: 'TM', invariant: 'no UI string changes after the moment of a switch or a page load: nothing waits for a delayed pass',
     was: '98 strings each way became correct only through the delayed passes; the Purchase button read "إرسال Purchase Request" until its pass' },
   // Phase 1
   'T-DISPLAY-01': { where: 'U1', invariant: 'the user bar shows the username exactly as stored, in both languages, through repeated switching',
@@ -110,32 +91,22 @@ const RESOLVED_DEBT = {
     was: 'shown as "NOW" and "Operating Hours" on a plain English load' },
   'T-ERROR-01': { where: 'E1', invariant: 'a shown validation reason (end before start) keeps its identity through a language switch, worded in the new language',
     was: 'a switch replaced it with the required-field message ("تاريخ ووقت النهاية مطلوب" / "End date & time is required")' },
-  'T-SESSION-01': { where: 'S1', invariant: 'the user bar is identical, with the exact username, whether the session starts before the page-load passes, is restored, or starts after them',
-    was: 'translated ("ساعات التشغيل") in the first two cases, raw only when login came after the passes' }
+  'T-SESSION-01': { where: 'S1', invariant: 'the user bar is identical, with the exact username, whether the session starts at page load, is restored, or starts once the page has settled',
+    was: 'translated ("ساعات التشغيل") in the first two cases, raw only when login came after the legacy page-load passes' }
 };
 
 /* ======================= results ======================= */
-const R = { requiredPass: [], requiredFail: [], debtReproduced: [], debtNotReproduced: [], unexpected: [], info: [] };
-const evaluatedDebt = new Set();
+const R = { requiredPass: [], requiredFail: [], unexpected: [], info: [] };
+const evaluatedResolved = new Set();
 function req(name, fn) {
   try { fn(); R.requiredPass.push(name); } catch (e) { R.requiredFail.push(`${name} :: ${e.message.split('\n').slice(0, 12).join('\n')}`); }
-}
-// Reports one registered debt: reproduced (the defect is still there) or
-// not reproduced (KNOWN_DEBT CHANGED). `actual` is what the build does now.
-function debt(id, reproduced, actual) {
-  const entry = KNOWN_DEBT[id];
-  if (!entry) { R.unexpected.push(`unregistered KNOWN_DEBT id ${id}`); return; }
-  if (evaluatedDebt.has(id)) { R.unexpected.push(`KNOWN_DEBT ${id} evaluated twice`); return; }
-  evaluatedDebt.add(id);
-  const row = { id, title: entry.title, actual, desired: entry.desired };
-  (reproduced ? R.debtReproduced : R.debtNotReproduced).push(row);
 }
 // A former debt, now a REQUIRED invariant: a failure is a REQUIRED FAIL.
 function resolved(id, holds, actual) {
   const entry = RESOLVED_DEBT[id];
   if (!entry) { R.unexpected.push(`unregistered RESOLVED_DEBT id ${id}`); return; }
-  if (evaluatedDebt.has(id)) { R.unexpected.push(`RESOLVED_DEBT ${id} evaluated twice`); return; }
-  evaluatedDebt.add(id);
+  if (evaluatedResolved.has(id)) { R.unexpected.push(`RESOLVED_DEBT ${id} evaluated twice`); return; }
+  evaluatedResolved.add(id);
   req(`${id} ${entry.invariant}`, () => assert.ok(holds, `${actual} (formerly: ${entry.was})`));
 }
 const info = (line) => R.info.push(line);
@@ -175,6 +146,55 @@ function errorIdentity(text) {
   if (t === END_BEFORE_START.en || t === END_BEFORE_START.ar) return 'end-before-start';
   if (t === END_REQUIRED.en || t === END_REQUIRED.ar) return 'end-required';
   return 'other: ' + t;
+}
+
+/* ======================= the removed legacy architecture (phase 3) ======================= */
+const LEGACY_TRANSLATORS = ['applySmallTitleTranslation', 'applySmallPlaceholderTranslation', 'applySmallButtonTranslation',
+  'applyFinalLanguageFix', 'applyMixedLanguageCleanup', 'applyFuelLanguage', 'fixPurchaseButtonLanguage'];
+// Their initializers, delayed refresh closures and shared helper.
+const LEGACY_HELPERS = ['initSmallTitleTranslation', 'initSmallPlaceholderTranslation', 'initSmallButtonTranslation',
+  'initFinalLanguageFix', 'initMixedLanguageCleanup', 'initFuelLanguage', 'initPurchaseButtonFinalFix',
+  'refreshTitleLanguage', 'refreshPlaceholderLanguage', 'refreshButtonLanguage', 'refreshFinalLanguage', 'refreshCleanup',
+  'refreshFuelLanguage', 'refreshPurchaseButton', 'legacyTranslatable'];
+// Entries found only in their text-replacement tables.
+const LEGACY_TABLE_ENTRIES = ['TASK DETAILS', 'Purchase Request إرسال', 'Use Now', 'Submit Purchase Order', '#nav-fuel'];
+// Every deferred callback in a source (timers, idle / frame callbacks,
+// MutationObserver), with its line and whether it runs translation code:
+// a name containing Lang, Translat or Cleanup (applyAuthLanguage,
+// refreshFuelLanguage, ...), called or passed by reference. A callback that
+// cannot be parsed counts as translating.
+function deferredCallbacks(source) {
+  const api = /\b(setTimeout|setInterval|requestAnimationFrame|requestIdleCallback|MutationObserver)\s*\(/g;
+  const out = [];
+  let m;
+  while ((m = api.exec(source))) {
+    const args = balancedArgs(source, m.index + m[0].length);
+    out.push({ api: m[1], line: source.slice(0, m.index).split('\n').length, args,
+      translates: args === null || /\b\w*(?:Lang|Translat|Cleanup)\w*\b/.test(args) });
+  }
+  return out;
+}
+// The text from `start` to the parenthesis that closes the one just before
+// it, skipping strings and comments; null if it never closes.
+function balancedArgs(source, start) {
+  let depth = 1;
+  for (let i = start; i < source.length; i++) {
+    const c = source[i];
+    if (c === '"' || c === "'" || c === '`') {
+      let j = i + 1;
+      while (j < source.length && source[j] !== c && (c === '`' || source[j] !== '\n')) j += source[j] === '\\' ? 2 : 1;
+      if (source[j] !== c) return null;
+      i = j;
+    } else if (c === '/' && source[i + 1] === '/') {
+      i = source.indexOf('\n', i);
+      if (i < 0) return null;
+    } else if (c === '/' && source[i + 1] === '*') {
+      i = source.indexOf('*/', i + 2) + 1;
+      if (i < 1) return null;
+    } else if (c === '(') depth++;
+    else if (c === ')' && --depth === 0) return source.slice(start, i);
+  }
+  return null;
 }
 
 /* ======================= test data ======================= */
@@ -298,10 +318,10 @@ function pageInit(a) {
     },
     explicitTotal: () => ['[data-auth-en][data-auth-ar]', '[data-auth-text-en][data-auth-text-ar]', '[data-auth-placeholder-en]', '[data-auth-alt-en]', '[data-auth-label-en]']
       .reduce((n, sel) => n + document.querySelectorAll(sel).length, 0),
-    // UI copy in these roots that only the legacy passes could translate:
-    // text with letters, or a placeholder with letters, outside explicit
-    // ownership, raw data (translate="no") and shadow roots.
-    legacyOwned(selectors) {
+    // UI copy in these roots that nothing translates: text with letters, or
+    // a placeholder with letters, outside explicit ownership, raw data
+    // (translate="no") and shadow roots.
+    unowned(selectors) {
       const out = [];
       const letters = /[A-Za-z؀-ۿ]/;
       const owned = '[data-auth-en], [data-auth-text-en], [data-auth-label-en], [translate="no"]';
@@ -477,6 +497,13 @@ async function run(browser) {
     req('H validation identity is independent of wording language; a different reason is detected', () => {
       assert.deepEqual([errorIdentity(END_BEFORE_START.en), errorIdentity(END_BEFORE_START.ar), errorIdentity(END_REQUIRED.ar)],
         ['end-before-start', 'end-before-start', 'end-required']);
+    });
+    req('H deferred-callback classifier flags delayed translation (by reference, by call, in an observer), not other timers', () => {
+      const sample = 'setTimeout(refreshTitleLanguage, 60);\nsetTimeout(function () { applyAuthLanguage(); }, 0);\n' +
+        "setTimeout(() => { el.classList.add('out'); /* ) */ setTimeout(() => el.remove(), 260); }, life);\n" +
+        'new MutationObserver(() => applyFuelLanguage(lang));\nsetTimeout(() => { show(\'(\'';
+      assert.deepEqual(deferredCallbacks(sample).map((d) => [d.api, d.line, d.translates]), [['setTimeout', 1, true], ['setTimeout', 2, true],
+        ['setTimeout', 3, false], ['setTimeout', 3, false], ['MutationObserver', 4, true], ['setTimeout', 5, true]]);
     });
   });
 
@@ -750,8 +777,6 @@ async function run(browser) {
   });
 
   /* ---------- M1. modern Generator / Fuel components render in the current language (section 12) ---------- */
-  const LEGACY_SWEEP = ['applySmallTitleTranslation', 'applySmallPlaceholderTranslation', 'applySmallButtonTranslation',
-    'applyFinalLanguageFix', 'applyMixedLanguageCleanup', 'applyFuelLanguage', 'fixPurchaseButtonLanguage'];
   for (const lang of ['en', 'ar']) {
     await scenario('M1', async () => {
       const L = lang.toUpperCase();
@@ -759,7 +784,7 @@ async function run(browser) {
         genops_fuel_readings_v1: [reading('id_rd1', 'id_t1', '2026-09-24T06:00:00Z', 500, ''), reading('id_rd2', 'id_t2', '2026-09-24T06:00:00Z', 200, '')] };
       const h = await open(browser, { lang, session: user('tester'), seed });
       await h.click('#nav-generators');
-      // The legacy timers of the page load have run (open() settled); nothing is pending.
+      // open() has settled the page load; nothing is pending.
       const checks = [];
       const inLang = async (label, selector, exact) => {
         const state = await h.ev(([sel, l]) => ({ count: document.querySelectorAll(sel).length,
@@ -813,16 +838,13 @@ async function run(browser) {
           assert.deepEqual(texts, expected);
         });
       }
-      // A full legacy sweep now has nothing left to change in these components.
-      const sweep = await h.ev(([names, l]) => {
-        const roots = '#genmgrEditor, #generatorOpsList, #genmgrStatusCard, #fuelmgrTankEditor, #fuelTankList, #fuelmgrTransferEditor, #fuelmgrMovementCard';
-        const read = () => Array.from(document.querySelectorAll(roots)).map((r) => r.innerHTML).join('\n');
-        const before = read();
-        const called = names.filter((n) => typeof window[n] === 'function');
-        called.forEach((n) => window[n](l));
-        return { called, same: read() === before };
-      }, [LEGACY_SWEEP, lang]);
-      req(`M1 ${L} running the legacy translation sweep (${sweep.called.length} passes) changes nothing in the new components`, () => assert.equal(sweep.same, true));
+      // Nothing rewrites these components later: no delayed pass.
+      const COMPONENTS = '#genmgrEditor, #generatorOpsList, #genmgrStatusCard, #fuelmgrTankEditor, #fuelTankList, #fuelmgrTransferEditor, #fuelmgrMovementCard';
+      const markup = () => h.ev((roots) => Array.from(document.querySelectorAll(roots)).map((r) => r.innerHTML).join('\n'), COMPONENTS);
+      const created = await markup();
+      await h.settle();
+      const later = await markup();
+      req(`M1 ${L} nothing changes in the new components once they are created (${SETTLE_MS} ms later)`, () => assert.equal(later === created, true));
       cleanRun(`M1 ${L}`, h);
       await h.context.close();
     });
@@ -1085,22 +1107,18 @@ async function run(browser) {
       assert.ok(en0.now.length >= 7);
       assert.deepEqual([new Set(en0.now), new Set(ar.now), new Set(en1.now)], [new Set(['NOW']), new Set(['الآن']), new Set(['NOW'])]);
     });
-    // The Purchase button is explicitly owned: at the moment of the switch,
-    // before any delayed pass, it is already right and its legacy fix has
-    // nothing left to change.
-    const purchaseFix = [];
+    // The Purchase button is explicitly owned: it is right at the moment of
+    // the switch, and nothing changes it afterwards.
+    const purchase = [];
+    const button = () => h.ev(() => { const b = document.getElementById('btnSubmitPO'); return [b.innerHTML, b.textContent.replace(/\s+/g, ' ').trim()]; });
     for (const lang of ['ar', 'en']) {
       await h.switchTo(lang, false);
-      purchaseFix.push(await h.ev(() => {
-        const button = document.getElementById('btnSubmitPO');
-        const before = button.innerHTML;
-        if (typeof fixPurchaseButtonLanguage === 'function') fixPurchaseButtonLanguage();
-        return [button.innerHTML === before, button.textContent.replace(/\s+/g, ' ').trim()];
-      }));
+      const atSwitch = await button();
       await h.settle();
+      purchase.push([atSwitch[1], (await button())[0] === atSwitch[0]]);
     }
-    req('B1 running fixPurchaseButtonLanguage() after the switch leaves the explicitly rendered Purchase button unchanged, in both languages', () =>
-      assert.deepEqual(purchaseFix, [[true, 'إرسال طلب الشراء'], [true, 'Submit Purchase Request']]));
+    req('B1 the Purchase button is complete at the moment of the switch and unchanged afterwards, in both languages', () =>
+      assert.deepEqual(purchase, [['إرسال طلب الشراء', true], ['Submit Purchase Request', true]]));
     cleanRun('B1', h);
     await h.context.close();
   });
@@ -1131,7 +1149,7 @@ async function run(browser) {
     await h.context.close();
   });
 
-  /* ---------- TM. timing: at the switch vs after the delayed passes (section 21) ---------- */
+  /* ---------- TM. timing: at the switch vs SETTLE_MS later (section 21) ---------- */
   await scenario('TM', async () => {
     const h = await open(browser, { lang: 'en', session: user('tester') });
     const explicit = {};
@@ -1153,7 +1171,7 @@ async function run(browser) {
       assert.deepEqual([navEn.drawer, navEn.quick, navEn.aria], [e[1].drawer, e[1].quick, e[1].aria]);
     });
     const late = { ar: diffSnap(arImmediate, arSettled), en: diffSnap(enImmediate, enSettled) };
-    // Page load: what the delayed passes still change after an Arabic reload.
+    // Page load: anything that still changes after an Arabic, then an English, reload.
     await h.switchTo('ar');
     await h.reload();
     const atLoad = await h.tr('snap');
@@ -1166,7 +1184,7 @@ async function run(browser) {
     const enLoadLate = diffSnap(atEnLoad, await h.tr('snap'));
     const sample = (list) => list.slice(0, 4).map((d) => `${d.key}: ${JSON.stringify(norm(d.before))} -> ${JSON.stringify(norm(d.after))}`).join('; ');
     resolved('T-TIME-01', late.ar.length + late.en.length + loadLate.length + enLoadLate.length === 0,
-      `changed by delayed passes: after EN->AR ${late.ar.length} (${sample(late.ar)}); after AR->EN ${late.en.length} (${sample(late.en)}); ` +
+      `changed later: after EN->AR ${late.ar.length} (${sample(late.ar)}); after AR->EN ${late.en.length} (${sample(late.en)}); ` +
       `after an Arabic page load ${loadLate.length} (${sample(loadLate)}); after an English page load ${enLoadLate.length} (${sample(enLoadLate)})`);
     cleanRun('TM', h);
     await h.context.close();
@@ -1174,38 +1192,30 @@ async function run(browser) {
 
   /* ---------- X1. explicit ownership at creation (phase 2) ----------
      The converted screens (Generator Run, Fuel Reading, Tasks, Management,
-     Supply), created in a language: correct at once, before any delayed
-     legacy pass runs; nothing changes once the passes have run; no UI copy
-     there is left to the legacy passes; a full legacy sweep changes none of it. */
+     Supply), created in a language: correct at once, when the page has
+     loaded; nothing changes afterwards; no UI copy there is without explicit
+     ownership or a raw-data marker. */
   const SCREENS = '#page-generators, #page-tasks, #page-attendance, #page-purchase';
   const NEUTRAL = ['IQD']; // a currency code, the same in both languages
   for (const lang of ['en', 'ar']) {
     await scenario('X1', async () => {
       const L = lang.toUpperCase();
       const h = await open(browser, { lang, session: user('tester'), seed: SEED_NAMES, settle: false });
-      // The page-load legacy passes are still pending here.
+      // The page has loaded; no timer has run yet.
       const atLoad = { mismatches: await h.tr('explicitMismatches', lang), total: await h.tr('explicitTotal'), snap: await h.tr('snap'),
         employee: await h.ev(() => Array.from(document.querySelectorAll('#task-employee, #att-employee, #po-requester'))
           .map((select) => { const option = select.querySelector('option[value=""]'); return [option.textContent, option.hasAttribute('data-auth-en')]; })) };
       await h.settle();
       const settled = await h.tr('snap');
-      const legacy = (await h.tr('legacyOwned', SCREENS)).filter((line) => !NEUTRAL.some((word) => line.endsWith(' = ' + JSON.stringify(word))));
-      const sweep = await h.ev(([names, l, screens]) => {
-        const read = () => Array.from(document.querySelectorAll(screens)).map((root) => root.innerHTML).join('\n');
-        const before = read();
-        const called = names.filter((name) => typeof window[name] === 'function');
-        called.forEach((name) => window[name](l));
-        return { called, same: read() === before };
-      }, [LEGACY_SWEEP, lang, SCREENS]);
-      req(`X1 ${L} load: all ${atLoad.total} explicitly owned UI strings are in ${L} at once, before any delayed pass`, () =>
+      const unowned = (await h.tr('unowned', SCREENS)).filter((line) => !NEUTRAL.some((word) => line.endsWith(' = ' + JSON.stringify(word))));
+      req(`X1 ${L} load: all ${atLoad.total} explicitly owned UI strings are in ${L} at once, when the page has loaded`, () =>
         assert.deepEqual(atLoad.mismatches, []));
       req(`X1 ${L} load: the three employee placeholders are created in ${L} and explicitly owned`, () =>
         assert.deepEqual(atLoad.employee, Array(3).fill([lang === 'ar' ? 'اختر الموظف...' : 'Select employee…', true])));
-      req(`X1 ${L} load: nothing changes once the page-load legacy passes have run`, () =>
+      req(`X1 ${L} load: nothing changes after the page load (${SETTLE_MS} ms later)`, () =>
         assert.deepEqual(diffSnap(atLoad.snap, settled).map((d) => `${d.key}: ${JSON.stringify(d.before)} -> ${JSON.stringify(d.after)}`), []));
-      req(`X1 ${L}: no UI copy in Generator Run, Fuel Reading, Tasks, Management or Supply is left to the legacy passes`, () =>
-        assert.deepEqual(legacy, []));
-      req(`X1 ${L}: a full legacy sweep (${sweep.called.length} passes) changes nothing in those screens`, () => assert.equal(sweep.same, true));
+      req(`X1 ${L}: no UI copy in Generator Run, Fuel Reading, Tasks, Management or Supply is without explicit ownership or a raw-data marker`, () =>
+        assert.deepEqual(unowned, []));
       cleanRun(`X1 ${L}`, h);
       await h.context.close();
     });
@@ -1219,26 +1229,117 @@ async function run(browser) {
     const read = async (h) => ({ h, session: await h.ev(() => localStorage.getItem('genops_prototype_user')),
       bar: await h.ev(() => [document.getElementById('authLoggedEmployee').textContent, document.getElementById('authLoggedRole').textContent,
         document.getElementById('authLogoutButton').textContent.trim()]) });
-    // a. Arabic already selected; login while the page-load passes are still pending.
+    // a. Arabic already selected; login right after the page load, before any timer.
     let h = await open(browser, { lang: 'ar', settle: false });
     await h.login(NAME); await h.settle();
-    variants.loginBeforePasses = await read(h);
+    variants.loginAtLoad = await read(h);
     // b. Arabic restored on page load with an existing session.
     h = await open(browser, { lang: 'ar', session: user(NAME) });
     variants.restored = await read(h);
-    // c. Arabic selected; login after every legacy pass has finished.
+    // c. Arabic selected; login once the page has settled.
     h = await open(browser, { lang: 'ar' });
     await h.login(NAME); await h.settle();
-    variants.loginAfterPasses = await read(h);
+    variants.loginAfterSettle = await read(h);
     const stored = JSON.stringify(user(NAME));
     req('S1 the stored session is identical in all three cases ({"username":"Operating Hours",...})', () =>
       assert.deepEqual(Object.values(variants).map((v) => v.session), [stored, stored, stored]));
-    req('S1 login before the page-load passes, restored session and login after the passes all show the exact raw username', () =>
+    req('S1 login at page load, restored session and login once the page has settled all show the exact raw username', () =>
       assert.deepEqual(Object.values(variants).map((v) => v.bar[0]), [NAME, NAME, NAME]));
     const bars = Object.fromEntries(Object.entries(variants).map(([k, v]) => [k, v.bar]));
     resolved('T-SESSION-01', Object.values(bars).every((b) => JSON.stringify(b) === JSON.stringify([NAME, 'مدير', 'تسجيل الخروج'])),
-      `user bar under Arabic: login before the page-load passes ${JSON.stringify(bars.loginBeforePasses)}, restored session ${JSON.stringify(bars.restored)}, login after the passes ${JSON.stringify(bars.loginAfterPasses)}`);
+      `user bar under Arabic: login at page load ${JSON.stringify(bars.loginAtLoad)}, restored session ${JSON.stringify(bars.restored)}, login once settled ${JSON.stringify(bars.loginAfterSettle)}`);
     for (const [k, v] of Object.entries(variants)) { cleanRun(`S1 ${k}`, v.h); await v.h.context.close(); }
+  });
+
+  /* ---------- ARCH. the legacy translation architecture stays removed (phase 3) ----------
+     Source: none of the seven text-replacement translators, their
+     initializers, refresh closures, helper or table entries; no text-node
+     sweep; no deferred callback runs translation code. Runtime: none of them
+     exists, and a full language switch in a busy state schedules nothing and
+     is complete in the same task, both ways. */
+  await scenario('ARCH', async () => {
+    const source = fs.readFileSync(HTML, 'utf8');
+    const present = (list) => list.filter((s) => source.includes(s));
+    req(`ARCH production source contains none of the seven legacy translators (${LEGACY_TRANSLATORS.join(', ')})`, () =>
+      assert.deepEqual(present(LEGACY_TRANSLATORS), []));
+    req('ARCH production source contains none of their initializers, delayed refresh closures, legacyTranslatable or table entries', () =>
+      assert.deepEqual(present(LEGACY_HELPERS.concat(LEGACY_TABLE_ENTRIES)), []));
+    req('ARCH production source has no text-node sweep (createTreeWalker / SHOW_TEXT), the mechanism of every legacy pass', () =>
+      assert.deepEqual(present(['createTreeWalker', 'SHOW_TEXT']), []));
+    const deferred = deferredCallbacks(source);
+    deferred.forEach((d) => info(`ARCH deferred callback ${d.api} at line ${d.line} (${d.translates ? 'TRANSLATES' : 'no translation'}): ${norm(d.args).slice(0, 100)}`));
+    req(`ARCH none of the ${deferred.length} deferred callbacks in production (timers, frame / idle callbacks, observers) schedules translation`, () =>
+      assert.deepEqual(deferred.filter((d) => d.translates).map((d) => `${d.api} at line ${d.line}: ${norm(d.args).slice(0, 120)}`), []));
+
+    const h = await open(browser, { lang: 'en', session: user('tester'), seed: SEED_NAMES });
+    const defined = await h.ev((names) => names.filter((n) => typeof window[n] !== 'undefined'), LEGACY_TRANSLATORS.concat(LEGACY_HELPERS));
+    req('ARCH none of the legacy translators, initializers or helpers is defined in the running page', () => assert.deepEqual(defined, []));
+    // A busy state: a photo preview, a cross-field Generator error, required-field
+    // errors in the other forms, the Generator editor, a delete confirmation,
+    // a selected tank and the Fuel transfer editor.
+    await h.click('#nav-tasks');
+    const jpeg = Buffer.from(await h.ev(() => {
+      const c = document.createElement('canvas'); c.width = 32; c.height = 24;
+      const x = c.getContext('2d'); x.fillStyle = '#21E6E6'; x.fillRect(0, 0, 32, 24);
+      return c.toDataURL('image/jpeg', 0.9).split(',')[1];
+    }), 'base64');
+    await h.page.setInputFiles('#task-photo-gallery', { name: 'fixture.jpg', mimeType: 'image/jpeg', buffer: jpeg });
+    await h.until(() => document.querySelectorAll('#task-preview-grid img').length === 1, null, 'photo preview');
+    await h.click('#nav-generators');
+    await h.set('gen-name', 'id_g1');
+    await h.until(() => document.getElementById('gen-start-hm').value === '100', null, 'opening reading');
+    await h.set('gen-start-dt', '2026-09-25T10:00'); await h.set('gen-end-dt', '2026-09-25T09:00'); await h.set('gen-end-hm', '99');
+    await h.ev(() => ['formGenerators', 'formTasks', 'formAttendance', 'formPurchase'].forEach((id) => document.getElementById(id).requestSubmit()));
+    await h.click('#genmgrAddBtn');
+    await h.until(() => !document.getElementById('genmgrEditor').hidden, null, 'generator editor');
+    await h.click('#generatorOpsList [data-genmgr-delete]');
+    await h.until(() => !!document.querySelector('#generatorOpsList .ops-confirm'), null, 'generator delete confirmation');
+    await h.click('#secHeadFuel');
+    await h.set('fuel-tank', 'id_t1');
+    await h.click('#fuelmgrTransferBtn');
+    await h.until(() => !document.getElementById('fuelmgrTransferEditor').hidden, null, 'transfer editor');
+    await h.settle();
+    const busy = await h.ev(() => ({ previews: document.querySelectorAll('#task-preview-grid img').length,
+      errors: document.querySelectorAll('.show[id^="err-"]').length, reason: document.getElementById('err-gen-end-dt').dataset.errorReason || null,
+      editors: ['genmgrEditor', 'fuelmgrTransferEditor'].filter((id) => !document.getElementById(id).hidden).length,
+      confirm: document.querySelectorAll('.ops-confirm').length, strings: Object.keys(window.__tr.snap()).length }));
+    info(`ARCH busy state: ${busy.strings} UI strings, ${busy.errors} field errors, ${busy.previews} preview, ${busy.editors} editors, ${busy.confirm} confirmation`);
+    req('ARCH the busy state is reached (preview, cross-field and required-field errors, two editors, a delete confirmation)', () =>
+      assert.deepEqual([busy.previews, busy.errors > 3, busy.reason, busy.editors, busy.confirm], [1, true, 'end_before_start', 2, 1]));
+    // Clicks the language button with every scheduling API recorded, then
+    // reads the page in the same task.
+    const switchRecorded = (lang) => h.ev((l) => {
+      const scheduled = [];
+      const describe = (fn) => String(fn).replace(/\s+/g, ' ').slice(0, 80);
+      const apis = ['setTimeout', 'setInterval', 'requestAnimationFrame', 'requestIdleCallback'].filter((n) => typeof window[n] === 'function');
+      const saved = {};
+      apis.forEach((n) => { saved[n] = window[n]; window[n] = function (...args) { scheduled.push(`${n}(${describe(args[0])}, ${args[1]})`); return saved[n].apply(this, args); }; });
+      const Observer = window.MutationObserver;
+      window.MutationObserver = function (callback) { scheduled.push(`MutationObserver(${describe(callback)})`); return new Observer(callback); };
+      try { document.getElementById(l === 'ar' ? 'btnLangAr' : 'btnLangEn').click(); } finally {
+        apis.forEach((n) => { window[n] = saved[n]; });
+        window.MutationObserver = Observer;
+      }
+      return { scheduled, mismatches: window.__tr.explicitMismatches(l), total: window.__tr.explicitTotal(), snap: window.__tr.snap(), lang: window.__tr.lang() };
+    }, lang);
+    const switches = {};
+    for (const lang of ['ar', 'en']) {
+      const atSwitch = await switchRecorded(lang);
+      await h.settle();
+      switches[lang] = Object.assign(atSwitch, { later: diffSnap(atSwitch.snap, await h.tr('snap')) });
+    }
+    const both = (fn) => ({ ar: fn(switches.ar), en: fn(switches.en) });
+    req('ARCH a full language switch in a busy state schedules no timer, frame / idle callback or observer, both ways', () =>
+      assert.deepEqual(both((s) => s.scheduled), { ar: [], en: [] }));
+    req(`ARCH all ${switches.ar.total} explicitly owned UI strings of the busy state are in the new language in the same task, both ways`, () =>
+      assert.deepEqual(both((s) => s.mismatches), { ar: [], en: [] }));
+    req('ARCH the language attributes and the active button are set in the same task, both ways', () =>
+      assert.deepEqual(both((s) => s.lang), { ar: { lang: 'ar', dir: 'rtl', stored: 'ar', bodyDirection: 'rtl', activeButton: 'ar' },
+        en: { lang: 'en', dir: 'ltr', stored: 'en', bodyDirection: 'ltr', activeButton: 'en' } }));
+    req(`ARCH nothing in the busy state changes after the switch (${SETTLE_MS} ms later): the switch is complete immediately, both ways`, () =>
+      assert.deepEqual(both((s) => s.later.map((d) => `${d.key}: ${JSON.stringify(d.before)} -> ${JSON.stringify(d.after)}`)), { ar: [], en: [] }));
+    cleanRun('ARCH', h);
+    await h.context.close();
   });
 }
 
@@ -1247,22 +1348,18 @@ async function run(browser) {
   const browser = await chromium.launch({ headless: true });
   try { await run(browser); } finally { await browser.close(); server.close(); }
   if (!process.env.ONLY) {
-    Object.keys(KNOWN_DEBT).concat(Object.keys(RESOLVED_DEBT)).filter((id) => !evaluatedDebt.has(id))
-      .forEach((id) => R.unexpected.push(`${KNOWN_DEBT[id] ? 'KNOWN_DEBT' : 'RESOLVED_DEBT'} ${id} was never evaluated`));
+    Object.keys(RESOLVED_DEBT).filter((id) => !evaluatedResolved.has(id))
+      .forEach((id) => R.unexpected.push(`RESOLVED_DEBT ${id} was never evaluated`));
   }
   const out = path.join(process.env.RESULTS_DIR ? path.resolve(process.env.RESULTS_DIR) : os.tmpdir(), 'translation-safety-results.json');
   fs.writeFileSync(out, JSON.stringify(R, null, 2));
   console.log('results: ' + out);
   console.log(`REQUIRED PASS: ${R.requiredPass.length}`);
   console.log(`REQUIRED FAIL: ${R.requiredFail.length}`);
-  console.log(`KNOWN_DEBT REPRODUCED: ${R.debtReproduced.length}`);
-  console.log(`KNOWN_DEBT NOT REPRODUCED: ${R.debtNotReproduced.length}`);
   console.log(`UNEXPECTED CHANGE: ${R.unexpected.length}`);
-  console.log(`RESOLVED_DEBT (now REQUIRED): ${Object.keys(RESOLVED_DEBT).join(', ')}`);
+  console.log(`RESOLVED_DEBT (REQUIRED): ${Object.keys(RESOLVED_DEBT).join(', ')}`);
   R.requiredFail.forEach((f) => console.log('REQUIRED FAIL ' + f));
-  R.debtReproduced.forEach((d) => console.log(`KNOWN_DEBT ${d.id} ${d.title}\n    actual:  ${d.actual}\n    desired: ${d.desired}`));
-  R.debtNotReproduced.forEach((d) => console.log(`KNOWN_DEBT CHANGED ${d.id} ${d.title}\n    actual now: ${d.actual}\n    -> convert this debt into a REQUIRED invariant`));
   R.unexpected.forEach((u) => console.log('UNEXPECTED CHANGE ' + u));
   R.info.forEach((line) => console.log('INFO ' + line));
-  process.exitCode = R.requiredFail.length || R.debtNotReproduced.length || R.unexpected.length ? 1 : 0;
+  process.exitCode = R.requiredFail.length || R.unexpected.length ? 1 : 0;
 })();
